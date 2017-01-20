@@ -10,10 +10,12 @@ Server:
 
 
 	Dateiablage
-	Zugriff via https
+	Zugriff via https/Ftp
 
 Client:
 	Frei wählbarer Name+letze 24Bit der Mac in asccii
+	Bilder via usb werden automatisch eingefügt mit standard CFG vom Server
+	
 
 Admin:
 	Upload der Bilder via FTP 
