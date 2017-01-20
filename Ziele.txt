@@ -1,0 +1,23 @@
+Team "The-Brains"
+
+Server:
+	XML,CSV o.ä. für Bilddaten
+		Gruppe
+		Untergruppe
+		Clientname
+		Bild Name
+		AnzeigeDauer
+
+
+	Dateiablage
+	Zugriff via https
+
+Client:
+	Frei wählbarer Name+letze 24Bit der Mac in asccii
+
+Admin:
+	Upload der Bilder via FTP 
+		ftp.strato.de bilderrahmen@bilderrahmen.cheaterll.de::Kennwort0
+	Bearbeiten und Löschen von Bildern
+	Anzeigen der Client-Config
+	Suchen nach Gruppen, Untergruppen, Namen
