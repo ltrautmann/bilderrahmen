@@ -1,6 +1,9 @@
+import utils.panels.P_Buttons;
 import utils.panels.P_ClientGroupSelect;
+import utils.panels.P_MainWindow;
 
 import javax.swing.*;
+import java.awt.BorderLayout;
 import java.awt.Container;
 
 /**
@@ -8,8 +11,9 @@ import java.awt.Container;
  */
 public class Fenster extends JFrame {
     private Container c;
-    private JTabbedPane tabbedPane;
-    private P_ClientGroupSelect p_ClientGroupSelect;
+    private P_MainWindow p_mainWindow;
+    private P_Buttons p_buttons;
+
 
     public Fenster() {
         initComponents();
@@ -19,11 +23,12 @@ public class Fenster extends JFrame {
 
     private void initComponents(){
         c = getContentPane();
-        tabbedPane = new JTabbedPane();
-        p_ClientGroupSelect = new P_ClientGroupSelect(true, null, null);
-        tabbedPane.addTab("Clients", null, p_ClientGroupSelect);
-        tabbedPane.addTab("Gruppen", null, new JPanel());
-        c.add(tabbedPane);
+        setLayout(new BorderLayout());
+
+        p_buttons = new P_Buttons();
+        p_mainWindow = new P_MainWindow(true, null, null);
+        c.add(p_mainWindow, BorderLayout.CENTER);
+        c.add(p_buttons, BorderLayout.SOUTH);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
