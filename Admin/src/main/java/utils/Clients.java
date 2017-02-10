@@ -1,28 +1,56 @@
 package utils;
 
+import javax.swing.AbstractListModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  * Created by robin on 22.01.17.
  */
-public class Clients {
+public class Clients extends AbstractListModel<Gruppe> {
 
+    private static int number = 0;
     private String id;
     private String name;
-    private static int number = 0;
     private ArrayList<Gruppe> arrayListGroups;
+    private ArrayList<BildSettings> bildIgnoreArrayList;
+    private ArrayList<BildSettings> clientSpezielleBilderListe;
+    private ArrayList<BildSettings> alleBilderListe;
 
-    public static int getNumber() {
+    public Clients() {
+         number++;
+        id = ""+number;
+         arrayListGroups = new ArrayList<Gruppe>();
+        clientSpezielleBilderListe = new ArrayList<BildSettings>();
+    }
+
+    public  int getNumber() {
         return number;
     }
 
-
-    public Clients() {
-        number = number++;
-        arrayListGroups = new ArrayList<Gruppe>();
+    public ArrayList<BildSettings> getBildIgnoreArrayList() {
+        return bildIgnoreArrayList;
     }
 
+    public void setBildIgnoreArrayList(ArrayList<BildSettings> bildIgnoreArrayList) {
+        this.bildIgnoreArrayList = bildIgnoreArrayList;
+    }
+
+    public ArrayList<BildSettings> getClientSpezielleBilderListe() {
+        return clientSpezielleBilderListe;
+    }
+
+    public void setClientSpezielleBilderListe(ArrayList<BildSettings> clientSpezielleBilderListe) {
+        this.clientSpezielleBilderListe = clientSpezielleBilderListe;
+    }
+
+    public ArrayList<BildSettings> getAlleBilderListe() {
+        return alleBilderListe;
+    }
+
+    public void setAlleBilderListe(ArrayList<BildSettings> alleBilderListe) {
+        this.alleBilderListe = alleBilderListe;
+    }
 
     public Gruppe removeGruppe(String grupprnName) {
         Gruppe v;
@@ -55,6 +83,50 @@ public class Clients {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void addGroup(Gruppe g) {
+        if (!arrayListGroups.contains(g))
+        arrayListGroups.add(g);
+       // System.out.println(arrayListGroups.size());
+    }
+    public void updateList(){
+        fireIntervalAdded(this,arrayListGroups.size(),arrayListGroups.size());
+    }
+
+    @Override
+    public String toString() {
+        return  name ;
+    }
+
+    @Override
+    public int getSize() {
+        return arrayListGroups.size();
+    }
+
+    @Override
+    public Gruppe getElementAt(int index) {
+        return arrayListGroups.get(index);
+    }
+
+    public void listenMergen() {
+        alleBilderListe = new ArrayList<BildSettings>();
+        for (Gruppe g : arrayListGroups) {
+            for (BildSettings gb : g.getGruppenBildArrayList()) {
+                alleBilderListe.add(gb);
+            }
+        }
+        for (BildSettings cb : clientSpezielleBilderListe) {
+            if (!alleBilderListe.contains(cb)) {
+                alleBilderListe.add(cb);
+            } else {
+                alleBilderListe.remove(cb);
+                alleBilderListe.add(cb);
+            }
+        }
+        for (BildSettings ib : bildIgnoreArrayList) {
+            alleBilderListe.remove(bildIgnoreArrayList);
+        }
     }
 
 }

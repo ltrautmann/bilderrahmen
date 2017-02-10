@@ -5,6 +5,7 @@ import utils.Gruppe;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 /**
@@ -21,6 +22,7 @@ public class P_MainWindow extends JPanel {
         p_ClientGroupSelect = new P_ClientGroupSelect(testlauf, arrayListClients, gruppeArrayList);
         jTabbedPane.addTab("Clients", null, p_ClientGroupSelect);
         jTabbedPane.addTab("Gruppen", null, new JPanel());
+        jTabbedPane.setPreferredSize(new Dimension(900,500));
         add(jTabbedPane);
     }
 }
