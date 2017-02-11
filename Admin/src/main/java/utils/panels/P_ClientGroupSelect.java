@@ -76,7 +76,6 @@ public class P_ClientGroupSelect extends JPanel {
         buttons.add(jButtons[1]);
 
         p_Groups_User = new P_Groups(arrayListClients.get(0));
-        System.out.println((Object)arrayListClients.get(0));
         p_ClientSelect = new P_ClientSelect(arrayListClients);
         p_Groups_Global = new P_Groups(gruppeArrayList);
         add(p_ClientSelect, BorderLayout.NORTH);
