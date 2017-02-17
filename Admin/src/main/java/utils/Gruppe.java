@@ -1,12 +1,14 @@
 package utils;
 
+import utils.interfaces.I_GotPictures;
+
 import javax.swing.AbstractListModel;
 import java.util.ArrayList;
 
 /**
  * Created by robin on 22.01.17.
  */
-public class Gruppe extends AbstractListModel<BildSettings> {
+public class Gruppe extends AbstractListModel implements I_GotPictures {
     private ArrayList<BildSettings> gruppenBildArrayList;
     private String gruppenName;
 
@@ -69,5 +71,16 @@ public class Gruppe extends AbstractListModel<BildSettings> {
     @Override
     public BildSettings getElementAt(int index) {
         return gruppenBildArrayList.get(index);
+    }
+
+
+    @Override
+    public void addElement(BildSettings bildSettings) {
+        gruppenBildArrayList.add(bildSettings);
+    }
+
+    @Override
+    public ArrayList<BildSettings> getPictures() {
+        return gruppenBildArrayList;
     }
 }

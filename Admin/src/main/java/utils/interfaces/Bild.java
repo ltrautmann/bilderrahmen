@@ -1,4 +1,4 @@
-package utils;
+package utils.interfaces;
 
 /**
  * Created by Robin on 10.02.2017.

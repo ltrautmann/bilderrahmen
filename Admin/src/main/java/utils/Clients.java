@@ -1,5 +1,8 @@
 package utils;
 
+import utils.interfaces.I_GotGroups;
+import utils.interfaces.I_GotPictures;
+
 import javax.swing.AbstractListModel;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +10,7 @@ import java.util.Iterator;
 /**
  * Created by robin on 22.01.17.
  */
-public class Clients extends AbstractListModel<Gruppe> {
+public class Clients extends AbstractListModel implements I_GotGroups, I_GotPictures {
 
     private static int number = 0;
     private String id;
@@ -18,13 +21,18 @@ public class Clients extends AbstractListModel<Gruppe> {
     private ArrayList<BildSettings> alleBilderListe;
 
     public Clients() {
-         number++;
-        id = ""+number;
-         arrayListGroups = new ArrayList<Gruppe>();
+        number++;
+        id = "" + number;
+        arrayListGroups = new ArrayList<Gruppe>();
         clientSpezielleBilderListe = new ArrayList<BildSettings>();
     }
 
-    public  int getNumber() {
+    public Clients(String name) {
+        this();
+        this.name = name;
+    }
+
+    public int getNumber() {
         return number;
     }
 
@@ -87,16 +95,17 @@ public class Clients extends AbstractListModel<Gruppe> {
 
     public void addGroup(Gruppe g) {
         if (!arrayListGroups.contains(g))
-        arrayListGroups.add(g);
-       // System.out.println(arrayListGroups.size());
+            arrayListGroups.add(g);
+        // System.out.println(arrayListGroups.size());
     }
-    public void updateList(){
-        fireIntervalAdded(this,arrayListGroups.size(),arrayListGroups.size());
+
+    public void updateList() {
+        fireIntervalAdded(this, arrayListGroups.size(), arrayListGroups.size());
     }
 
     @Override
     public String toString() {
-        return  name ;
+        return name;
     }
 
     @Override
@@ -129,4 +138,25 @@ public class Clients extends AbstractListModel<Gruppe> {
         }
     }
 
+    @Override
+    public void addElement(Gruppe gruppe) {
+        //todo add method
+    }
+
+    @Override
+    public ArrayList<Gruppe> getGruppen() {
+        return null;
+        //todo add method
+    }
+
+    @Override
+    public void addElement(BildSettings bildSettings) {
+//todo add method
+    }
+
+    @Override
+    public ArrayList<BildSettings> getPictures() {
+        return null;
+        //todo add method
+    }
 }
