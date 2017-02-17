@@ -9,7 +9,8 @@ import java.io.IOException;
  */
 public class test {
     public static void main(String[] args) {
-        FileDownloader.createInstance("https://bilderrahmen.cheaterll.de/files/", "", "", "gbs", "Kennwort0");
-        FileDownloader fd = FileDownloader.getInstance();
+        //FileDownloader.createInstance("https://bilderrahmen.cheaterll.de/files/", "", "", "gbs", "Kennwort0");
+        //FileDownloader fd = FileDownloader.getInstance();
+        Window w = new Window();
     }
 }

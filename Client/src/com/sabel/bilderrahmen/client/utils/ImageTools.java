@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
  * Created by you shall not pass on 17.02.2017.
  */
 public class ImageTools {
-    public BufferedImage resizeImage(BufferedImage image) {
+    public static BufferedImage resizeImage(BufferedImage image) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) screenSize.getWidth();
         int height = (int) screenSize.getHeight();
@@ -40,7 +40,7 @@ public class ImageTools {
      *                      the {@code BILINEAR} hint is specified)
      * @return a scaled version of the original {@code BufferedImage}
      */
-    private BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
+    private static BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
         int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
         BufferedImage ret = (BufferedImage) img;
         int w, h;
