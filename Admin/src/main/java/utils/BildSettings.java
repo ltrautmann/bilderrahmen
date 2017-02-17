@@ -1,5 +1,7 @@
 package utils;
 
+import utils.interfaces.Bild;
+
 /**
  * Created by Robin on 10.02.2017.
  */
@@ -12,6 +14,10 @@ public class BildSettings implements Bild {
         this.dauerInSec = dauerInSec;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 
     public int getDauerInSec() {
         return dauerInSec;
@@ -47,6 +53,6 @@ public class BildSettings implements Bild {
 
     @Override
     public String getName() {
-        return location.substring(location.lastIndexOf('/'), location.length());
+        return location.substring(location.lastIndexOf('/')+1, location.length());
     }
 }

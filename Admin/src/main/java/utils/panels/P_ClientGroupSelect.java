@@ -27,10 +27,9 @@ public class P_ClientGroupSelect extends JPanel {
     private P_ClientSelect p_ClientSelect;
 
 
-    public P_ClientGroupSelect(boolean testlauf, ArrayList<Clients> arrayListClients, ArrayList<Gruppe> gruppeArrayList) {
+    public P_ClientGroupSelect( ArrayList<Clients> arrayListClients, ArrayList<Gruppe> gruppeArrayList) {
         this.arrayListClients = arrayListClients;
         this.gruppeArrayList = gruppeArrayList;
-        if (testlauf) testdaten();
         initComponents();
         initEvents();
 
@@ -62,6 +61,12 @@ public class P_ClientGroupSelect extends JPanel {
 
     }
 
+    public ArrayList getClientArraylist(){
+        return arrayListClients;
+    }
+    public ArrayList getGruppen() {
+        return gruppeArrayList;
+    }
     private void initComponents() {
         setLayout(new BorderLayout());
         center = new JPanel();
@@ -85,18 +90,18 @@ public class P_ClientGroupSelect extends JPanel {
         add(center);
     }
 
-    public void testdaten() {
-        this.arrayListClients = new ArrayList<Clients>();
-        this.gruppeArrayList = new ArrayList<Gruppe>();
-        Clients c[] = new Clients[100];
-        Gruppe g[] = new Gruppe[100];
-
-        for (int i = 0; i < c.length; i++) {
-            c[i] = new Clients();
-            g[i] = new Gruppe("Gruppe_" + i);
-            c[i].setName("Client_Nr:" + i);
-            arrayListClients.add(c[i]);
-            gruppeArrayList.add(g[i]);
-        }
-    }
+//    public void testdaten() {
+//        this.arrayListClients = new ArrayList<Clients>();
+//        this.gruppeArrayList = new ArrayList<Gruppe>();
+//        Clients c[] = new Clients[100];
+//        Gruppe g[] = new Gruppe[100];
+//
+//        for (int i = 0; i < c.length; i++) {
+//            c[i] = new Clients();
+//            g[i] = new Gruppe("Gruppe_" + i);
+//            c[i].setName("Client_Nr:" + i);
+//            arrayListClients.add(c[i]);
+//            gruppeArrayList.add(g[i]);
+//        }
+//    }
 }
