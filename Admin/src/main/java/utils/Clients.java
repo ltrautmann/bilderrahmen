@@ -15,21 +15,31 @@ public class Clients extends AbstractListModel implements I_GotGroups, I_GotPict
     private static int number = 0;
     private String id;
     private String name;
-    private ArrayList<Gruppe> arrayListGroups;
-    private ArrayList<BildSettings> bildIgnoreArrayList;
-    private ArrayList<BildSettings> clientSpezielleBilderListe;
-    private ArrayList<BildSettings> alleBilderListe;
+    private ArrayList<Gruppe> arrayListGroups;                      //Liste0
+    private ArrayList<BildSettings> bildIgnoreArrayList;            //Liste1
+    private ArrayList<BildSettings> clientSpezielleBilderListe;     //Liste2
+    private ArrayList<BildSettings> alleBilderListe;                //Liste3
+    private int angezeigteListe = 0;
 
     public Clients() {
         number++;
         id = "" + number;
         arrayListGroups = new ArrayList<Gruppe>();
         clientSpezielleBilderListe = new ArrayList<BildSettings>();
+        bildIgnoreArrayList = new ArrayList<>();
     }
 
     public Clients(String name) {
         this();
         this.name = name;
+    }
+
+    public int getAngezeigteListe() {
+        return angezeigteListe;
+    }
+
+    public void setAngezeigteListe(int angezeigteListe) {
+        this.angezeigteListe = angezeigteListe;
     }
 
     public int getNumber() {
@@ -110,12 +120,33 @@ public class Clients extends AbstractListModel implements I_GotGroups, I_GotPict
 
     @Override
     public int getSize() {
-        return arrayListGroups.size();
+        switch (angezeigteListe) {
+            case 0:
+                return arrayListGroups.size();
+            case 1:
+                return bildIgnoreArrayList.size();
+            case 2:
+                return clientSpezielleBilderListe.size();
+            case 3:
+                return alleBilderListe.size();
+        }
+        return 0;
     }
 
     @Override
-    public Gruppe getElementAt(int index) {
-        return arrayListGroups.get(index);
+    public Object getElementAt(int index) {
+        switch (angezeigteListe) {
+            case 0:
+                return arrayListGroups.get(index);
+            case 1:
+                return bildIgnoreArrayList.get(index);
+            case 2:
+                return clientSpezielleBilderListe.get(index);
+            case 3:
+                return alleBilderListe.get(index);
+
+        }
+        return null;
     }
 
     public void listenMergen() {
@@ -140,18 +171,29 @@ public class Clients extends AbstractListModel implements I_GotGroups, I_GotPict
 
     @Override
     public void addElement(Gruppe gruppe) {
-        //todo add method
+        if(!arrayListGroups.contains(gruppe))
+        arrayListGroups.add(gruppe);
+        fireIntervalAdded(this, arrayListGroups.size(), arrayListGroups.size());
     }
 
     @Override
     public ArrayList<Gruppe> getGruppen() {
-        return null;
-        //todo add method
+        return arrayListGroups;
     }
 
     @Override
     public void addElement(BildSettings bildSettings) {
-//todo add method
+
+        if (angezeigteListe == 1) {
+            if(!bildIgnoreArrayList.contains(bildSettings))
+            bildIgnoreArrayList.add(bildSettings);
+            fireIntervalAdded(this, bildIgnoreArrayList.size(), bildIgnoreArrayList.size());
+        }
+        if (angezeigteListe == 2) {
+            if(!clientSpezielleBilderListe.contains(bildSettings))
+            clientSpezielleBilderListe.add(bildSettings);
+            fireIntervalAdded(this, clientSpezielleBilderListe.size(), clientSpezielleBilderListe.size());
+        }
     }
 
     @Override
