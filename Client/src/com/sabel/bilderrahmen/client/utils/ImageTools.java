@@ -12,13 +12,14 @@ public class ImageTools {
         int width = (int) screenSize.getWidth();
         int height = (int) screenSize.getHeight();
         //adjust the target height or width to conserve the aspect ratio of the original image
-        double aspectRatio = image.getWidth() / image.getHeight();
+        double aspectRatio = (double)image.getWidth() / (double)image.getHeight();
         if (width * aspectRatio < height) {
             height = (int) (width * aspectRatio);
         } else if (width * aspectRatio > height) {
             width = (int) (height * aspectRatio);
         }
-        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
+        System.out.println("Resizing image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
+        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, (image.getWidth() > width || image.getHeight() > height));
     }
 
     /**
