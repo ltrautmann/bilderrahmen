@@ -1,6 +1,7 @@
 package com.sabel.bilderrahmen.client;
 
 import com.sabel.bilderrahmen.client.utils.ConfigReaderWriter;
+import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.ImageTools;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
@@ -12,10 +13,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +28,7 @@ public class Window extends JFrame {
     private Container c;
     private JPanel menuPanelParent;
     private ImagePanel imagePanel;
+    private ImageService imageService;
 
 
 
@@ -34,30 +36,31 @@ public class Window extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         init();
         fullScreen(this, false);
+        imageService = new ImageService();
         testimages();
     }
 
     private void testimages() {
+        test.testimages();
         try {
-            test.testimages();
-            int i = 0;
-            int last_image = 10;
-            while (i < last_image) {
-                imagePanel.setImage(ImageTools.resizeImage(ImageIO.read(new File(test.testimages[i]))));
-                TimeUnit.SECONDS.sleep(1);
-                if (i == last_image - 1) {
-                    i = 0;
-                } else {
-                    i++;
-                }
+            for (String s : test.testimages) {
+                imageService.addImage(ImageTools.resizeImage(ImageIO.read(new File(s))));
             }
-            //for (int i=0;i<10;i++) {
-            //    imagePanel.setImage(ImageTools.resizeImage(ImageIO.read(new File(test.testimages[i]))));
-            //    TimeUnit.SECONDS.sleep(5);
-            //}
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        }
+        Random r = new Random();
+
+        try {
+            Image curImg = imageService.getImage(0);
+            while (true) {
+                //TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(r.nextInt(1900)+100);
+                curImg = imageService.next(curImg);
+                //imagePanel.setImage(curImg);
+                imagePanel.setImage(imageService.randomImage());
+            }
+        }catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
