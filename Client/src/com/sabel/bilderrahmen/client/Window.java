@@ -86,15 +86,16 @@ public class Window extends JFrame {
         menuPanelParent.setLayout(new GridBagLayout());
         menuPanelParent.add(new MenuPanel(configReaderWriter));
         imagePanel = new ImagePanel();
-        //c.add(menuPanelParent); //NICHT NUTZEN!!!
     }
 
     private void initEvents(){
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == 27) {//27 == ESC
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     System.exit(0);
+                } else if (e.getKeyCode() == KeyEvent.VK_F5) {
+                    //TODO:Refresh config
                 }
             }
         });

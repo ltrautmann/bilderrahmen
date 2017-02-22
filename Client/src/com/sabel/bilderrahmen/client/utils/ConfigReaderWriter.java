@@ -15,7 +15,6 @@ public class ConfigReaderWriter {
 
     public boolean readInitialConfig() throws IOException {
         //TODO: lokale config lesen
-        //FileDownloader.getConfig("default-config.xml");
 
 
 
