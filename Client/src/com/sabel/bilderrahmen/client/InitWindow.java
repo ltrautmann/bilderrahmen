@@ -23,28 +23,13 @@ public class InitWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Initializing...");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(500, 500);
+        setSize(960, 540);
         setLocationRelativeTo(null);
         init();
     }
 
     private void init() {
-
-
         initComponents();
-        initEvents();
-    }
-
-    private void initComponents() {
-        c = getContentPane();
-        jTextPaneConsoleOutput = new JTextPane();
-        jScrollPaneConsoleOutput = new JScrollPane(jTextPaneConsoleOutput);
-        messageConsole = new MessageConsole(jTextPaneConsoleOutput);
-        messageConsole.redirectOut(null, System.out);
-        messageConsole.redirectErr(Color.RED, System.err);
-        messageConsole.setMessageLines(1000);
-        c.add(jScrollPaneConsoleOutput);
-        this.setVisible(true);
         Config.setConfigDefault();
 
         try {
@@ -74,7 +59,15 @@ public class InitWindow extends JFrame {
         new Window();
     }
 
-    private void initEvents() {
-
+    private void initComponents() {
+        c = getContentPane();
+        jTextPaneConsoleOutput = new JTextPane();
+        jScrollPaneConsoleOutput = new JScrollPane(jTextPaneConsoleOutput);
+        messageConsole = new MessageConsole(jTextPaneConsoleOutput);
+        messageConsole.redirectOut(null, System.out);
+        messageConsole.redirectErr(Color.RED, System.err);
+        messageConsole.setMessageLines(1000);
+        c.add(jScrollPaneConsoleOutput);
+        this.setVisible(true);
     }
 }
