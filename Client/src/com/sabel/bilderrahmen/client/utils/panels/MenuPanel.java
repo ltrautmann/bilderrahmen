@@ -1,6 +1,6 @@
 package com.sabel.bilderrahmen.client.utils.panels;
 
-import com.sabel.bilderrahmen.client.utils.ConfigReaderWriter;
+import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 
 import javax.swing.*;
 import java.awt.*;

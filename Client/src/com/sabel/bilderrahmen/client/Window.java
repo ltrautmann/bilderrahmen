@@ -1,8 +1,8 @@
 package com.sabel.bilderrahmen.client;
 
-import com.sabel.bilderrahmen.client.utils.ConfigReaderWriter;
+import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
-import com.sabel.bilderrahmen.client.utils.ImageTools;
+import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 

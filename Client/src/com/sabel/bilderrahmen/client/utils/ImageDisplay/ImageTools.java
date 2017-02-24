@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils;
+package com.sabel.bilderrahmen.client.utils.ImageDisplay;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

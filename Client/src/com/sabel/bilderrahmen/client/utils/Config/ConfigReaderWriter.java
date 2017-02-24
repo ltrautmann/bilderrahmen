@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils;
+package com.sabel.bilderrahmen.client.utils.Config;
 
 import com.sabel.bilderrahmen.client.utils.WebService.FileDownloader;
 
