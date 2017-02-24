@@ -18,7 +18,7 @@ public class ConfigReaderWriter {
 
 
 
-        //FileDownloader.setServer();
+        //Config.setServer();
         //FileDownloader.setWebAuth();
         return true;
     }

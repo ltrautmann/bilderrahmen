@@ -28,6 +28,10 @@ public class ImageService {
         return (index >= 0 && index < images.size()) ? images.get(index) : null;
     }
 
+    public int indexOfImage(Image i) {
+        return images.indexOf(i);
+    }
+
     public Image removeImage(int index){
         return images.remove(index);
     }

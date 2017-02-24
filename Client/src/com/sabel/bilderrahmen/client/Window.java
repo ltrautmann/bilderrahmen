@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client;
 
+import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
@@ -41,11 +42,10 @@ public class Window extends JFrame {
     }
 
     private void testimages() {
-        test.testimages();
+        Config.testConfig();
         try {
-            for (String s : test.testimages) {
-                imageService.addImage(ImageTools.resizeImage(ImageIO.read(new File(s))));
-            }
+            ImageTools.resizeAllImages(false);
+            imageService = new ImageService(ImageTools.getResizedImages());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,6 +96,7 @@ public class Window extends JFrame {
                     System.exit(0);
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     //TODO:Refresh config
+                    System.out.println("refreshing config...");
                 }
             }
         });
