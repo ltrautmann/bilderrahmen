@@ -19,7 +19,7 @@ public class FileDownloader {
         Config.setServer(server);
         Config.setLocalConfigDir(localConfigDir);
         Config.setLocalImageDir(localImageDir);
-        MyAuthenticator.setPasswordAuthentication(username, password);
+        Config.setWebAuth(username, password);
         Config.setWebAuth(new MyAuthenticator());
     }
 

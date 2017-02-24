@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client.utils.Config;
 
+import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.WebService.MyAuthenticator;
 
 import java.net.InetAddress;
@@ -11,23 +12,30 @@ import java.net.UnknownHostException;
  * Created by you shall not pass on 24.02.2017.
  */
 public class Config {
+
+    private static ConfigReaderWriter configReaderWriter;
+    private static ImageService imageService;
     private static String server; // https://bilderrahmen.cheaterll.de/files/
     private static String deviceID;
     private static String MACAddress;
     private static String localConfigDir;
     private static String localImageDir;
+    private static String localResizedImageDir;
     private static MyAuthenticator webAuth;
 
-    public static void testConfig(){
+    public static void setConfigDefault(){
         setServer("https://bilderrahmen.cheaterll.de/files/");
         setDeviceID("testdevice");
-        setLocalConfigDir("D:\\config\\");
-        setLocalImageDir("D:\\images\\");
-
-        System.out.println("Server:" + getServer());
-        System.out.println("DeviceID:" + getDeviceID());
-        System.out.println("ConfigDir:" + getLocalConfigDir());
-        System.out.println("ImageDir:" + getLocalImageDir());
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            setLocalConfigDir("D:\\config\\");
+            setLocalImageDir("D:\\images\\");
+            setLocalResizedImageDir("D:\\images\\resized\\");
+        }else {
+            setLocalConfigDir("/home/" + System.getProperty("user.name") + "/config/");
+            setLocalImageDir("/home/" + System.getProperty("user.name") + "/images/");
+            setLocalResizedImageDir("/home/" + System.getProperty("user.name") + "/images/resized/");
+        }
+        configReaderWriter = new ConfigReaderWriter();
     }
 
     public static void readMAC(){
@@ -63,7 +71,7 @@ public class Config {
         Config.webAuth = webAuth;
     }
 
-    public void setWebAuth(String username, String password){
+    public static void setWebAuth(String username, String password){
         MyAuthenticator.setPasswordAuthentication(username, password);
     }
 
@@ -89,5 +97,29 @@ public class Config {
 
     public static void setLocalImageDir(String localImageDir) {
         Config.localImageDir = localImageDir;
+    }
+
+    public static String getLocalResizedImageDir() {
+        return localResizedImageDir;
+    }
+
+    public static void setLocalResizedImageDir(String localImageDir) {
+        Config.localResizedImageDir = localImageDir;
+    }
+
+    public static ConfigReaderWriter getConfigReaderWriter() {
+        return configReaderWriter;
+    }
+
+    public static String getMACAddress() {
+        return MACAddress;
+    }
+
+    public static void setImageService(ImageService imageService) {
+        Config.imageService = imageService;
+    }
+
+    public static ImageService getImageService() {
+        return imageService;
     }
 }

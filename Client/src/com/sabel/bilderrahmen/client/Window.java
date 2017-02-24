@@ -1,22 +1,14 @@
 package com.sabel.bilderrahmen.client;
 
 import com.sabel.bilderrahmen.client.utils.Config.Config;
-import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
-import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -24,31 +16,25 @@ import java.util.concurrent.TimeUnit;
  * Created by you shall not pass on 10.02.2017.
  */
 public class Window extends JFrame {
-    private ConfigReaderWriter configReaderWriter;
-    private List<Image> images;
     private Container c;
     private JPanel menuPanelParent;
     private ImagePanel imagePanel;
-    private ImageService imageService;
+    private static boolean displayImages;
+    ImageService imageService;
 
 
 
     public Window(){
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         init();
         fullScreen(this, false);
-        imageService = new ImageService();
-        testimages();
+        if (displayImages) {
+            testimages();
+        }
     }
 
     private void testimages() {
-        Config.testConfig();
-        try {
-            ImageTools.resizeAllImages(false);
-            imageService = new ImageService(ImageTools.getResizedImages());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("run testimages");
+        imageService = Config.getImageService();
         Random r = new Random();
 
         try {
@@ -66,29 +52,27 @@ public class Window extends JFrame {
     }
 
     private void init(){
-        configReaderWriter = new ConfigReaderWriter();
+        c = getContentPane();
         initComponents();
         initEvents();
-        try {
-            if (configReaderWriter.readInitialConfig()) {
-                c.add(imagePanel);
-            } else {
-                c.add(menuPanelParent);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.setVisible(false);
     }
 
     private void initComponents(){
-        c = getContentPane();
-        menuPanelParent = new JPanel();
-        menuPanelParent.setLayout(new GridBagLayout());
-        menuPanelParent.add(new MenuPanel(configReaderWriter));
-        imagePanel = new ImagePanel();
+        System.out.println("init components");
+        if (displayImages) {
+            imagePanel = new ImagePanel();
+            c.add(imagePanel);
+        } else {
+            menuPanelParent = new JPanel();
+            menuPanelParent.setLayout(new GridBagLayout());
+            menuPanelParent.add(new MenuPanel(Config.getConfigReaderWriter()));
+            c.add(menuPanelParent);
+        }
     }
 
     private void initEvents(){
+        System.out.println("init events");
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -110,7 +94,7 @@ public class Window extends JFrame {
         if (result) {
             frame.setUndecorated(true);
             frame.setResizable(true);
-
+/*
             frame.addFocusListener(new FocusListener() {
 
                 @Override
@@ -123,7 +107,7 @@ public class Window extends JFrame {
                     frame.setAlwaysOnTop(false);
                 }
             });
-
+*/
             if (doPack)
                 frame.pack();
 
@@ -146,5 +130,13 @@ public class Window extends JFrame {
                 frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
         return result;
+    }
+
+    public static boolean isDisplayImages() {
+        return displayImages;
+    }
+
+    public static void setDisplayImages(boolean displayImages) {
+        Window.displayImages = displayImages;
     }
 }

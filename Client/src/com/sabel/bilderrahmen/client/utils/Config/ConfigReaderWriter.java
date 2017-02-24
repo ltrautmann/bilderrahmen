@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.client.utils.Config;
 
 import com.sabel.bilderrahmen.client.utils.WebService.FileDownloader;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,7 +17,15 @@ public class ConfigReaderWriter {
     public boolean readInitialConfig() throws IOException {
         //TODO: lokale config lesen
 
+        System.out.println(Config.getLocalConfigDir() + Config.getDeviceID() + ".xml");
+        System.out.println(new File(Config.getLocalConfigDir() + "default-config.xml"));
 
+        if (new File(Config.getLocalConfigDir() + Config.getDeviceID() + ".xml").exists()) {
+        } else if (new File(Config.getLocalConfigDir() + "default-config.xml").exists()) {
+        } else {
+            System.out.println("wtf");
+            return false;
+        }
 
         //Config.setServer();
         //FileDownloader.setWebAuth();

@@ -14,26 +14,47 @@ import java.util.List;
  * Created by you shall not pass on 17.02.2017.
  */
 public class ImageTools {
+    private static List<String> supportedExtensions;
+
+    static {
+        supportedExtensions = new ArrayList<>();
+        supportedExtensions.add("png");
+        supportedExtensions.add("jpg");
+        supportedExtensions.add("jpeg");
+        supportedExtensions.add("bmp");
+    }
 
     public static void resizeAllImages(boolean forceResize) throws IOException {
         File imagedir = new File(Config.getLocalImageDir());
         File[] images = imagedir.listFiles();
+        System.out.println("Resizing Images:");
         for (File f : images) {
             String filename = f.getName();
-            String resizedName = Config.getLocalImageDir() + "resized-" + filename;
-            if((!(new File(resizedName).exists()) || forceResize) && !filename.contains("resized-")) {
-                ImageIO.write(resizeImage(ImageIO.read(f)), filename.substring(filename.lastIndexOf(".") + 1).toLowerCase(), new File(resizedName));
+            String resizedName = "resized-" + filename;
+            String resizedPath = Config.getLocalResizedImageDir() + resizedName;
+            System.out.println("Source: \"" + filename + "\": ");
+            if ((!(new File(resizedPath).exists()) || forceResize)) {
+                if (new File(f.getPath()).isFile()) {
+                    String fileExtension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+                    if (supportedExtensions.contains(fileExtension)) {
+                        ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
+                    } else {
+                        System.out.println("File extension \"" + fileExtension + "\" is not a supported image type.");
+                    }
+                }else {
+                    System.out.println("\"" + filename + "\" is a directory and was ignored.");
+                }
+            } else {
+                System.out.println("Resized image \"" + resizedName + "\" already exists.");
             }
         }
     }
 
     public static java.util.List<Image> getResizedImages() throws IOException {
         List<Image> ret = new ArrayList<>();
-        File[] images = new File(Config.getLocalImageDir()).listFiles();
+        File[] images = new File(Config.getLocalResizedImageDir()).listFiles();
         for (File f : images) {
-            if (f.getName().contains("resized-")) {
-                ret.add(ImageIO.read(f));
-            }
+            ret.add(ImageIO.read(f));
         }
         return ret;
     }
@@ -112,5 +133,9 @@ public class ImageTools {
         } while (w != targetWidth || h != targetHeight);
         System.out.println(" done!");
         return ret;
+    }
+
+    public static List<String> getSupportedExtensions() {
+        return supportedExtensions;
     }
 }
