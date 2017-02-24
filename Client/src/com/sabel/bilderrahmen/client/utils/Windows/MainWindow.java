@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client;
+package com.sabel.bilderrahmen.client.utils.Windows;
 
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
@@ -15,21 +15,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by you shall not pass on 10.02.2017.
  */
-public class Window extends JFrame {
+public class MainWindow extends JFrame {
     private Container c;
-    private JPanel menuPanelParent;
     private ImagePanel imagePanel;
     private static boolean displayImages;
     ImageService imageService;
 
 
 
-    public Window(){
+    public MainWindow(){
         init();
-        fullScreen(this, false);
-        if (displayImages) {
-            testimages();
-        }
     }
 
     private void testimages() {
@@ -55,7 +50,11 @@ public class Window extends JFrame {
         c = getContentPane();
         initComponents();
         initEvents();
-        this.setVisible(false);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        fullScreen(this, false);
+        if (displayImages) {
+            testimages();
+        }
     }
 
     private void initComponents(){
@@ -64,10 +63,6 @@ public class Window extends JFrame {
             imagePanel = new ImagePanel();
             c.add(imagePanel);
         } else {
-            menuPanelParent = new JPanel();
-            menuPanelParent.setLayout(new GridBagLayout());
-            menuPanelParent.add(new MenuPanel(Config.getConfigReaderWriter()));
-            c.add(menuPanelParent);
         }
     }
 
@@ -137,6 +132,6 @@ public class Window extends JFrame {
     }
 
     public static void setDisplayImages(boolean displayImages) {
-        Window.displayImages = displayImages;
+        MainWindow.displayImages = displayImages;
     }
 }

@@ -39,13 +39,13 @@ public class ImageTools {
                     if (supportedExtensions.contains(fileExtension)) {
                         ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
                     } else {
-                        System.out.println("File extension \"" + fileExtension + "\" is not a supported image type.");
+                        System.out.println("  File extension \"" + fileExtension + "\" is not a supported image type.");
                     }
                 }else {
-                    System.out.println("\"" + filename + "\" is a directory and was ignored.");
+                    System.out.println("  \"" + filename + "\" is a directory and was ignored.");
                 }
             } else {
-                System.out.println("Resized image \"" + resizedName + "\" already exists.");
+                System.out.println("  Resized image \"" + resizedName + "\" already exists.");
             }
         }
     }
@@ -71,8 +71,9 @@ public class ImageTools {
         } else if (width * aspectRatio > height) {
             width = (int) (height * aspectRatio);
         }
-        System.out.print("Resizing image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
-        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, (image.getWidth() > width || image.getHeight() > height));
+        boolean multiStepDownscaling = (image.getWidth() > width || image.getHeight() > height);
+        System.out.print(((multiStepDownscaling)?"  Downscaling":"  Upscaling") + " image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
+        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
     }
 
     /**
@@ -96,11 +97,13 @@ public class ImageTools {
      */
     private static BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
         int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        int cycles = 0;
         BufferedImage ret = (BufferedImage) img;
         int w, h;
         if (higherQuality) {
             // Use multi-step technique: start with original size, then
-            // scale down in multiple passes with drawImage() // until the target size is reached
+            // scale down in multiple passes with drawImage()
+            // until the target size is reached
             w = img.getWidth();
             h = img.getHeight();
         } else {
@@ -130,8 +133,10 @@ public class ImageTools {
             g2.drawImage(ret, 0, 0, w, h, null);
             g2.dispose();
             ret = tmp;
+            cycles++;
         } while (w != targetWidth || h != targetHeight);
-        System.out.println(" done!");
+        System.out.println(".");
+        System.out.println("  Done in " + cycles + ((cycles!=1)?" cycles.":" cycle."));
         return ret;
     }
 

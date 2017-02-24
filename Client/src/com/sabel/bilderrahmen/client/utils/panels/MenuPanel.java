@@ -1,5 +1,7 @@
 package com.sabel.bilderrahmen.client.utils.panels;
 
+import com.sabel.bilderrahmen.client.test;
+import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 
 import javax.swing.*;
@@ -66,7 +68,7 @@ public class MenuPanel extends JPanel {
         buttonOK.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                configReaderWriter.modifyLoginParams(getServerURL(), getLoginName(), getPassword());
+                applyConfigChanges();
             }
         });
         textfields[0].addActionListener(new AbstractAction() {
@@ -84,9 +86,16 @@ public class MenuPanel extends JPanel {
         textfields[2].addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                configReaderWriter.modifyLoginParams(getServerURL(), getLoginName(), getPassword());
+                applyConfigChanges();
             }
         });
+    }
+
+    private void applyConfigChanges(){
+        configReaderWriter.modifyLoginParams(getServerURL(), getLoginName(), getPassword());
+        Config.getConfigReaderWriter().modifyLoginParams(null,null,null);
+        //test.restart();
+        //TODO:restart
     }
 
     public void setServerURL(String url){

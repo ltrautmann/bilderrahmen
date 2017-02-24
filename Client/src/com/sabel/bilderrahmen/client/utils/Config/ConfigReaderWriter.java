@@ -16,15 +16,20 @@ public class ConfigReaderWriter {
 
     public boolean readInitialConfig() throws IOException {
         //TODO: lokale config lesen
-
-        System.out.println(Config.getLocalConfigDir() + Config.getDeviceID() + ".xml");
-        System.out.println(new File(Config.getLocalConfigDir() + "default-config.xml"));
-
-        if (new File(Config.getLocalConfigDir() + Config.getDeviceID() + ".xml").exists()) {
-        } else if (new File(Config.getLocalConfigDir() + "default-config.xml").exists()) {
-        } else {
-            System.out.println("wtf");
-            return false;
+        String localDeviceConfig = Config.getDeviceID() + ".xml";
+        String localDefaultConfig = "default-config.xml";
+        System.out.println("Looking for local configuration file at \"" + Config.getLocalConfigDir() + "\"");
+        File config = new File(Config.getLocalConfigDir() + localDeviceConfig);
+        if (config.exists()) {
+            System.out.println("Found local device-specific config file at \"" +localDeviceConfig + "\"");
+        }else{
+            config = new File(Config.getLocalConfigDir() + localDefaultConfig);
+            if (config.exists()) {
+                System.out.println("Found local default config file at \"" +localDefaultConfig + "\"");
+            }else {
+                System.out.println("Could not find local config file.");
+                return false;
+            }
         }
 
         //Config.setServer();
@@ -33,6 +38,13 @@ public class ConfigReaderWriter {
     }
 
     public void modifyLoginParams(String url, String loginName, char[] password) {
-        System.out.println(url + "\n" + loginName + "\n" + new String(password));
+        File f = new File(Config.getLocalConfigDir() + "default-config.xml");
+        f.getParentFile().mkdirs();
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        System.out.println(url + "\n" + loginName + "\n" + new String(password));
     }
 }

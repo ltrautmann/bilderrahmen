@@ -35,6 +35,11 @@ public class Config {
             setLocalImageDir("/home/" + System.getProperty("user.name") + "/images/");
             setLocalResizedImageDir("/home/" + System.getProperty("user.name") + "/images/resized/");
         }
+
+
+
+        System.out.println("Raspi Bilderrahmen");
+
         configReaderWriter = new ConfigReaderWriter();
     }
 

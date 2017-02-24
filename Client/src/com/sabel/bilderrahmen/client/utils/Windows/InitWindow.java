@@ -1,5 +1,6 @@
-package com.sabel.bilderrahmen.client;
+package com.sabel.bilderrahmen.client.utils.Windows;
 
+import com.sabel.bilderrahmen.client.test;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
@@ -20,15 +21,11 @@ public class InitWindow extends JFrame {
     private boolean displayImages;
 
     public InitWindow() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Initializing...");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(960, 540);
-        setLocationRelativeTo(null);
         init();
     }
 
     private void init() {
+        initFrame();
         initComponents();
         Config.setConfigDefault();
 
@@ -51,12 +48,18 @@ public class InitWindow extends JFrame {
             }
         }
         if (displayImages) {
-            Window.setDisplayImages(true);
+            test.setMainWindow(new MainWindow());
         } else {
-            Window.setDisplayImages(false);
+            MainWindow.setDisplayImages(false);
         }
         this.setVisible(false);
-        new Window();
+    }
+
+    private void initFrame() {
+        setTitle("Initializing...");
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setSize(960, 540);
+        setLocationRelativeTo(null);
     }
 
     private void initComponents() {
