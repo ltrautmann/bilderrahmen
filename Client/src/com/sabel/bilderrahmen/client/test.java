@@ -31,7 +31,12 @@ public class test {
     public static void setMainWindow(MainWindow mainWindow) {
         test.mainWindow = mainWindow;
     }
-/*
+
+    public static void setConfigWindow(ConfigWindow configWindow) {
+        test.configWindow = configWindow;
+    }
+
+    /*
     public static void restart(){
         initWindow.setVisible(false);
         mainWindow.setVisible(false);

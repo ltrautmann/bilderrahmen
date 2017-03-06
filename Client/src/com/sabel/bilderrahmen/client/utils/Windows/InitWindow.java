@@ -31,26 +31,19 @@ public class InitWindow extends JFrame {
 
         try {
             if (Config.getConfigReaderWriter().readInitialConfig()) {
-                displayImages = true;
+                try {
+                    ImageTools.resizeAllImages(false);
+                    Config.setImageService(new ImageService(ImageTools.getResizedImages()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                test.setMainWindow(new MainWindow());
             } else {
-                displayImages = false;
+                //MainWindow.setDisplayImages(false);
+                test.setConfigWindow(new ConfigWindow());
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        if (displayImages) {
-            try {
-                ImageTools.resizeAllImages(false);
-                Config.setImageService(new ImageService(ImageTools.getResizedImages()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (displayImages) {
-            test.setMainWindow(new MainWindow());
-        } else {
-            MainWindow.setDisplayImages(false);
         }
         this.setVisible(false);
     }

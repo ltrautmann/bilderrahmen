@@ -22,6 +22,7 @@ public class ConfigWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSize(960, 540);
         setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     private void init() {
@@ -30,6 +31,7 @@ public class ConfigWindow extends JFrame {
     }
 
     private void initComponents() {
+        c = getContentPane();
         menuPanelParent = new JPanel();
         menuPanelParent.setLayout(new GridBagLayout());
         menuPanelParent.add(new MenuPanel(Config.getConfigReaderWriter()));
