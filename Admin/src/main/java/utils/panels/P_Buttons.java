@@ -3,6 +3,8 @@ package utils.panels;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Robin on 23.01.2017.
@@ -18,6 +20,12 @@ public class P_Buttons extends JPanel {
         loadJButton = new JButton("Reload");
         add(saveJButton);
         add(loadJButton);
+        saveJButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //serialisieren
+            }
+        });
     }
 
 

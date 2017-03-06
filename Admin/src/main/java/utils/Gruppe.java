@@ -14,6 +14,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
 
     public Gruppe(String gruppenName) {
         this.gruppenName = gruppenName;
+        gruppenBildArrayList = new ArrayList<>();
     }
 
     public Gruppe(String gruppenName, ArrayList<BildSettings> gruppenBilderListe) {
@@ -75,6 +76,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
 
     @Override
     public void addElement(BildSettings bildSettings) {
+        if(!gruppenBildArrayList.contains(bildSettings))
         gruppenBildArrayList.add(bildSettings);
         fireIntervalAdded(this, gruppenBildArrayList.size(), gruppenBildArrayList.size());
     }

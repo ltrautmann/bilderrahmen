@@ -35,8 +35,9 @@ public class P_MainWindow extends JPanel {
         jTabbedPane = new JTabbedPane();
 
         p_ClientGroupSelect = new P_ClientGroupSelect(arrayListClients, gruppeArrayList);
-        jTabbedPane.addTab("Clients bekomt gruppen", null, new P_ZuordnungsPain(clientss, myListModel));
-        jTabbedPane.addTab("Client ignoriert Bilder", null, new P_ZuordnungsPain(clientss));
+        jTabbedPane.addTab("Clients bekommt gruppen", null, new P_ZuordnungsPain(clientss, myListModel));
+        jTabbedPane.addTab("Client ignoriert Bilder", null, new P_ZuordnungsPain(clientss,true));
+        jTabbedPane.addTab("Gruppe bekommt Bilder", null, new P_ZuordnungsPain(gruppeArrayList,bilderPool));
         jTabbedPane.setPreferredSize(new Dimension(900, 500));
         jTabbedPane.addChangeListener(new ChangeListener() {
             @Override

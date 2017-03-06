@@ -53,8 +53,8 @@ public class Fenster extends JFrame {
 
         for (int i = 0; i < 10; i++) {
             clientss.add(new Clients("Clients: " + i));
-            gruppes.add(new Gruppe("Gruppe: " + i));
             bilderPool.addBild("ein/test/bild" + i);
+            gruppes.add(new Gruppe("Gruppe: " + i));
 
         }
     }
