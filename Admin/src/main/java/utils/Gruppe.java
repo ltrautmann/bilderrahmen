@@ -16,6 +16,12 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
         this.gruppenName = gruppenName;
     }
 
+    public Gruppe(String gruppenName, ArrayList<BildSettings> gruppenBilderListe) {
+        this.gruppenName = gruppenName;
+        gruppenBildArrayList = gruppenBilderListe;
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,13 +40,6 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
         result = 31 * result + (gruppenName != null ? gruppenName.hashCode() : 0);
         return result;
     }
-
-    public Gruppe(String gruppenName, ArrayList<BildSettings> gruppenBilderListe) {
-        this.gruppenName = gruppenName;
-        gruppenBildArrayList = gruppenBilderListe;
-
-    }
-
 
     public ArrayList<BildSettings> getGruppenBildArrayList() {
         return gruppenBildArrayList;
@@ -77,6 +76,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
     @Override
     public void addElement(BildSettings bildSettings) {
         gruppenBildArrayList.add(bildSettings);
+        fireIntervalAdded(this, gruppenBildArrayList.size(), gruppenBildArrayList.size());
     }
 
     @Override

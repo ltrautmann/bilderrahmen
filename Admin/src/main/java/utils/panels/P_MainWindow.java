@@ -1,5 +1,6 @@
 package utils.panels;
 
+import utils.BildSettings;
 import utils.BilderPool;
 import utils.Clients;
 import utils.Gruppe;
@@ -7,6 +8,8 @@ import utils.Gruppe;
 import javax.swing.AbstractListModel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
@@ -32,9 +35,20 @@ public class P_MainWindow extends JPanel {
         jTabbedPane = new JTabbedPane();
 
         p_ClientGroupSelect = new P_ClientGroupSelect(arrayListClients, gruppeArrayList);
-        jTabbedPane.addTab("Clients", null, new P_ZuordnungsPain(clientss, myListModel));
-        jTabbedPane.addTab("Gruppen", null, new P_ZuordnungsPain(clientss, this.bilderPool));
+        jTabbedPane.addTab("Clients bekomt gruppen", null, new P_ZuordnungsPain(clientss, myListModel));
+        jTabbedPane.addTab("Client ignoriert Bilder", null, new P_ZuordnungsPain(clientss));
         jTabbedPane.setPreferredSize(new Dimension(900, 500));
+        jTabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+
+
+                        for (Clients c : clientss) {
+                            c.setAngezeigteListe(jTabbedPane.getSelectedIndex());
+                        }
+
+            }
+        });
         add(jTabbedPane);
     }
 

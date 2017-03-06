@@ -43,7 +43,7 @@ public class P_ClientSelect extends JPanel {
         String[] inhalt = new String[clientsArrayList.size()];
         for (int i = 0; i < clientsArrayList.size(); i++) {
             inhalt[i] = clientsArrayList.get(i).getName();
-            System.out.println(clientsArrayList.get(i).getNumber());
+            //System.out.println(clientsArrayList.get(i).getNumber());
         }
        // jComboBox = new JComboBox(inhalt);
         jComboBox = new JComboBox(clientsArrayList.toArray());
