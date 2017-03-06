@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils.Windows;
+package com.sabel.bilderrahmen.client.Windows;
 
 import com.sabel.bilderrahmen.client.test;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
@@ -27,6 +27,7 @@ public class InitWindow extends JFrame {
     private void init() {
         initFrame();
         initComponents();
+        System.out.println("Raspi Bilderrahmen");
         Config.setConfigDefault();
 
         try {

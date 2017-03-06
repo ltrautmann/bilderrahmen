@@ -5,8 +5,7 @@ import com.sabel.bilderrahmen.client.utils.Config.Config;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -25,8 +24,40 @@ public class ImageTools {
     }
 
     public static void resizeAllImages(boolean forceResize) throws IOException {
-        File imagedir = new File(Config.getLocalImageDir());
-        File[] images = imagedir.listFiles();
+        int imageCount = 0;
+        int resizedCount = 0;
+        int ignoredFiles = 0;
+        int ignoredDirectories = 0;
+        System.out.println("Searching for images in \"" + Config.getLocalImageDir() + "\"");
+        File imageDir = new File(Config.getLocalImageDir());
+        File[] images = imageDir.listFiles();
+        System.out.println("Found " + images.length + " files and directories");
+        int width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        System.out.println("Detected screen resolution of " + width + "x" + height);
+        String lastResizedScreenresPath = Config.getLocalResizedImageDir() + "last-resized-screenres.txt";
+        if (new File(lastResizedScreenresPath).exists()) {
+            BufferedReader br = new BufferedReader(new FileReader(lastResizedScreenresPath));
+            String s = br.readLine();
+            br.close();
+            if (!(width + "x" + height).equals(s)) {
+                forceResize = true;
+                System.out.println("Screen resolution at last resize was " + s + ", forcing resize of all images.");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
+                bw.write(width + "x" + height);
+                bw.flush();
+                bw.close();
+            } else {
+                System.out.println("Screen resolution did not change since last resize, not forcing resize on already resized images.");
+            }
+        } else {
+            forceResize = true;
+            System.out.println("Did not find resolution of previous resize, forcing resize of all images.");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
+            bw.write(width + "x" + height);
+            bw.flush();
+            bw.close();
+        }
         System.out.println("Resizing Images:");
         for (File f : images) {
             String filename = f.getName();
@@ -38,16 +69,23 @@ public class ImageTools {
                     String fileExtension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
                     if (supportedExtensions.contains(fileExtension)) {
                         ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
+                        imageCount++;
+                        resizedCount++;
                     } else {
-                        System.out.println("  File extension \"" + fileExtension + "\" is not a supported image type.");
+                        System.out.println("  File extension \"" + fileExtension + "\" is not a supported image type and was ignored.");
+                        ignoredFiles++;
                     }
                 }else {
                     System.out.println("  \"" + filename + "\" is a directory and was ignored.");
+                    ignoredDirectories++;
                 }
             } else {
                 System.out.println("  Resized image \"" + resizedName + "\" already exists.");
+                imageCount++;
             }
         }
+        System.out.println(resizedCount + " of " + imageCount + " images had to be resized.");
+        System.out.println("Ignored " + ignoredDirectories + ((ignoredDirectories == 1) ? " directory and " : " directories and ") + ignoredFiles + ((ignoredFiles == 1) ? " incompatible file." : " incompatible files."));
     }
 
     public static java.util.List<Image> getResizedImages() throws IOException {
@@ -66,12 +104,12 @@ public class ImageTools {
         int height = (int) screenSize.getHeight();
         //adjust the target height or width to conserve the aspect ratio of the original image
         double aspectRatio = (double)image.getWidth() / (double)image.getHeight();
-        if (width * aspectRatio < height) {
-            height = (int) (width * aspectRatio);
-        } else if (width * aspectRatio > height) {
+        if (aspectRatio <= ((double) width / (double) height)) {
             width = (int) (height * aspectRatio);
+        } else {
+            height = (int) (width / aspectRatio);
         }
-        boolean multiStepDownscaling = (image.getWidth() > width || image.getHeight() > height);
+        boolean multiStepDownscaling = (image.getWidth() > width && image.getHeight() > height);
         System.out.print(((multiStepDownscaling)?"  Downscaling":"  Upscaling") + " image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
         return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
     }

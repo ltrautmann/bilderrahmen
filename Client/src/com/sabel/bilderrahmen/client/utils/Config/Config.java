@@ -3,14 +3,16 @@ package com.sabel.bilderrahmen.client.utils.Config;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.WebService.MyAuthenticator;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import javax.xml.bind.annotation.XmlAccessOrder;
+import javax.xml.bind.annotation.XmlAccessorOrder;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.net.*;
 
 /**
  * Created by you shall not pass on 24.02.2017.
  */
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+@XmlRootElement
 public class Config {
 
     private static ConfigReaderWriter configReaderWriter;
@@ -24,6 +26,7 @@ public class Config {
     private static MyAuthenticator webAuth;
 
     public static void setConfigDefault(){
+        System.out.println("Using default paths to save and load config file and images");
         setServer("https://bilderrahmen.cheaterll.de/files/");
         setDeviceID("testdevice");
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -38,7 +41,6 @@ public class Config {
 
 
 
-        System.out.println("Raspi Bilderrahmen");
 
         configReaderWriter = new ConfigReaderWriter();
     }
@@ -85,7 +87,19 @@ public class Config {
     }
 
     public static void setServer(String server) {
-        Config.server = server;
+        try {
+            //Check if URL is valid
+            new URL(server);
+            //Add / to the end if not already present
+            if ('/' == server.charAt(server.length()-1)){
+                Config.server = server;
+            } else {
+                Config.server = server + "/";
+            }
+        } catch (Exception e) {
+            //If URL is not valid, throw exception
+            throw new IllegalArgumentException("Not a valid URL");
+        }
     }
 
     public static String getLocalConfigDir() {
@@ -93,6 +107,9 @@ public class Config {
     }
 
     public static void setLocalConfigDir(String localConfigDir) {
+        if ('/' == localConfigDir.charAt(localConfigDir.length()-1)){
+            localConfigDir = localConfigDir + '/';
+        }
         Config.localConfigDir = localConfigDir;
     }
 
@@ -101,6 +118,10 @@ public class Config {
     }
 
     public static void setLocalImageDir(String localImageDir) {
+
+        if ('/' == localImageDir.charAt(localImageDir.length()-1)){
+            localImageDir = localImageDir + '/';
+        }
         Config.localImageDir = localImageDir;
     }
 
@@ -108,8 +129,12 @@ public class Config {
         return localResizedImageDir;
     }
 
-    public static void setLocalResizedImageDir(String localImageDir) {
-        Config.localResizedImageDir = localImageDir;
+    public static void setLocalResizedImageDir(String localResizedImageDir) {
+
+        if ('/' == localResizedImageDir.charAt(localResizedImageDir.length()-1)){
+            localResizedImageDir = localResizedImageDir + '/';
+        }
+        Config.localResizedImageDir = localResizedImageDir;
     }
 
     public static ConfigReaderWriter getConfigReaderWriter() {

@@ -1,6 +1,5 @@
-package com.sabel.bilderrahmen.client.utils.Windows;
+package com.sabel.bilderrahmen.client.Windows;
 
-import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 
 import javax.swing.*;
@@ -34,7 +33,7 @@ public class ConfigWindow extends JFrame {
         c = getContentPane();
         menuPanelParent = new JPanel();
         menuPanelParent.setLayout(new GridBagLayout());
-        menuPanelParent.add(new MenuPanel(Config.getConfigReaderWriter()));
+        menuPanelParent.add(new MenuPanel());
         c.add(menuPanelParent);
     }
 }
