@@ -1,5 +1,5 @@
 import utils.BilderPool;
-import utils.Clients;
+import utils.Client;
 import utils.Gruppe;
 import utils.panels.P_Buttons;
 import utils.panels.P_MainWindow;
@@ -17,7 +17,7 @@ public class Fenster extends JFrame {
     private Container c;
     private P_MainWindow p_mainWindow;
     private P_Buttons p_buttons;
-    private ArrayList<Clients> clientss;
+    private ArrayList<Client> clients;
     private ArrayList<Gruppe> gruppes;
     private BilderPool bilderPool;
 
@@ -39,20 +39,21 @@ public class Fenster extends JFrame {
         setLayout(new BorderLayout());
 
         p_buttons = new P_Buttons();
-        clientss = new ArrayList<>();
+        clients = new ArrayList<>();
         gruppes = new ArrayList<>();
         bilderPool = new BilderPool();
         readData();
-        p_mainWindow = new P_MainWindow( clientss, gruppes, bilderPool);
+        p_mainWindow = new P_MainWindow(clients, gruppes, bilderPool);
         c.add(p_mainWindow, BorderLayout.CENTER);
         c.add(p_buttons, BorderLayout.SOUTH);
+        p_buttons.setClients(clients);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void readData() {
 
         for (int i = 0; i < 10; i++) {
-            clientss.add(new Clients("Clients: " + i));
+            clients.add(new Client("Client: " + i));
             bilderPool.addBild("ein/test/bild" + i);
             gruppes.add(new Gruppe("Gruppe: " + i));
 

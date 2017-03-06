@@ -1,6 +1,6 @@
 package utils.panels;
 
-import utils.Clients;
+import utils.Client;
 import utils.Gruppe;
 
 import javax.swing.BoxLayout;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class P_ClientGroupSelect extends JPanel {
 
 
-    private ArrayList<Clients> arrayListClients;
+    private ArrayList<Client> arrayListClients;
     private ArrayList<Gruppe> gruppeArrayList;
     private JPanel center;
     private JPanel buttons;
@@ -27,7 +27,7 @@ public class P_ClientGroupSelect extends JPanel {
     private P_ClientSelect p_ClientSelect;
 
 
-    public P_ClientGroupSelect( ArrayList<Clients> arrayListClients, ArrayList<Gruppe> gruppeArrayList) {
+    public P_ClientGroupSelect(ArrayList<Client> arrayListClients, ArrayList<Gruppe> gruppeArrayList) {
         this.arrayListClients = arrayListClients;
         this.gruppeArrayList = gruppeArrayList;
         initComponents();
@@ -55,7 +55,7 @@ public class P_ClientGroupSelect extends JPanel {
         p_ClientSelect.setComboboxActionlistener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                p_Groups_User . setClients((Clients) p_ClientSelect.getSelectedItem());
+                p_Groups_User .setClient((Client) p_ClientSelect.getSelectedItem());
             }
         });
 
@@ -91,13 +91,13 @@ public class P_ClientGroupSelect extends JPanel {
     }
 
 //    public void testdaten() {
-//        this.arrayListClients = new ArrayList<Clients>();
+//        this.arrayListClients = new ArrayList<Client>();
 //        this.gruppeArrayList = new ArrayList<Gruppe>();
-//        Clients c[] = new Clients[100];
+//        Client c[] = new Client[100];
 //        Gruppe g[] = new Gruppe[100];
 //
 //        for (int i = 0; i < c.length; i++) {
-//            c[i] = new Clients();
+//            c[i] = new Client();
 //            g[i] = new Gruppe("Gruppe_" + i);
 //            c[i].setName("Client_Nr:" + i);
 //            arrayListClients.add(c[i]);

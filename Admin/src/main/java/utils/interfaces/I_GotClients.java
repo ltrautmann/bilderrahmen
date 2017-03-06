@@ -1,6 +1,6 @@
 package utils.interfaces;
 
-import utils.Clients;
+import utils.Client;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * Created by Robin on 17.02.2017.
  */
 public interface I_GotClients {
-    ArrayList<Clients> getClients();
+    ArrayList<Client> getClients();
 
-    void addElement(Clients clients);
+    void addElement(Client client);
 
 }

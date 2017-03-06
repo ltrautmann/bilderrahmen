@@ -1,27 +1,25 @@
 package utils.panels;
 
-import utils.Clients;
+import utils.Client;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by robin on 22.01.17.
  */
 public class P_ClientSelect extends JPanel {
     private JComboBox jComboBox;
-    private ArrayList<Clients> clientsArrayList;
+    private ArrayList<Client> clientArrayList;
     private JLabel jLabel;
     private JPanel boxPanel;
 
 
-    public P_ClientSelect(ArrayList<Clients> clientsArrayList) {
+    public P_ClientSelect(ArrayList<Client> clientArrayList) {
 
-        this.clientsArrayList = clientsArrayList;
+        this.clientArrayList = clientArrayList;
         initComponents();
 
     }
@@ -40,13 +38,13 @@ public class P_ClientSelect extends JPanel {
         setLayout(new BorderLayout());
         boxPanel = new JPanel();
         //boxPanel.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-        String[] inhalt = new String[clientsArrayList.size()];
-        for (int i = 0; i < clientsArrayList.size(); i++) {
-            inhalt[i] = clientsArrayList.get(i).getName();
-            //System.out.println(clientsArrayList.get(i).getNumber());
+        String[] inhalt = new String[clientArrayList.size()];
+        for (int i = 0; i < clientArrayList.size(); i++) {
+            inhalt[i] = clientArrayList.get(i).getName();
+            //System.out.println(clientArrayList.get(i).getNumber());
         }
        // jComboBox = new JComboBox(inhalt);
-        jComboBox = new JComboBox(clientsArrayList.toArray());
+        jComboBox = new JComboBox(clientArrayList.toArray());
         jLabel = new JLabel("Select Client:");
         add(boxPanel);
         boxPanel.add(jLabel);

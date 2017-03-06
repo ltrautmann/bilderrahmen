@@ -1,6 +1,6 @@
 package utils.panels;
 
-import utils.Clients;
+import utils.Client;
 import utils.Gruppe;
 
 import javax.swing.DefaultListModel;
@@ -17,11 +17,11 @@ import java.util.List;
 public class P_Groups extends JPanel {
     private JScrollPane jScrollPane;
     private JList<Gruppe> jList;
-    private Clients clients;
+    private Client client;
 
-    public P_Groups(Clients clients) {
+    public P_Groups(Client client) {
         this.setLayout(new BorderLayout());
-        initComponents(clients);
+        initComponents(client);
         setPreferences();
     }
 
@@ -36,9 +36,9 @@ public class P_Groups extends JPanel {
 
     }
 
-    private void initComponents(Clients clients) {
-        this.clients = clients;
-        jList = new JList<Gruppe>(clients);
+    private void initComponents(Client client) {
+        this.client = client;
+        jList = new JList<Gruppe>(client);
         jScrollPane = new JScrollPane(jList);
         //jScrollPane.setPreferredSize(new Dimension(25, 200));
         // jScrollPane.setLayout(new FlowLayout());
@@ -60,9 +60,9 @@ public class P_Groups extends JPanel {
 
     }
 
-    public void setClients(Clients clients) {
-        this.clients = clients;
-        jList.setModel(clients);
+    public void setClient(Client client) {
+        this.client = client;
+        jList.setModel(client);
     }
 
     public List<Gruppe> getSelected() {
@@ -70,16 +70,16 @@ public class P_Groups extends JPanel {
     }
 
     public void addGruppe(List<Gruppe> list) {
-        if (clients != null)
+        if (client != null)
             for (Gruppe g : list) {
-                clients.addGroup(g);
+                client.addGroup(g);
             }
-        clients.updateList();
+        client.updateList();
     }
 
     public Gruppe rmGruppe(Gruppe gruppe) {
-        Gruppe g = clients.removeGruppe(gruppe.getGruppenName());
-        clients.updateList();
+        Gruppe g = client.removeGruppe(gruppe.getGruppenName());
+        client.updateList();
         jList.clearSelection();
         return g;
     }

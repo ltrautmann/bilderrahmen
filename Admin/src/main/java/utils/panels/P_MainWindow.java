@@ -1,8 +1,7 @@
 package utils.panels;
 
-import utils.BildSettings;
 import utils.BilderPool;
-import utils.Clients;
+import utils.Client;
 import utils.Gruppe;
 
 import javax.swing.AbstractListModel;
@@ -20,13 +19,13 @@ public class P_MainWindow extends JPanel {
 
     private JTabbedPane jTabbedPane;
     private P_ClientGroupSelect p_ClientGroupSelect;
-    private ArrayList<Clients> clientss;
+    private ArrayList<Client> clients;
     private BilderPool bilderPool;
     private ArrayList<Gruppe> gruppes;
     private MyListModel myListModel;
 
-    public P_MainWindow(ArrayList<Clients> arrayListClients, ArrayList<Gruppe> gruppeArrayList, BilderPool bilderPool) {
-        clientss = arrayListClients;
+    public P_MainWindow(ArrayList<Client> arrayListClients, ArrayList<Gruppe> gruppeArrayList, BilderPool bilderPool) {
+        clients = arrayListClients;
         this.bilderPool = bilderPool;
         gruppes = gruppeArrayList;
         myListModel = new MyListModel(gruppes);
@@ -35,16 +34,17 @@ public class P_MainWindow extends JPanel {
         jTabbedPane = new JTabbedPane();
 
         p_ClientGroupSelect = new P_ClientGroupSelect(arrayListClients, gruppeArrayList);
-        jTabbedPane.addTab("Clients bekommt gruppen", null, new P_ZuordnungsPain(clientss, myListModel));
-        jTabbedPane.addTab("Client ignoriert Bilder", null, new P_ZuordnungsPain(clientss,true));
+        jTabbedPane.addTab("Client bekommt gruppen", null, new P_ZuordnungsPain(clients, myListModel));
+        jTabbedPane.addTab("Client ignoriert Bilder", null, new P_ZuordnungsPain(clients,true));
         jTabbedPane.addTab("Gruppe bekommt Bilder", null, new P_ZuordnungsPain(gruppeArrayList,bilderPool));
+        jTabbedPane.addTab("Client bekommt Bilder", null, new P_ZuordnungsPain(clients,bilderPool));
         jTabbedPane.setPreferredSize(new Dimension(900, 500));
         jTabbedPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
 
 
-                        for (Clients c : clientss) {
+                        for (Client c : clients) {
                             c.setAngezeigteListe(jTabbedPane.getSelectedIndex());
                         }
 
