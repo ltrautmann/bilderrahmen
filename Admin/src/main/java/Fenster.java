@@ -25,7 +25,6 @@ public class Fenster extends JFrame {
     private GroupPool gruppes;
     private BilderPool bilderPool;
 
-
     public Fenster() {
 
         initComponents();
