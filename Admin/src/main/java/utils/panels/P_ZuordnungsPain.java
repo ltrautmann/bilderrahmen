@@ -1,10 +1,12 @@
 package utils.panels;
 
 import utils.BildSettings;
-import utils.Clients;
+import utils.BilderPool;
+import utils.Client;
 import utils.Gruppe;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -19,13 +21,14 @@ public class P_ZuordnungsPain extends JPanel {
     private JPanel center;
     private JPanel jPanelLinks;
     private JPanel jPanelRechts;
-    private JPanel jPanelMitte;
+    private JPanel jPanelMitte;/**/
     private JList listLiks;
     private JList listRechts;
     private JScrollPane jScrollPaneLinks;
     private JScrollPane jScrollPaneRechts;
     private JComboBox jComboBox;
     private JButton[] jButtons;
+    private boolean ignorPaneFlag = false;
 
     public P_ZuordnungsPain(ArrayList<? extends AbstractListModel> drodownListe, AbstractListModel modelLinks) {
 
@@ -34,10 +37,11 @@ public class P_ZuordnungsPain extends JPanel {
 
     }
 
-    public P_ZuordnungsPain(ArrayList<Clients> clientsArrayList) {
-        jComboBox = new JComboBox(clientsArrayList.toArray());
+    public P_ZuordnungsPain(ArrayList<Client> clientArrayList, boolean isIgnorPane) {
+        jComboBox = new JComboBox(clientArrayList.toArray());
+        ignorPaneFlag = isIgnorPane;
 
-        collectGroupPictures();
+
         this.listLiks = new JList(collectGroupPictures().toArray());//todo alle Gruppenbilder hinzufügen
         this.listRechts = new JList((AbstractListModel) ((jComboBox.getSelectedObjects())[0]));
         setLayout(new BorderLayout());
@@ -66,18 +70,19 @@ public class P_ZuordnungsPain extends JPanel {
         center.add(jPanelMitte, BorderLayout.CENTER);
         center.add(jPanelRechts, BorderLayout.EAST);
         center.add(jComboBox, BorderLayout.NORTH);
-
+        initevents();
         add(center);
 
 
     }
 
     private ArrayList<BildSettings> collectGroupPictures() {
-        ArrayList<Gruppe> gruppesOfClient = ((Clients) jComboBox.getSelectedItem()).getGruppen();
+        ArrayList<Gruppe> gruppesOfClient = ((Client) jComboBox.getSelectedItem()).getGruppen();
+        //  System.out.println(gruppesOfClient);
         ArrayList<BildSettings> bildSettingss = new ArrayList<>();
         for (Gruppe g : gruppesOfClient) {
             for (BildSettings b : g.getGruppenBildArrayList()) {
-                if( !bildSettingss.contains(b))
+                if (!bildSettingss.contains(b))
                     bildSettingss.add(b);
             }
         }
@@ -124,12 +129,24 @@ public class P_ZuordnungsPain extends JPanel {
         jButtons[0].addActionListener(new ActionListener() { // Hinzufuegen button
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (jComboBox.getSelectedItem() instanceof Clients) {
+                if (jComboBox.getSelectedItem() instanceof Client) {
                     while (listLiks.getSelectedValue() != null) {
                         if (listLiks.getSelectedValue() instanceof BildSettings) {
-                            ((Clients) jComboBox.getSelectedItem()).addElement((BildSettings) listLiks.getSelectedValue());
+                            ((Client) jComboBox.getSelectedItem()).addElement((BildSettings) listLiks.getSelectedValue());
                         } else if (listLiks.getSelectedValue() instanceof Gruppe) {
-                            ((Clients) jComboBox.getSelectedItem()).addElement((Gruppe) listLiks.getSelectedValue());
+                            ((Client) jComboBox.getSelectedItem()).addElement((Gruppe) listLiks.getSelectedValue());
+                        } else
+                            JOptionPane.showConfirmDialog(null, "Fuck", "da stimmt was mit den typen nicht", JOptionPane.YES_OPTION);
+                        listLiks.removeSelectionInterval(listLiks.getSelectedIndex(), listLiks.getSelectedIndex());
+                    }
+                }
+                if (jComboBox.getSelectedItem() instanceof Gruppe) {
+                    while (listLiks.getSelectedValue() != null) {
+                        if (listLiks.getSelectedValue() instanceof BildSettings) {
+                            ((Gruppe) jComboBox.getSelectedItem()).addElement((BildSettings) listLiks.getSelectedValue());
+                            //}
+                            //else if (listLiks.getSelectedValue() instanceof Gruppe) {
+                            //  ((Gruppe) jComboBox.getSelectedItem()).addElement((Gruppe) listLiks.getSelectedValue());
                         } else
                             JOptionPane.showConfirmDialog(null, "Fuck", "da stimmt was mit den typen nicht", JOptionPane.YES_OPTION);
                         listLiks.removeSelectionInterval(listLiks.getSelectedIndex(), listLiks.getSelectedIndex());
@@ -144,10 +161,51 @@ public class P_ZuordnungsPain extends JPanel {
 
             }
         });
+
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                listRechts.setModel((ListModel) jComboBox.getSelectedItem());
+
+               // System.out.println("liste links pre: "+listLiks.getModel());
+                //System.out.println("combobox pre: "+jComboBox.getSelectedItem());
+                if (ignorPaneFlag) {
+                    ((Client) jComboBox.getSelectedItem()).setAngezeigteListe(1);
+                    System.out.println("Ignore Seite");
+
+                    listLiks.setModel(new ListModel() {
+                        @Override
+                        public int getSize() {
+                            return collectGroupPictures().size();
+                        }
+
+                        @Override
+                        public Object getElementAt(int index) {
+                            return collectGroupPictures().get(index);
+                        }
+
+                        @Override
+                        public void addListDataListener(ListDataListener l) {
+
+                        }
+
+                        @Override
+                        public void removeListDataListener(ListDataListener l) {
+
+                        }
+                    });
+                }
+
+                else if (!(listLiks.getModel() instanceof BilderPool)) {
+                    ((Client) jComboBox.getSelectedItem()).setAngezeigteListe(0);
+                }
+
+                else if (jComboBox.getSelectedItem() instanceof Client && listLiks.getModel() instanceof BilderPool) {
+                    System.out.println("Spezielle Bilder");
+                    ((Client) jComboBox.getSelectedItem()).setAngezeigteListe(2);
+
+                }
+                listRechts.setModel((AbstractListModel) jComboBox.getSelectedItem());
+                //System.out.println("post: "+jComboBox.getSelectedItem());
             }
         });
     }

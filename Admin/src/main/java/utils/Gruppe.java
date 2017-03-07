@@ -3,14 +3,21 @@ package utils;
 import utils.interfaces.I_GotPictures;
 
 import javax.swing.AbstractListModel;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 
 /**
  * Created by robin on 22.01.17.
  */
+
+@XmlRootElement
 public class Gruppe extends AbstractListModel implements I_GotPictures {
-    private ArrayList<BildSettings> gruppenBildArrayList;
     private String gruppenName;
+    private ArrayList<BildSettings> gruppenBildArrayList;
+
+    public Gruppe() {
+    }
 
     public Gruppe(String gruppenName) {
         this.gruppenName = gruppenName;
@@ -45,7 +52,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
     public ArrayList<BildSettings> getGruppenBildArrayList() {
         return gruppenBildArrayList;
     }
-
+    @XmlElement
     public void setGruppenBildArrayList(ArrayList<BildSettings> gruppenBildArrayList) {
         this.gruppenBildArrayList = gruppenBildArrayList;
     }
@@ -53,7 +60,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
     public String getGruppenName() {
         return gruppenName;
     }
-
+    @XmlElement
     public void setGruppenName(String gruppenName) {
         gruppenName = gruppenName;
     }
@@ -76,8 +83,8 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
 
     @Override
     public void addElement(BildSettings bildSettings) {
-        if(!gruppenBildArrayList.contains(bildSettings))
-        gruppenBildArrayList.add(bildSettings);
+        if (!gruppenBildArrayList.contains(bildSettings))
+            gruppenBildArrayList.add(bildSettings);
         fireIntervalAdded(this, gruppenBildArrayList.size(), gruppenBildArrayList.size());
     }
 
