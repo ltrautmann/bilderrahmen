@@ -1,9 +1,9 @@
-package com.sabel.bilderrahmen.client.utils.Windows;
+package com.sabel.bilderrahmen.client.Windows;
 
 import com.sabel.bilderrahmen.client.utils.Config.Config;
+import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
-import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class MainWindow extends JFrame {
     private Container c;
     private ImagePanel imagePanel;
-    private static boolean displayImages;
-    ImageService imageService;
-
+    private ImageService imageService;
 
 
     public MainWindow(){
@@ -31,7 +29,8 @@ public class MainWindow extends JFrame {
         System.out.println("run testimages");
         imageService = Config.getImageService();
         Random r = new Random();
-
+        //TODO: Neuen Thread erstellen für regelmäßiges Config überprüfen
+        new ConfigUpdater("Raspi Bilderrahmen Update-Service").start();
         try {
             Image curImg = imageService.getImage(0);
             while (true) {
@@ -39,7 +38,12 @@ public class MainWindow extends JFrame {
                 TimeUnit.MILLISECONDS.sleep(r.nextInt(1900)+100);
                 curImg = imageService.next(curImg);
                 //imagePanel.setImage(curImg);
-                imagePanel.setImage(imageService.randomImage());
+                try {
+                    imagePanel.setImage(imageService.randomImage());
+                } catch (NullPointerException e) {
+                    System.out.println("Tried to update with nonexistent image. Skipping image update for this cycle.");
+                    System.out.println("This is probably caused by the list of images being updated currently.");
+                }
             }
         }catch (InterruptedException e) {
             e.printStackTrace();
@@ -52,18 +56,13 @@ public class MainWindow extends JFrame {
         initEvents();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         fullScreen(this, false);
-        if (displayImages) {
-            testimages();
-        }
+        testimages();
     }
 
     private void initComponents(){
         System.out.println("init components");
-        if (displayImages) {
-            imagePanel = new ImagePanel();
-            c.add(imagePanel);
-        } else {
-        }
+        imagePanel = new ImagePanel();
+        c.add(imagePanel);
     }
 
     private void initEvents(){
@@ -125,13 +124,5 @@ public class MainWindow extends JFrame {
                 frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         }
         return result;
-    }
-
-    public static boolean isDisplayImages() {
-        return displayImages;
-    }
-
-    public static void setDisplayImages(boolean displayImages) {
-        MainWindow.displayImages = displayImages;
     }
 }

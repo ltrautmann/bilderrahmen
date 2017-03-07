@@ -19,16 +19,15 @@ public class MenuPanel extends JPanel {
     private JPanel panelTop;
     private JPanel panelBottom;
     private JButton buttonOK;
-    private ConfigReaderWriter configReaderWriter;
 
-    public MenuPanel(ConfigReaderWriter configReaderWriter) {
-        this.configReaderWriter = configReaderWriter;
+    public MenuPanel() {
         initComponents();
         initEvents();
     }
 
-    public MenuPanel(ConfigReaderWriter configReaderWriter, String url, String loginName, String password){
-        this(configReaderWriter);
+    public MenuPanel(String url, String loginName, String password){
+        initComponents();
+        initEvents();
         setServerURL(url);
         setLoginName(loginName);
         setPassword(password);
@@ -36,19 +35,21 @@ public class MenuPanel extends JPanel {
 
     private void initComponents(){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        labels = new JLabel[3];
-        textfields = new JTextField[3];
+        labels = new JLabel[4];
+        textfields = new JTextField[4];
         labels[0] = new JLabel("Server URL  ");
         labels[1] = new JLabel("Login Name  ");
         labels[2] = new JLabel("Password  ");
+        labels[3] = new JLabel("Device Name");
         textfields[0] = new JTextField(30);
         textfields[1] = new JTextField(30);
         textfields[2] = new JPasswordField(30);
+        textfields[3] = new JTextField(30);
         panelLabels = new JPanel();
         panelTextfields = new JPanel();
         panelLabels.setLayout(new BoxLayout(panelLabels, BoxLayout.Y_AXIS));
         panelTextfields.setLayout(new BoxLayout(panelTextfields, BoxLayout.Y_AXIS));
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < labels.length; i++) {
             labels[i].setHorizontalAlignment(JLabel.RIGHT);
             panelLabels.add(labels[i]);
             panelTextfields.add(textfields[i]);
@@ -86,14 +87,19 @@ public class MenuPanel extends JPanel {
         textfields[2].addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                textfields[3].requestFocus();
+            }
+        });
+        textfields[3].addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 applyConfigChanges();
             }
         });
     }
 
     private void applyConfigChanges(){
-        configReaderWriter.modifyLoginParams(getServerURL(), getLoginName(), getPassword());
-        Config.getConfigReaderWriter().modifyLoginParams(null,null,null);
+        Config.getConfigReaderWriter().modifyLoginParams(getServerURL(), getLoginName(), getPassword());
         //test.restart();
         //TODO:restart
     }
@@ -110,6 +116,10 @@ public class MenuPanel extends JPanel {
         this.textfields[2].setText(password);
     }
 
+    public void setDeviceName(String deviceName) {
+        this.textfields[3].setText(deviceName);
+    }
+
     public String getServerURL() {
         return this.textfields[0].getText();
     }
@@ -121,4 +131,9 @@ public class MenuPanel extends JPanel {
     public char[] getPassword(){
         return ((JPasswordField) this.textfields[2]).getPassword();
     }
+
+    public String getDeviceName(){
+        return this.textfields[3].getText();
+    }
+
 }

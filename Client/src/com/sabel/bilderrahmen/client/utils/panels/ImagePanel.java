@@ -1,11 +1,7 @@
 package com.sabel.bilderrahmen.client.utils.panels;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by you shall not pass on 20.02.2017.
@@ -19,7 +15,12 @@ public class ImagePanel extends JPanel{
         add(picLabel);
     }
 
-    public void setImage(Image i){
-        picLabel.setIcon(new ImageIcon(i));
+    public void setImage(Image i) throws NullPointerException{
+        if (i == null) {
+            throw new NullPointerException("Image to be updated was null.");
+        }else {
+            System.out.println("Updating currently displayed image.");
+            picLabel.setIcon(new ImageIcon(i));
+        }
     }
 }
