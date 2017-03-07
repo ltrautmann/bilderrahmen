@@ -23,6 +23,7 @@ public class Config {
     private static String localConfigDir;
     private static String localImageDir;
     private static String localResizedImageDir;
+    private static int configUpdateInterval; //seconds
     private static MyAuthenticator webAuth;
 
     public static void setConfigDefault(){
@@ -38,7 +39,7 @@ public class Config {
             setLocalImageDir("/home/" + System.getProperty("user.name") + "/images/");
             setLocalResizedImageDir("/home/" + System.getProperty("user.name") + "/images/resized/");
         }
-
+        setConfigUpdateInterval(10);
 
 
 
@@ -151,5 +152,13 @@ public class Config {
 
     public static ImageService getImageService() {
         return imageService;
+    }
+
+    public static int getConfigUpdateInterval() {
+        return configUpdateInterval;
+    }
+
+    public static void setConfigUpdateInterval(int configUpdateInterval) {
+        Config.configUpdateInterval = configUpdateInterval;
     }
 }

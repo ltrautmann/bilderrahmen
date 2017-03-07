@@ -34,7 +34,7 @@ public class InitWindow extends JFrame {
             if (Config.getConfigReaderWriter().readInitialConfig()) {
                 try {
                     ImageTools.resizeAllImages(false);
-                    Config.setImageService(new ImageService(ImageTools.getResizedImages()));
+                    Config.setImageService(new ImageService(ImageTools.getResizedImagePaths()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

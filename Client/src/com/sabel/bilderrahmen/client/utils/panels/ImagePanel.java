@@ -15,7 +15,12 @@ public class ImagePanel extends JPanel{
         add(picLabel);
     }
 
-    public void setImage(Image i){
-        picLabel.setIcon(new ImageIcon(i));
+    public void setImage(Image i) throws NullPointerException{
+        if (i == null) {
+            throw new NullPointerException("Image to be updated was null.");
+        }else {
+            System.out.println("Updating currently displayed image.");
+            picLabel.setIcon(new ImageIcon(i));
+        }
     }
 }

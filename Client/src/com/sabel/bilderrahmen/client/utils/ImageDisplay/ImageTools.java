@@ -8,12 +8,14 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by you shall not pass on 17.02.2017.
  */
 public class ImageTools {
     private static List<String> supportedExtensions;
+    private static boolean currentlyResizing = false;
 
     static {
         supportedExtensions = new ArrayList<>();
@@ -24,10 +26,17 @@ public class ImageTools {
     }
 
     public static void resizeAllImages(boolean forceResize) throws IOException {
+        if (!currentlyResizing) {
+            currentlyResizing = true;
+        } else {
+            System.out.println("Resize is currently in progress and was requested to start again. Cancelling second resize operation");
+            return;
+        }
         int imageCount = 0;
         int resizedCount = 0;
         int ignoredFiles = 0;
         int ignoredDirectories = 0;
+        int outOfMemoryImages = 0;
         System.out.println("Searching for images in \"" + Config.getLocalImageDir() + "\"");
         File imageDir = new File(Config.getLocalImageDir());
         File[] images = imageDir.listFiles();
@@ -68,9 +77,45 @@ public class ImageTools {
                 if (new File(f.getPath()).isFile()) {
                     String fileExtension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
                     if (supportedExtensions.contains(fileExtension)) {
-                        ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
-                        imageCount++;
-                        resizedCount++;
+                        int tries = 0;
+                        int maxReTries = 2;
+                        while (tries <= maxReTries) {
+                            try {
+                                ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
+                                imageCount++;
+                                resizedCount++;
+                                tries = 10;
+                            } catch (OutOfMemoryError e) {
+                                System.out.println("Not enough memory to resize current image. Aborting resize of current image.");
+                                outOfMemoryImages++;
+                                File tmpFile = new File(resizedPath);
+                                if (tmpFile.exists()) {
+                                    try {
+                                        tmpFile.delete();
+                                    } catch (Exception ex) {
+                                        try {
+                                            TimeUnit.SECONDS.sleep(1);
+                                        } catch (InterruptedException e1) {
+
+                                        }
+                                        tmpFile.delete();
+                                    }
+                                }
+                                tries = 10;
+                            } catch (FileNotFoundException e) {
+                                if (++tries == maxReTries) {
+                                    System.out.println("Max retires exceeded. Aborting image resize. Please check the target directory.");
+                                    throw e;
+                                } else {
+                                    System.out.println("Could not access current image. Retrying after 1 second. " + (maxReTries - tries) + " Tries left");
+                                    try {
+                                        TimeUnit.SECONDS.sleep(1);
+                                    } catch (InterruptedException e1) {
+                                        System.out.println("Retry wait period was interrupted. Continuing with retry immediately.");
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         System.out.println("  File extension \"" + fileExtension + "\" is not a supported image type and was ignored.");
                         ignoredFiles++;
@@ -85,14 +130,18 @@ public class ImageTools {
             }
         }
         System.out.println(resizedCount + " of " + imageCount + " images had to be resized.");
+        if (outOfMemoryImages > 0) {
+            System.out.println("Not enough memory to resize " + outOfMemoryImages + ((outOfMemoryImages == 1) ? " image." : " images."));
+        }
         System.out.println("Ignored " + ignoredDirectories + ((ignoredDirectories == 1) ? " directory and " : " directories and ") + ignoredFiles + ((ignoredFiles == 1) ? " incompatible file." : " incompatible files."));
+        currentlyResizing = false;
     }
 
-    public static java.util.List<Image> getResizedImages() throws IOException {
-        List<Image> ret = new ArrayList<>();
+    public static java.util.List<String> getResizedImagePaths() throws IOException {
+        List<String> ret = new ArrayList<>();
         File[] images = new File(Config.getLocalResizedImageDir()).listFiles();
         for (File f : images) {
-            ret.add(ImageIO.read(f));
+            ret.add(f.getPath());
         }
         return ret;
     }

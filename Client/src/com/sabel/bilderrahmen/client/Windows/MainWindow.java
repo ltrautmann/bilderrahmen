@@ -1,6 +1,7 @@
 package com.sabel.bilderrahmen.client.Windows;
 
 import com.sabel.bilderrahmen.client.utils.Config.Config;
+import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 
@@ -29,6 +30,7 @@ public class MainWindow extends JFrame {
         imageService = Config.getImageService();
         Random r = new Random();
         //TODO: Neuen Thread erstellen für regelmäßiges Config überprüfen
+        new ConfigUpdater("Raspi Bilderrahmen Update-Service").start();
         try {
             Image curImg = imageService.getImage(0);
             while (true) {
@@ -36,7 +38,12 @@ public class MainWindow extends JFrame {
                 TimeUnit.MILLISECONDS.sleep(r.nextInt(1900)+100);
                 curImg = imageService.next(curImg);
                 //imagePanel.setImage(curImg);
-                imagePanel.setImage(imageService.randomImage());
+                try {
+                    imagePanel.setImage(imageService.randomImage());
+                } catch (NullPointerException e) {
+                    System.out.println("Tried to update with nonexistent image. Skipping image update for this cycle.");
+                    System.out.println("This is probably caused by the list of images being updated currently.");
+                }
             }
         }catch (InterruptedException e) {
             e.printStackTrace();
