@@ -19,7 +19,8 @@ public class ClientPool extends AbstractListModel implements I_GotClients {
     public ClientPool() {
         clientArrayList = new ArrayList<>();
     }
-@XmlTransient
+
+    @XmlTransient
     public ArrayList<Client> getClientArrayList() {
         return clientArrayList;
     }

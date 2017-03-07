@@ -4,10 +4,7 @@ import utils.interfaces.I_GotGroups;
 import utils.interfaces.I_GotPictures;
 
 import javax.swing.AbstractListModel;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -15,28 +12,28 @@ import java.util.Iterator;
  * Created by robin on 22.01.17.
  */
 @XmlRootElement
-@XmlType(propOrder = {"id","name","arrayListGroups","bildIgnoreArrayList","clientSpezielleBilderListe","alleBilderListe","angezeigteListe"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Client extends AbstractListModel implements I_GotGroups, I_GotPictures {
 
 
     private static int number = 0;
     private String id;
     private String name;
+    @XmlTransient
     private ArrayList<Gruppe> arrayListGroups;                      //Liste0
+    @XmlElementWrapper(name = "Groups")
+    @XmlElement(name = "Group")
+    private ArrayList<String> arrayListGroupNames;
+    @XmlElementWrapper(name = "IgnoredPictures")
+    @XmlElement(name = "Pictures")
     private ArrayList<BildSettings> bildIgnoreArrayList;            //Liste1
+    @XmlElementWrapper(name = "SpecialPictures")
+    @XmlElement(name = "Pictures")
     private ArrayList<BildSettings> clientSpezielleBilderListe;     //Liste2
     @XmlTransient
     private ArrayList<BildSettings> alleBilderListe;                //Liste3
     @XmlTransient
     private int angezeigteListe = 0;
-
-    public static void setNumber(int number) {
-        Client.number = number;
-    }
-
-    public ArrayList<Gruppe> getArrayListGroups() {
-        return arrayListGroups;
-    }
 
     public Client() {
         number++;
@@ -44,6 +41,7 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         arrayListGroups = new ArrayList<Gruppe>();
         clientSpezielleBilderListe = new ArrayList<BildSettings>();
         bildIgnoreArrayList = new ArrayList<>();
+        arrayListGroupNames = new ArrayList<>();
     }
 
     public Client(String name) {
@@ -51,17 +49,18 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         this.name = name;
     }
 
-    @XmlElement
-    public void setId(String id) {
-        this.id = id;
+    public ArrayList<String> getArrayListGroupNames() {
+        return arrayListGroupNames;
     }
 
-    @XmlElement
-    public void setName(String name) {
-        this.name = name;
+    public void setArrayListGroupNames(ArrayList<String> arrayListGroupNames) {
+        this.arrayListGroupNames = arrayListGroupNames;
     }
 
-    @XmlElement
+    public ArrayList<Gruppe> getArrayListGroups() {
+        return arrayListGroups;
+    }
+
     public void setArrayListGroups(ArrayList<Gruppe> arrayListGroups) {
         this.arrayListGroups = arrayListGroups;
     }
@@ -70,8 +69,16 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -91,11 +98,14 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         return number;
     }
 
+    public static void setNumber(int number) {
+        Client.number = number;
+    }
+
     public ArrayList<BildSettings> getBildIgnoreArrayList() {
         return bildIgnoreArrayList;
     }
 
-    @XmlElement
     public void setBildIgnoreArrayList(ArrayList<BildSettings> bildIgnoreArrayList) {
         this.bildIgnoreArrayList = bildIgnoreArrayList;
     }
@@ -104,7 +114,6 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         return clientSpezielleBilderListe;
     }
 
-    @XmlElement
     public void setClientSpezielleBilderListe(ArrayList<BildSettings> clientSpezielleBilderListe) {
         this.clientSpezielleBilderListe = clientSpezielleBilderListe;
     }
@@ -185,8 +194,8 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
         alleBilderListe = new ArrayList<BildSettings>();
         for (Gruppe g : arrayListGroups) {
             for (BildSettings gb : g.getGruppenBildArrayList()) {
-                if(!alleBilderListe.contains(gb))
-                alleBilderListe.add(gb);
+                if (!alleBilderListe.contains(gb))
+                    alleBilderListe.add(gb);
             }
         }
         for (BildSettings cb : clientSpezielleBilderListe) {
@@ -228,5 +237,13 @@ public class Client extends AbstractListModel implements I_GotGroups, I_GotPictu
     public ArrayList<BildSettings> getPictures() {
         return null;
         //todo add method
+    }
+
+    public void update() {
+        arrayListGroupNames.clear();
+        for (Gruppe g : arrayListGroups) {
+            arrayListGroupNames.add(g.getGruppenName());
+
+        }
     }
 }

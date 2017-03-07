@@ -3,8 +3,7 @@ package utils;
 import utils.interfaces.I_GotPictures;
 
 import javax.swing.AbstractListModel;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
 /**
@@ -12,8 +11,11 @@ import java.util.ArrayList;
  */
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Gruppe extends AbstractListModel implements I_GotPictures {
     private String gruppenName;
+    @XmlElementWrapper(name = "GroupPictures")
+    @XmlElement(name = "Picture")
     private ArrayList<BildSettings> gruppenBildArrayList;
 
     public Gruppe() {
@@ -52,7 +54,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
     public ArrayList<BildSettings> getGruppenBildArrayList() {
         return gruppenBildArrayList;
     }
-    @XmlElement
+
     public void setGruppenBildArrayList(ArrayList<BildSettings> gruppenBildArrayList) {
         this.gruppenBildArrayList = gruppenBildArrayList;
     }
@@ -60,7 +62,7 @@ public class Gruppe extends AbstractListModel implements I_GotPictures {
     public String getGruppenName() {
         return gruppenName;
     }
-    @XmlElement
+
     public void setGruppenName(String gruppenName) {
         gruppenName = gruppenName;
     }

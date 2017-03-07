@@ -1,6 +1,7 @@
 package utils.panels;
 
-import utils.Client;
+import utils.ClientPool;
+import utils.GroupPool;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -11,7 +12,6 @@ import javax.xml.bind.Marshaller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Robin on 23.01.2017.
@@ -19,11 +19,8 @@ import java.util.ArrayList;
 public class P_Buttons extends JPanel {
     private JButton saveJButton;
     private JButton loadJButton;
-
-    public void setClients(ArrayList<Client> clients) {
-        this.clients = clients;
-    }
-    private ArrayList<Client> clients;
+    private ClientPool clients;
+    private GroupPool groups;
 
     public P_Buttons() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -36,20 +33,28 @@ public class P_Buttons extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                int i = 0;
-                for(Client c : clients)
-                try {
 
-                    i++;
-                    File file = new File("D:\\Schippan\\TEMPBitteLoeschen"+i+".xml");
-                    JAXBContext jaxbContext = JAXBContext.newInstance(Client.class);
+                clients.update();
+                try {
+                    File file = new File("D:\\Schippan\\TEMPBitteLoeschen.xml");
+                    JAXBContext jaxbContext = JAXBContext.newInstance(ClientPool.class);
                     Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
                     // output pretty printed
                     jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-                    jaxbMarshaller.marshal(c, file);
-                    jaxbMarshaller.marshal(c, System.out);
+                    jaxbMarshaller.marshal(clients, file);
+
+
+                    file = new File("D:\\Schippan\\GroupsLOECHMICH.xml");
+                    jaxbContext = JAXBContext.newInstance(GroupPool.class);
+                    jaxbMarshaller = jaxbContext.createMarshaller();
+
+                    // output pretty printed
+                    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+                    jaxbMarshaller.marshal(groups, file);
+                    // jaxbMarshaller.marshal(c, System.out);
 
                 } catch (JAXBException f) {
                     f.printStackTrace();
@@ -58,6 +63,18 @@ public class P_Buttons extends JPanel {
             }
 
         });
+    }
+
+    public GroupPool getGroups() {
+        return groups;
+    }
+
+    public void setGroups(GroupPool groups) {
+        this.groups = groups;
+    }
+
+    public void setClients(ClientPool clients) {
+        this.clients = clients;
     }
 
 
