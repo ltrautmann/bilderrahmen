@@ -1,8 +1,7 @@
 package com.sabel.bilderrahmen.client.utils.panels;
 
-import com.sabel.bilderrahmen.client.test;
+import com.sabel.bilderrahmen.client.Windows.ConfigWindow;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
-import com.sabel.bilderrahmen.client.utils.Config.ConfigReaderWriter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +11,7 @@ import java.awt.event.ActionEvent;
  * Created by you shall not pass on 17.02.2017.
  */
 public class MenuPanel extends JPanel {
+    private ConfigWindow parentFrame;
     private JLabel[] labels;
     private JTextField[] textfields;
     private JPanel panelLabels;
@@ -20,31 +20,48 @@ public class MenuPanel extends JPanel {
     private JPanel panelBottom;
     private JButton buttonOK;
 
-    public MenuPanel() {
+    public MenuPanel(ConfigWindow parentFrame) {
+        this.parentFrame = parentFrame;
         initComponents();
         initEvents();
+        setServerURL(Config.getServer());
+        setDeviceName(Config.getDeviceID());
+        setLocalConfigPath(Config.getLocalConfigDir());
+        setLocalImagePath(Config.getLocalImageDir());
+        setLocalResizedImagePath(Config.getLocalResizedImageDir());
     }
 
-    public MenuPanel(String url, String loginName, String password){
+    public MenuPanel(ConfigWindow parentFrame, String url, String loginName, String password){
+        this.parentFrame = parentFrame;
         initComponents();
         initEvents();
         setServerURL(url);
         setLoginName(loginName);
         setPassword(password);
+        setDeviceName(Config.getDeviceID());
+        setLocalConfigPath(Config.getLocalConfigDir());
+        setLocalImagePath(Config.getLocalImageDir());
+        setLocalResizedImagePath(Config.getLocalResizedImageDir());
     }
 
     private void initComponents(){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        labels = new JLabel[4];
-        textfields = new JTextField[4];
-        labels[0] = new JLabel("Server URL  ");
-        labels[1] = new JLabel("Login Name  ");
-        labels[2] = new JLabel("Password  ");
+        labels = new JLabel[7];
+        textfields = new JTextField[7];
+        labels[0] = new JLabel("Server URL");
+        labels[1] = new JLabel("Login Name");
+        labels[2] = new JLabel("Password");
         labels[3] = new JLabel("Device Name");
+        labels[4] = new JLabel("Local Config Path");
+        labels[5] = new JLabel("Local Image Path");
+        labels[6] = new JLabel("Local Resized Image Path");
         textfields[0] = new JTextField(30);
         textfields[1] = new JTextField(30);
         textfields[2] = new JPasswordField(30);
         textfields[3] = new JTextField(30);
+        textfields[4] = new JTextField(30);
+        textfields[5] = new JTextField(30);
+        textfields[6] = new JTextField(30);
         panelLabels = new JPanel();
         panelTextfields = new JPanel();
         panelLabels.setLayout(new BoxLayout(panelLabels, BoxLayout.Y_AXIS));
@@ -53,6 +70,7 @@ public class MenuPanel extends JPanel {
             labels[i].setHorizontalAlignment(JLabel.RIGHT);
             panelLabels.add(labels[i]);
             panelTextfields.add(textfields[i]);
+            System.out.println(i + "|" + labels[i].getText());
         }
         panelTop = new JPanel();
         panelTop.add(panelLabels);
@@ -93,15 +111,50 @@ public class MenuPanel extends JPanel {
         textfields[3].addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                textfields[4].requestFocus();
+            }
+        });
+        textfields[4].addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textfields[5].requestFocus();
+            }
+        });
+        textfields[5].addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textfields[6].requestFocus();
+            }
+        });
+        textfields[6].addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 applyConfigChanges();
             }
         });
     }
 
     private void applyConfigChanges(){
-        Config.getConfigReaderWriter().modifyLoginParams(getServerURL(), getLoginName(), getPassword());
-        //test.restart();
-        //TODO:restart
+        if (getServerURL() != null && !getServerURL().equals("") &&
+                getLoginName() != null && !getLoginName().equals("") &&
+                getPassword() != null && getPassword().toString() != null && !getPassword().toString().equals("") &&
+                getDeviceName() != null && !getDeviceName().equals("") &&
+                getLocalConfigPath() != null && !getLocalConfigPath().equals("") &&
+                getLocalImagePath() != null && !getLocalImagePath().equals("") &&
+                getLocalResizedImagePath() != null && !getLocalResizedImagePath().equals("")) {
+
+            Config.getConfigReaderWriter().modifyLoginParams(getServerURL(), getLoginName(), getPassword());
+            Config.setLocalConfigDir(getLocalConfigPath());
+            Config.setLocalImageDir(getLocalImagePath());
+            Config.setLocalResizedImageDir(getLocalResizedImagePath());
+            Config.setDeviceID(getDeviceName());
+            //Test.restart();
+            //TODO:restart
+            parentFrame.exitAndRestart();
+        } else {
+
+        }
+
     }
 
     public void setServerURL(String url){
@@ -120,6 +173,18 @@ public class MenuPanel extends JPanel {
         this.textfields[3].setText(deviceName);
     }
 
+    public void setLocalConfigPath(String path) {
+        this.textfields[4].setText(path);
+    }
+
+    public void setLocalImagePath(String path) {
+        this.textfields[5].setText(path);
+    }
+
+    public void setLocalResizedImagePath(String path) {
+        this.textfields[6].setText(path);
+    }
+
     public String getServerURL() {
         return this.textfields[0].getText();
     }
@@ -136,4 +201,15 @@ public class MenuPanel extends JPanel {
         return this.textfields[3].getText();
     }
 
+    public String getLocalConfigPath(){
+        return this.textfields[3].getText();
+    }
+
+    public String getLocalImagePath(){
+        return this.textfields[3].getText();
+    }
+
+    public String getLocalResizedImagePath(){
+        return this.textfields[3].getText();
+    }
 }

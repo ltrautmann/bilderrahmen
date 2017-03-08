@@ -82,6 +82,7 @@ public class ImageTools {
                         while (tries <= maxReTries) {
                             try {
                                 ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
+                                f = null;
                                 imageCount++;
                                 resizedCount++;
                                 tries = 10;
@@ -160,7 +161,18 @@ public class ImageTools {
         }
         boolean multiStepDownscaling = (image.getWidth() > width && image.getHeight() > height);
         System.out.print(((multiStepDownscaling)?"  Downscaling":"  Upscaling") + " image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
-        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
+        if (true) {
+            return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
+        } else {
+            BufferedImage tmp = new BufferedImage(width, height, ((image.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB));
+            Graphics2D g2 = tmp.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.drawImage(image, 0, 0, width, height, null);
+            g2.dispose();
+            g2 = null;
+            image = tmp;
+            return image;
+        }
     }
 
     /**
@@ -219,6 +231,8 @@ public class ImageTools {
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
             g2.drawImage(ret, 0, 0, w, h, null);
             g2.dispose();
+            g2 = null;
+            System.gc();
             ret = tmp;
             cycles++;
         } while (w != targetWidth || h != targetHeight);

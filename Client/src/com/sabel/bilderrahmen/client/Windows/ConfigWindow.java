@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client.Windows;
 
+import com.sabel.bilderrahmen.client.Test;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 
 import javax.swing.*;
@@ -18,22 +19,28 @@ public class ConfigWindow extends JFrame {
 
     private void initFrame() {
         setTitle("Config-Server");
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(960, 540);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void init() {
-        initFrame();
         initComponents();
+        initFrame();
     }
 
     private void initComponents() {
         c = getContentPane();
         menuPanelParent = new JPanel();
         menuPanelParent.setLayout(new GridBagLayout());
-        menuPanelParent.add(new MenuPanel());
+        menuPanelParent.add(new MenuPanel(this));
         c.add(menuPanelParent);
+    }
+
+    public void exitAndRestart(){
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        Test.setInitWindow(new InitWindow());
+        this.dispose();
     }
 }

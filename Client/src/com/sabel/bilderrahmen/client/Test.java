@@ -7,7 +7,7 @@ import com.sabel.bilderrahmen.client.Windows.MainWindow;
 /**
  * Created by you shall not pass on 10.02.2017.
  */
-public class test {
+public class Test {
     private static InitWindow initWindow;
     private static MainWindow mainWindow;
     private static ConfigWindow configWindow;
@@ -29,11 +29,15 @@ public class test {
     }
 
     public static void setMainWindow(MainWindow mainWindow) {
-        test.mainWindow = mainWindow;
+        Test.mainWindow = mainWindow;
+    }
+
+    public static void setInitWindow(InitWindow initWindow) {
+        Test.initWindow = initWindow;
     }
 
     public static void setConfigWindow(ConfigWindow configWindow) {
-        test.configWindow = configWindow;
+        Test.configWindow = configWindow;
     }
 
     /*

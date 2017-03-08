@@ -214,7 +214,11 @@ public class MessageConsole {
                 {
                     int offset = document.getLength();
                     document.insertString(offset, line, attributes);
-                    textComponent.setCaretPosition( document.getLength() );
+                    try {
+                        textComponent.setCaretPosition(document.getLength());
+                    } catch (NullPointerException e) {
+                        //e.printStackTrace();
+                    }
                 }
                 else
                 {
