@@ -81,28 +81,35 @@ public class ImageTools {
                         int maxReTries = 2;
                         while (tries <= maxReTries) {
                             try {
-                                ImageIO.write(resizeImage(ImageIO.read(f)), fileExtension, new File(resizedPath));
-                                f = null;
+                                ImageIO.write(resizeImage(ImageIO.read(f), false), fileExtension, new File(resizedPath));
                                 imageCount++;
                                 resizedCount++;
-                                tries = 10;
+                                tries = maxReTries + 10;
                             } catch (OutOfMemoryError e) {
-                                System.out.println("Not enough memory to resize current image. Aborting resize of current image.");
-                                outOfMemoryImages++;
-                                File tmpFile = new File(resizedPath);
-                                if (tmpFile.exists()) {
-                                    try {
-                                        tmpFile.delete();
-                                    } catch (Exception ex) {
+                                try {
+                                    System.out.println("Not enough memory available for high-quality multi-step scaling. Attempting single-step scaling.");
+                                    ImageIO.write(resizeImage(ImageIO.read(f), true), fileExtension, new File(resizedPath));
+                                    imageCount++;
+                                    resizedCount++;
+                                    tries = maxReTries + 10;
+                                }catch (OutOfMemoryError e0){
+                                    System.out.println("Not enough memory to resize current image. Aborting resize of current image.");
+                                    outOfMemoryImages++;
+                                    File tmpFile = new File(resizedPath);
+                                    if (tmpFile.exists()) {
                                         try {
-                                            TimeUnit.SECONDS.sleep(1);
-                                        } catch (InterruptedException e1) {
+                                            tmpFile.delete();
+                                        } catch (Exception ex) {
+                                            try {
+                                                TimeUnit.SECONDS.sleep(1);
+                                            } catch (InterruptedException e1) {
 
+                                            }
+                                            tmpFile.delete();
                                         }
-                                        tmpFile.delete();
                                     }
+                                    tries = maxReTries + 10;
                                 }
-                                tries = 10;
                             } catch (FileNotFoundException e) {
                                 if (++tries == maxReTries) {
                                     System.out.println("Max retires exceeded. Aborting image resize. Please check the target directory.");
@@ -148,7 +155,7 @@ public class ImageTools {
     }
 
 
-    public static BufferedImage resizeImage(BufferedImage image) {
+    public static BufferedImage resizeImage(BufferedImage image, boolean forceSingleStep) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) screenSize.getWidth();
         int height = (int) screenSize.getHeight();
@@ -159,7 +166,7 @@ public class ImageTools {
         } else {
             height = (int) (width / aspectRatio);
         }
-        boolean multiStepDownscaling = (image.getWidth() > width && image.getHeight() > height);
+        boolean multiStepDownscaling = (image.getWidth() > width && image.getHeight() > height) && !forceSingleStep;
         System.out.print(((multiStepDownscaling)?"  Downscaling":"  Upscaling") + " image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".");
         if (true) {
             return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
