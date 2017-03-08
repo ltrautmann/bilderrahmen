@@ -1,6 +1,6 @@
 package utils;
 
-import sun.swing.BakedArrayList;
+import utils.interfaces.I_GotPictures;
 
 import javax.swing.AbstractListModel;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Robin on 10.02.2017.
  */
-public class BilderPool extends AbstractListModel {
+public class BilderPool extends AbstractListModel implements I_GotPictures {
 
     private ArrayList<BildSettings> bildArrayList;
 
@@ -33,4 +33,14 @@ public class BilderPool extends AbstractListModel {
         return bildArrayList.get(index);
     }
 
+    @Override
+    public void addElement(BildSettings bildSettings) {
+        //todo
+    }
+
+    @Override
+    public ArrayList<BildSettings> getPictures() {
+        //todo
+        return null;
+    }
 }

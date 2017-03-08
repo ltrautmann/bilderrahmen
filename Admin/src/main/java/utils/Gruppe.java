@@ -1,17 +1,35 @@
 package utils;
 
+import utils.interfaces.I_GotPictures;
+
 import javax.swing.AbstractListModel;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 
 /**
  * Created by robin on 22.01.17.
  */
-public class Gruppe extends AbstractListModel<BildSettings> {
-    private ArrayList<BildSettings> gruppenBildArrayList;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Gruppe extends AbstractListModel implements I_GotPictures {
     private String gruppenName;
+    @XmlElementWrapper(name = "GroupPictures")
+    @XmlElement(name = "Picture")
+    private ArrayList<BildSettings> gruppenBildArrayList;
+
+    public Gruppe() {
+    }
 
     public Gruppe(String gruppenName) {
         this.gruppenName = gruppenName;
+        gruppenBildArrayList = new ArrayList<>();
+    }
+
+    public Gruppe(String gruppenName, ArrayList<BildSettings> gruppenBilderListe) {
+        this.gruppenName = gruppenName;
+        gruppenBildArrayList = gruppenBilderListe;
+
     }
 
     @Override
@@ -32,13 +50,6 @@ public class Gruppe extends AbstractListModel<BildSettings> {
         result = 31 * result + (gruppenName != null ? gruppenName.hashCode() : 0);
         return result;
     }
-
-    public Gruppe(String gruppenName, ArrayList<BildSettings> gruppenBilderListe) {
-        this.gruppenName = gruppenName;
-        gruppenBildArrayList = gruppenBilderListe;
-
-    }
-
 
     public ArrayList<BildSettings> getGruppenBildArrayList() {
         return gruppenBildArrayList;
@@ -69,5 +80,18 @@ public class Gruppe extends AbstractListModel<BildSettings> {
     @Override
     public BildSettings getElementAt(int index) {
         return gruppenBildArrayList.get(index);
+    }
+
+
+    @Override
+    public void addElement(BildSettings bildSettings) {
+        if (!gruppenBildArrayList.contains(bildSettings))
+            gruppenBildArrayList.add(bildSettings);
+        fireIntervalAdded(this, gruppenBildArrayList.size(), gruppenBildArrayList.size());
+    }
+
+    @Override
+    public ArrayList<BildSettings> getPictures() {
+        return gruppenBildArrayList;
     }
 }
