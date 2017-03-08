@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client.Windows;
 
+import com.sabel.bilderrahmen.client.Test;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
@@ -19,7 +20,9 @@ public class MainWindow extends JFrame {
     private Container c;
     private ImagePanel imagePanel;
     private ImageService imageService;
-
+    private ConfigUpdater updater;
+    private Thread updaterThread;
+    private boolean isTerminated;
 
     public MainWindow(){
         init();
@@ -30,10 +33,12 @@ public class MainWindow extends JFrame {
         imageService = Config.getImageService();
         Random r = new Random();
         //TODO: Neuen Thread erstellen für regelmäßiges Config überprüfen
-        new ConfigUpdater("Raspi Bilderrahmen Update-Service").start();
+        updater = new ConfigUpdater("Raspi Bilderrahmen Update-Service");
+        updaterThread = updater.start();
+        isTerminated = false;
         try {
             Image curImg = imageService.getImage(0);
-            while (true) {
+            while (!isTerminated) {
                 //TimeUnit.SECONDS.sleep(1);
                 TimeUnit.MILLISECONDS.sleep(r.nextInt(1900)+100);
                 curImg = imageService.next(curImg);
@@ -75,9 +80,23 @@ public class MainWindow extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     //TODO:Refresh config
                     System.out.println("refreshing config...");
+                } else if (e.getKeyCode() == KeyEvent.VK_F1) {
+                    System.out.println("Manual Configuration Edit requested...");
+                    Test.setConfigWindow(new ConfigWindow());
+                    MainWindow.this.close();
                 }
             }
         });
+    }
+
+    private void close(){
+        isTerminated = true;
+        MainWindow.this.setVisible(false);
+        updaterThread.interrupt();
+        MainWindow.this.dispose();
+        Test.setMainWindow(null);
+        System.out.println("Image Display Window shut down");
+
     }
 
     static public boolean fullScreen(final JFrame frame, boolean doPack) {

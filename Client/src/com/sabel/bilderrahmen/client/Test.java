@@ -29,14 +29,26 @@ public class Test {
     }
 
     public static void setMainWindow(MainWindow mainWindow) {
+        if (Test.mainWindow != null) {
+            Test.mainWindow.dispose();
+            Test.mainWindow = null;
+        }
         Test.mainWindow = mainWindow;
     }
 
     public static void setInitWindow(InitWindow initWindow) {
+        if (Test.initWindow != null) {
+            Test.initWindow.dispose();
+            Test.initWindow = null;
+        }
         Test.initWindow = initWindow;
     }
 
     public static void setConfigWindow(ConfigWindow configWindow) {
+        if (Test.configWindow != null) {
+            Test.configWindow.dispose();
+            Test.configWindow = null;
+        }
         Test.configWindow = configWindow;
     }
 

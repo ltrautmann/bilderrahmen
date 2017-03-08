@@ -24,24 +24,21 @@ public class MenuPanel extends JPanel {
         this.parentFrame = parentFrame;
         initComponents();
         initEvents();
-        setServerURL(Config.getServer());
-        setDeviceName(Config.getDeviceID());
-        setLocalConfigPath(Config.getLocalConfigDir());
-        setLocalImagePath(Config.getLocalImageDir());
-        setLocalResizedImagePath(Config.getLocalResizedImageDir());
+        initFields(null, null, null);
     }
 
     public MenuPanel(ConfigWindow parentFrame, String url, String loginName, String password){
         this.parentFrame = parentFrame;
         initComponents();
         initEvents();
-        setServerURL(url);
-        setLoginName(loginName);
-        setPassword(password);
-        setDeviceName(Config.getDeviceID());
-        setLocalConfigPath(Config.getLocalConfigDir());
-        setLocalImagePath(Config.getLocalImageDir());
-        setLocalResizedImagePath(Config.getLocalResizedImageDir());
+        initFields(url, loginName, password.toCharArray());
+    }
+
+    public MenuPanel(ConfigWindow parentFrame, String url, String loginName, char[] password){
+        this.parentFrame = parentFrame;
+        initComponents();
+        initEvents();
+        initFields(url, loginName, password);
     }
 
     private void initComponents(){
@@ -134,10 +131,21 @@ public class MenuPanel extends JPanel {
         });
     }
 
+    private void initFields(String url, String loginName, char[] password){
+        setServerURL(((url == null) ? Config.getServer() : url));
+        if(loginName!=null) setLoginName(loginName);
+        if(password!=null) setPassword(password);
+        setDeviceName(Config.getDeviceID());
+        setLocalConfigPath(Config.getLocalConfigDir());
+        setLocalImagePath(Config.getLocalImageDir());
+        setLocalResizedImagePath(Config.getLocalResizedImageDir());
+        textfields[0].requestFocus();
+    }
+
     private void applyConfigChanges(){
         if (getServerURL() != null && !getServerURL().equals("") &&
                 getLoginName() != null && !getLoginName().equals("") &&
-                getPassword() != null && getPassword().toString() != null && !getPassword().toString().equals("") &&
+                getPassword() != null && new String(getPassword()) != null && !new String(getPassword()).equals("") &&
                 getDeviceName() != null && !getDeviceName().equals("") &&
                 getLocalConfigPath() != null && !getLocalConfigPath().equals("") &&
                 getLocalImagePath() != null && !getLocalImagePath().equals("") &&
@@ -150,66 +158,74 @@ public class MenuPanel extends JPanel {
             Config.setDeviceID(getDeviceName());
             //Test.restart();
             //TODO:restart
-            parentFrame.exitAndRestart();
+            parentFrame.exitForRestart();
         } else {
 
         }
 
     }
 
-    public void setServerURL(String url){
+    private void setServerURL(String url){
         this.textfields[0].setText(url);
     }
 
-    public void setLoginName(String loginName){
+    private void setLoginName(String loginName){
         this.textfields[1].setText(loginName);
     }
 
-    public void setPassword(String password){
+    private void setPassword(String password){
         this.textfields[2].setText(password);
     }
 
-    public void setDeviceName(String deviceName) {
+    private void setPassword(char[] password){
+        this.textfields[2].setText(new String(password));
+    }
+
+    private void setDeviceName(String deviceName) {
         this.textfields[3].setText(deviceName);
     }
 
-    public void setLocalConfigPath(String path) {
+    private void setLocalConfigPath(String path) {
         this.textfields[4].setText(path);
     }
 
-    public void setLocalImagePath(String path) {
+    private void setLocalImagePath(String path) {
         this.textfields[5].setText(path);
     }
 
-    public void setLocalResizedImagePath(String path) {
+    private void setLocalResizedImagePath(String path) {
         this.textfields[6].setText(path);
     }
 
-    public String getServerURL() {
+    private String getServerURL() {
         return this.textfields[0].getText();
     }
 
-    public String getLoginName() {
+    private String getLoginName() {
         return this.textfields[1].getText();
     }
 
-    public char[] getPassword(){
+    private char[] getPassword(){
         return ((JPasswordField) this.textfields[2]).getPassword();
     }
 
-    public String getDeviceName(){
+    private String getPasswordString(){
+        return new String(((JPasswordField) this.textfields[2]).getPassword());
+    }
+
+    private String getDeviceName(){
         return this.textfields[3].getText();
     }
 
-    public String getLocalConfigPath(){
+    private String getLocalConfigPath(){
         return this.textfields[3].getText();
     }
 
-    public String getLocalImagePath(){
+    private String getLocalImagePath(){
         return this.textfields[3].getText();
     }
 
-    public String getLocalResizedImagePath(){
+    private String getLocalResizedImagePath(){
         return this.textfields[3].getText();
     }
 }

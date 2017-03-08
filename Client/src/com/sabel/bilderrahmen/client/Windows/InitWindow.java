@@ -27,7 +27,13 @@ public class InitWindow extends JFrame {
     private void init() {
         initFrame();
         initComponents();
+        System.out.println("########################################################################################################################");
         System.out.println("Raspi Bilderrahmen");
+        System.out.println("########################################################################################################################");
+        System.out.println();
+        System.out.println("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration");
+        System.out.println();
+        System.out.println("########################################################################################################################");
         Config.setConfigDefault();
 
         try {
@@ -47,6 +53,7 @@ public class InitWindow extends JFrame {
             e.printStackTrace();
         }
         this.setVisible(false);
+        this.dispose();
     }
 
     private void initFrame() {

@@ -45,13 +45,13 @@ public class ConfigReaderWriter {
     }
 
     public void modifyLoginParams(String url, String loginName, char[] password) {
-        File f = new File(Config.getLocalConfigDir() + confFile);
+        /*File f = new File(Config.getLocalConfigDir() + confFile);
         f.getParentFile().mkdirs();
         try {
             f.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 //        System.out.println(url + "\n" + loginName + "\n" + new String(password));
     }
 

@@ -32,14 +32,16 @@ public class ConfigUpdater implements Runnable {
         } catch (InterruptedException e) {
             System.out.println(threadName + ": Thread was interrupted.");
         } catch (IOException e) {
+            System.out.println("This should not have happened.");
             e.printStackTrace();
         }
     }
 
-    public void start(){
+    public Thread start(){
         if (t==null) {
             t = new Thread(this, threadName);
             t.start();
         }
+        return t;
     }
 }

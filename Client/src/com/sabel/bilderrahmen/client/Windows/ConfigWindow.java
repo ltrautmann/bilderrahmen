@@ -38,9 +38,8 @@ public class ConfigWindow extends JFrame {
         c.add(menuPanelParent);
     }
 
-    public void exitAndRestart(){
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        Test.setInitWindow(new InitWindow());
-        this.dispose();
+    public void exitForRestart(){
+        JOptionPane.showMessageDialog(ConfigWindow.this, "Configuration Changes saved. Program will now exit.", "Configuration Changes Applied", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
     }
 }
