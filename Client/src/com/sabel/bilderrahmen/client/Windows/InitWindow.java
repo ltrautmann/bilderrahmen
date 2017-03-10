@@ -1,6 +1,6 @@
 package com.sabel.bilderrahmen.client.Windows;
 
-import com.sabel.bilderrahmen.client.Test;
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
@@ -40,14 +40,14 @@ public class InitWindow extends JFrame {
             if (Config.getConfigReaderWriter().readInitialConfig()) {
                 try {
                     ImageTools.resizeAllImages(false);
-                    Config.setImageService(new ImageService(ImageTools.getResizedImagePaths()));
+                    Config.setImageService(new ImageService(ImageTools.getResizedImagePaths(false)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Test.setMainWindow(new MainWindow());
+                Main.setMainWindow(new MainWindow());
             } else {
                 //MainWindow.setDisplayImages(false);
-                Test.setConfigWindow(new ConfigWindow());
+                Main.setConfigWindow(new ConfigWindow());
             }
         } catch (IOException e) {
             e.printStackTrace();

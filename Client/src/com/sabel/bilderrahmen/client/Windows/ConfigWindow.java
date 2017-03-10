@@ -1,6 +1,5 @@
 package com.sabel.bilderrahmen.client.Windows;
 
-import com.sabel.bilderrahmen.client.Test;
 import com.sabel.bilderrahmen.client.utils.panels.MenuPanel;
 
 import javax.swing.*;

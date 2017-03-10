@@ -156,7 +156,7 @@ public class MenuPanel extends JPanel {
             Config.setLocalImageDir(getLocalImagePath());
             Config.setLocalResizedImageDir(getLocalResizedImagePath());
             Config.setDeviceID(getDeviceName());
-            //Test.restart();
+            //Main.restart();
             //TODO:restart
             parentFrame.exitForRestart();
         } else {

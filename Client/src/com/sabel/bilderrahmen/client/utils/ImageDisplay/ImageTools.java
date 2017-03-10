@@ -1,6 +1,8 @@
 package com.sabel.bilderrahmen.client.utils.ImageDisplay;
 
 import com.sabel.bilderrahmen.client.utils.Config.Config;
+import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
+import com.sabel.bilderrahmen.client.utils.WebService.FileDownloader;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class ImageTools {
     private static List<String> supportedExtensions;
     private static boolean currentlyResizing = false;
+    private static String renamedFilePrefix = "resized-";
 
     static {
         supportedExtensions = new ArrayList<>();
@@ -25,7 +28,37 @@ public class ImageTools {
         supportedExtensions.add("bmp");
     }
 
-    public static void resizeAllImages(boolean forceResize) throws IOException {
+    public static void updateLocalImages(ConfigUpdater thread) throws IOException {
+        List<String> oldImageList = Config.getImageService().getImages();
+        List<String> imageList = new ArrayList<>();
+        List<String> newImageList = new ArrayList<>();
+        //TODO: Bilderliste aus Config
+        for (String image : imageList) {
+            String fullLocalPath_resized = Config.getLocalResizedImageDir() + renamedFilePrefix + image;
+            if (!oldImageList.contains(fullLocalPath_resized)) {
+                try {
+                    FileDownloader.getImage(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                newImageList.add(fullLocalPath_resized);
+            } else {
+
+            }
+        }
+        for (String image : oldImageList) {
+            if (!newImageList.contains(image)) {
+                new File(image.replace(Config.getLocalResizedImageDir() + renamedFilePrefix, Config.getLocalImageDir())).delete();
+            }
+        }
+        resizeAllImages(false);
+        thread.setThreadPriority(Thread.MAX_PRIORITY);
+        Config.getImageService().setImages(ImageTools.getResizedImagePaths(true)); //Set max thread priority while updating the ImageService List
+        thread.setThreadPriority(Thread.MIN_PRIORITY);
+
+    }
+
+    public static void resizeAllImages(boolean forceResize){
         if (!currentlyResizing) {
             currentlyResizing = true;
         } else {
@@ -46,31 +79,44 @@ public class ImageTools {
         System.out.println("Detected screen resolution of " + width + "x" + height);
         String lastResizedScreenresPath = Config.getLocalResizedImageDir() + "last-resized-screenres.txt";
         if (new File(lastResizedScreenresPath).exists()) {
-            BufferedReader br = new BufferedReader(new FileReader(lastResizedScreenresPath));
-            String s = br.readLine();
-            br.close();
-            if (!(width + "x" + height).equals(s)) {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(lastResizedScreenresPath));
+                String s = br.readLine();
+                br.close();
+                if (!(width + "x" + height).equals(s)) {
+                    forceResize = true;
+                    System.out.println("Screen resolution at last resize was " + s + ", forcing resize of all images.");
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
+                    bw.write(width + "x" + height);
+                    bw.flush();
+                    bw.close();
+                } else {
+                    System.out.println("Screen resolution did not change since last resize, not forcing resize on already resized images.");
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("This should not have happened. YOu are a wizard. You actually deleted a file in the exact split second between checking if it's there and accessing it.");
+            } catch (IOException e) {
+                System.out.println("Could not read screen resolution of last resize or save current screen resolution. Forcing resize. Please check the target directory: " + lastResizedScreenresPath);
                 forceResize = true;
-                System.out.println("Screen resolution at last resize was " + s + ", forcing resize of all images.");
+            }
+        } else {
+            try {
+                forceResize = true;
+                System.out.println("Did not find resolution of previous resize, forcing resize of all images.");
                 BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
                 bw.write(width + "x" + height);
                 bw.flush();
                 bw.close();
-            } else {
-                System.out.println("Screen resolution did not change since last resize, not forcing resize on already resized images.");
+            }catch (IOException e) {
+                System.out.println("Could save current screen resolution. Please check the target directory: " + lastResizedScreenresPath);
+                forceResize = true;
             }
-        } else {
-            forceResize = true;
-            System.out.println("Did not find resolution of previous resize, forcing resize of all images.");
-            BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
-            bw.write(width + "x" + height);
-            bw.flush();
-            bw.close();
         }
         System.out.println("Resizing Images:");
         for (File f : images) {
             String filename = f.getName();
-            String resizedName = "resized-" + filename;
+            String resizedName = renamedFilePrefix + filename;
             String resizedPath = Config.getLocalResizedImageDir() + resizedName;
             System.out.println("Source: \"" + filename + "\": ");
             if ((!(new File(resizedPath).exists()) || forceResize)) {
@@ -109,11 +155,12 @@ public class ImageTools {
                                         }
                                     }
                                     tries = maxReTries + 10;
+                                } catch (IOException e1) {
+                                    System.out.println("Image File could not be accessed, aborting resize.");
                                 }
                             } catch (FileNotFoundException e) {
                                 if (++tries == maxReTries) {
                                     System.out.println("Max retires exceeded. Aborting image resize. Please check the target directory.");
-                                    throw e;
                                 } else {
                                     System.out.println("Could not access current image. Retrying after 1 second. " + (maxReTries - tries) + " Tries left");
                                     try {
@@ -122,6 +169,8 @@ public class ImageTools {
                                         System.out.println("Retry wait period was interrupted. Continuing with retry immediately.");
                                     }
                                 }
+                            } catch (IOException e) {
+                                System.out.println("Image File could not be accessed, aborting resize.");
                             }
                         }
                     } else {
@@ -145,11 +194,18 @@ public class ImageTools {
         currentlyResizing = false;
     }
 
-    public static java.util.List<String> getResizedImagePaths() throws IOException {
+    public static java.util.List<String> getResizedImagePaths(boolean deleteObsoleteImages) throws IOException {
         List<String> ret = new ArrayList<>();
         File[] images = new File(Config.getLocalResizedImageDir()).listFiles();
         for (File f : images) {
-            ret.add(f.getPath());
+            if (supportedExtensions.contains(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
+                if (new File(f.getPath().replace(Config.getLocalResizedImageDir() + renamedFilePrefix, Config.getLocalImageDir())).exists()) {
+                    ret.add(f.getPath());
+                } else if (deleteObsoleteImages){
+                    f.delete();
+                    System.out.println("Deleted obsolete file " + f.getPath());
+                }
+            }
         }
         return ret;
     }
@@ -250,5 +306,13 @@ public class ImageTools {
 
     public static List<String> getSupportedExtensions() {
         return supportedExtensions;
+    }
+
+    public static String getRenamedFilePrefix() {
+        return renamedFilePrefix;
+    }
+
+    public static void setRenamedFilePrefix(String renamedFilePrefix) {
+        ImageTools.renamedFilePrefix = renamedFilePrefix;
     }
 }

@@ -26,7 +26,7 @@ public class ConfigUpdater implements Runnable {
                 //TODO: Config updaten
                 ImageTools.resizeAllImages(false);
                 Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                Config.getImageService().setImages(ImageTools.getResizedImagePaths()); //Set max thread priority while updating the ImageService List
+                Config.getImageService().setImages(ImageTools.getResizedImagePaths(false)); //Set max thread priority while updating the ImageService List
                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             }
         } catch (InterruptedException e) {
@@ -43,5 +43,11 @@ public class ConfigUpdater implements Runnable {
             t.start();
         }
         return t;
+    }
+
+    public void setThreadPriority(int i) {
+        if (i >= Thread.MIN_PRIORITY && i <= Thread.MAX_PRIORITY) {
+            Thread.currentThread().setPriority(i);
+        }
     }
 }

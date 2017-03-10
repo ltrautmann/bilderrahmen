@@ -1,6 +1,6 @@
 package com.sabel.bilderrahmen.client.Windows;
 
-import com.sabel.bilderrahmen.client.Test;
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
@@ -82,7 +82,7 @@ public class MainWindow extends JFrame {
                     System.out.println("refreshing config...");
                 } else if (e.getKeyCode() == KeyEvent.VK_F1) {
                     System.out.println("Manual Configuration Edit requested...");
-                    Test.setConfigWindow(new ConfigWindow());
+                    Main.setConfigWindow(new ConfigWindow());
                     MainWindow.this.close();
                 }
             }
@@ -94,7 +94,7 @@ public class MainWindow extends JFrame {
         MainWindow.this.setVisible(false);
         updaterThread.interrupt();
         MainWindow.this.dispose();
-        Test.setMainWindow(null);
+        Main.setMainWindow(null);
         System.out.println("Image Display Window shut down");
 
     }
