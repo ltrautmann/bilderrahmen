@@ -74,45 +74,7 @@ public class ImageTools {
         File imageDir = new File(Config.getLocalImageDir());
         File[] images = imageDir.listFiles();
         System.out.println("Found " + images.length + " files and directories");
-        int width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        System.out.println("Detected screen resolution of " + width + "x" + height);
-        String lastResizedScreenresPath = Config.getLocalResizedImageDir() + "last-resized-screenres.txt";
-        if (new File(lastResizedScreenresPath).exists()) {
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new FileReader(lastResizedScreenresPath));
-                String s = br.readLine();
-                br.close();
-                if (!(width + "x" + height).equals(s)) {
-                    forceResize = true;
-                    System.out.println("Screen resolution at last resize was " + s + ", forcing resize of all images.");
-                    BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
-                    bw.write(width + "x" + height);
-                    bw.flush();
-                    bw.close();
-                } else {
-                    System.out.println("Screen resolution did not change since last resize, not forcing resize on already resized images.");
-                }
-            } catch (FileNotFoundException e) {
-                System.out.println("This should not have happened. YOu are a wizard. You actually deleted a file in the exact split second between checking if it's there and accessing it.");
-            } catch (IOException e) {
-                System.out.println("Could not read screen resolution of last resize or save current screen resolution. Forcing resize. Please check the target directory: " + lastResizedScreenresPath);
-                forceResize = true;
-            }
-        } else {
-            try {
-                forceResize = true;
-                System.out.println("Did not find resolution of previous resize, forcing resize of all images.");
-                BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
-                bw.write(width + "x" + height);
-                bw.flush();
-                bw.close();
-            }catch (IOException e) {
-                System.out.println("Could save current screen resolution. Please check the target directory: " + lastResizedScreenresPath);
-                forceResize = true;
-            }
-        }
+        forceResize = resolutionOfLastResize(forceResize);
         System.out.println("Resizing Images:");
         for (File f : images) {
             String filename = f.getName();
@@ -208,6 +170,49 @@ public class ImageTools {
             }
         }
         return ret;
+    }
+
+    private static boolean resolutionOfLastResize(boolean forceResize){
+        int width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        System.out.println("Detected screen resolution of " + width + "x" + height);
+        String lastResizedScreenresPath = Config.getLocalResizedImageDir() + "last-resized-screenres.txt";
+        if (new File(lastResizedScreenresPath).exists()) {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(lastResizedScreenresPath));
+                String s = br.readLine();
+                br.close();
+                if (!(width + "x" + height).equals(s)) {
+                    forceResize = true;
+                    System.out.println("Screen resolution at last resize was " + s + ", forcing resize of all images.");
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
+                    bw.write(width + "x" + height);
+                    bw.flush();
+                    bw.close();
+                } else {
+                    System.out.println("Screen resolution did not change since last resize, not forcing resize on already resized images.");
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("This should not have happened. YOu are a wizard. You actually deleted a file in the exact split second between checking if it's there and accessing it.");
+            } catch (IOException e) {
+                System.out.println("Could not read screen resolution of last resize or save current screen resolution. Forcing resize. Please check the target directory: " + lastResizedScreenresPath);
+                forceResize = true;
+            }
+        } else {
+            try {
+                forceResize = true;
+                System.out.println("Did not find resolution of previous resize, forcing resize of all images.");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(lastResizedScreenresPath));
+                bw.write(width + "x" + height);
+                bw.flush();
+                bw.close();
+            }catch (IOException e) {
+                System.out.println("Could save current screen resolution. Please check the target directory: " + lastResizedScreenresPath);
+                forceResize = true;
+            }
+        }
+        return forceResize;
     }
 
 

@@ -25,20 +25,23 @@ public class Config {
     private static String localResizedImageDir;
     private static int configUpdateInterval; //seconds
     private static MyAuthenticator webAuth;
+    private static boolean isUnixDevice;
 
     public static void setConfigDefault(){
         System.out.println("Using default paths to save and load config file and images");
         setServer("https://bilderrahmen.cheaterll.de/files/");
-        setDeviceID("testdevice");
+        System.out.println(System.getProperty("os.name"));
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             setLocalConfigDir("D:\\config\\");
             setLocalImageDir("D:\\images\\");
             setLocalResizedImageDir("D:\\images\\resized\\");
         }else {
+            isUnixDevice = true;
             setLocalConfigDir("/home/" + System.getProperty("user.name") + "/config/");
             setLocalImageDir("/home/" + System.getProperty("user.name") + "/images/");
             setLocalResizedImageDir("/home/" + System.getProperty("user.name") + "/images/resized/");
         }
+        setDeviceID("testdevice");
         setConfigUpdateInterval(10);
 
 
@@ -48,8 +51,36 @@ public class Config {
 
     public static void readMAC(){
         try {
-            NetworkInterface network = NetworkInterface.getByInetAddress(InetAddress.getLocalHost());
-            byte[] mac = network.getHardwareAddress();
+            NetworkInterface network = null;
+            byte[] mac = null;
+            if (isUnixDevice){
+                String iface = null;
+                if (iface == null) {
+                    iface = "eth";
+                }else{
+                    iface = "wlan";
+                }
+                int ifacenum = 0;
+                while (mac == null && ifacenum < 10) {
+                    try {
+                        network = NetworkInterface.getByName(iface + ifacenum);
+                        System.out.println("Attempting to read MAC of interface " + iface + ifacenum);
+                       mac = network.getHardwareAddress();
+                    }catch (Exception e){
+                        System.out.println("Unsuccessful, attempting next interface");
+                        ifacenum++;
+                    }
+                    if (mac == null) {
+                        System.out.println("Unsuccessful, attempting next interface");
+                        ifacenum++;
+                    }
+                }
+            }else {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                network = NetworkInterface.getByInetAddress(inetAddress);
+                System.out.println("Reading MAC of interface with IP " + inetAddress.getHostAddress().toString());
+                mac = network.getHardwareAddress();
+            }
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mac.length; i++) {
                 sb.append(String.format("%02X", mac[i]));

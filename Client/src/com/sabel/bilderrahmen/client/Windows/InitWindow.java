@@ -44,7 +44,13 @@ public class InitWindow extends JFrame {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Main.setMainWindow(new MainWindow());
+                if (Config.getImageService().size() == 0) {
+                    System.out.println("No Images found.");
+                    System.out.println("Exiting.");
+                    System.exit(0);
+                } else {
+                    Main.setMainWindow(new MainWindow());
+                }
             } else {
                 //MainWindow.setDisplayImages(false);
                 Main.setConfigWindow(new ConfigWindow());
