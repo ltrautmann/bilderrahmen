@@ -20,28 +20,88 @@ public class Test extends JFrame{
     public Test() throws HeadlessException {
         Container c = getContentPane();
         JTextArea jTextArea = new JTextArea();
+        JProgressBar jProgressBar = new JProgressBar();
+        jProgressBar.setStringPainted(true);
         jTextArea.setWrapStyleWord(true);
         jTextArea.setLineWrap(true);
         DefaultCaret caret = (DefaultCaret)jTextArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         jTextArea.setEditable(false);
         JPanel jPanel = new JPanel(new BorderLayout());
-        jPanel.add(jTextArea);
-        JScrollPane jScrollPane = new JScrollPane(jPanel);
+        JScrollPane jScrollPane = new JScrollPane(jTextArea);
         jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        c.add(jScrollPane);
+        jPanel.add(jProgressBar, BorderLayout.NORTH);
+        jPanel.add(jScrollPane, BorderLayout.CENTER);
+        c.add(jPanel);
         setTitle("Test");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(960, 540);
         setLocationRelativeTo(null);
         setVisible(true);
         try {
-            Logger logger = new Logger(jTextArea);
-            for (int i = 0; i < 51; i++) {
+            Logger logger = new Logger(jTextArea, jProgressBar);
+            for (int i = 0; i < 20; i++) {
+                logger.resetProgressBar(4);
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
                 logger.append("Text" + i + "\n");
-                TimeUnit.MILLISECONDS.sleep(20);
             }
+            TimeUnit.MILLISECONDS.sleep(20);
             logger.append("#####################################################################################################################################################################\n");
+            TimeUnit.MILLISECONDS.sleep(20);
+            /*for (int i = 50; i < 100; i++) {
+                logger.resetProgressBar(4);
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                TimeUnit.MILLISECONDS.sleep(50);
+                logger.updateProgressBar();
+                logger.append("Text" + i + "\n");
+            }*/
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.resetProgressBar(10);
+            logger.append("Testtext");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            TimeUnit.MILLISECONDS.sleep(100);
+            logger.updateProgressBar();
+            logger.append(".");
+            logger.append("\n");
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

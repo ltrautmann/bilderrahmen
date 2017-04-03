@@ -20,23 +20,24 @@ public class Logger {
     private String logFileName;
     private Executor executor;
     private JTextArea jTextArea;
+    private JProgressBar jProgressBar;
 
-    public Logger(JTextArea jTextArea) throws IOException {
+    public Logger(JTextArea jTextArea, JProgressBar jProgressBar) throws IOException {
         String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '-').replace(' ', '_');
         //logFileName = Config.getLocalConfigDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
         //fw = new FileWriter(logFileName);
         this.jTextArea = jTextArea;
+        this.jProgressBar = jProgressBar;
         executor = Executors.newSingleThreadExecutor();
 
     }
 
     public synchronized void append(CharSequence c) {
-        String threadName = Thread.currentThread().getName();
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String out = threadName + "|" + c.toString();
+                    String out = c.toString();
                     //fw.append(out);
                     jTextArea.append(out);
                     System.out.print(out);
@@ -45,5 +46,19 @@ public class Logger {
                 }
             }
         });
+    }
+
+    public synchronized void appendln(CharSequence c){
+        String threadName = Thread.currentThread().getName();
+        append(threadName + "|" + c);
+    }
+
+    public synchronized void resetProgressBar(int maxVal){
+        jProgressBar.setValue(0);
+        jProgressBar.setMaximum(maxVal);
+    }
+
+    public synchronized void updateProgressBar(){
+        jProgressBar.setValue(jProgressBar.getValue() + 1);
     }
 }
