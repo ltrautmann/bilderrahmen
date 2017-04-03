@@ -3,7 +3,6 @@ package com.sabel.bilderrahmen.client;
 import com.sabel.bilderrahmen.client.utils.Logger.Logger;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by you shall not pass on 10.03.2017.
  */
-public class Test extends JFrame{
+public class Test extends JFrame {
     public static void main(String[] args) {
         new Test();
     }
@@ -24,7 +23,7 @@ public class Test extends JFrame{
         jProgressBar.setStringPainted(true);
         jTextArea.setWrapStyleWord(true);
         jTextArea.setLineWrap(true);
-        DefaultCaret caret = (DefaultCaret)jTextArea.getCaret();
+        DefaultCaret caret = (DefaultCaret) jTextArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         jTextArea.setEditable(false);
         JPanel jPanel = new JPanel(new BorderLayout());
@@ -67,40 +66,17 @@ public class Test extends JFrame{
                 logger.updateProgressBar();
                 logger.append("Text" + i + "\n");
             }*/
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.resetProgressBar(10);
-            logger.append("Testtext");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            TimeUnit.MILLISECONDS.sleep(100);
-            logger.updateProgressBar();
-            logger.append(".");
-            logger.append("\n");
+            for (int i = 0; i < 10; i++) {
+                TimeUnit.MILLISECONDS.sleep(100);
+                logger.resetProgressBar(10);
+                logger.append("Testtext" + i);
+                for (int j = 0; j < 10; j++) {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                    logger.updateProgressBar();
+                    logger.append(".");
+                }
+                logger.append("\n");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
