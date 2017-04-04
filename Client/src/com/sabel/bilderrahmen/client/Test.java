@@ -78,9 +78,9 @@ public class Test extends JFrame {
                 logger.append("\n");
             }
 
-        } catch (IOException e) {
+        } /*catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } */catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
