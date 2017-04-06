@@ -7,8 +7,9 @@ import javax.swing.JTextArea;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -16,9 +17,9 @@ import java.util.concurrent.Executors;
 public class Logger {
     private FileWriter fw;
     private String logFile;
-    private Executor loggerExecutor;
-    private Executor progressBarExecutor;
-    private Executor fileWriterExecutor;
+    private ExecutorService loggerExecutor;
+    private ExecutorService progressBarExecutor;
+    private ExecutorService fileWriterExecutor;
     private JTextArea jTextArea;
     private JProgressBar jProgressBar;
     private boolean wasLastCharNewLine = true;
@@ -63,6 +64,15 @@ public class Logger {
                         });
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                }
+                if (Thread.interrupted()) {
+                    if (fw != null) {
+                        try {
+                            fw.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -134,5 +144,16 @@ public class Logger {
                 }
             }
         });
+    }
+
+    public synchronized void dispose() {
+        try {
+            loggerExecutor.shutdownNow();
+            fileWriterExecutor.shutdownNow();
+            fw.close();
+            progressBarExecutor.shutdownNow();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

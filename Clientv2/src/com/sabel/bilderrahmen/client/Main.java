@@ -5,6 +5,7 @@ import com.sabel.bilderrahmen.client.windows.InitWindow;
 import com.sabel.bilderrahmen.client.windows.MainWindow;
 
 import javax.swing.SwingUtilities;
+import java.util.Set;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -51,6 +52,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        start();
+    }
+
+    private static void start(){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -66,14 +71,35 @@ public class Main {
                 setInitWindow(null);
                 setConfigWindow(null);
                 setMainWindow(null);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Main.initWindow = new InitWindow();
+                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+                for (Thread t : threadArray) {
+                    if (t != Thread.currentThread()) {
+                        t.interrupt();
                     }
-                });
+                }
+                Main.start();
             }
         });
 
+    }
+
+    public static void quit(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setInitWindow(null);
+                setConfigWindow(null);
+                setMainWindow(null);
+                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+                for (Thread t : threadArray) {
+                    if (t != Thread.currentThread()) {
+                        t.interrupt();
+                    }
+                }
+                System.exit(0);
+            }
+        });
     }
 }
