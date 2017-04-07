@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client.utils.logger;
 
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.config.Config;
 
 import javax.swing.JProgressBar;
@@ -24,6 +25,9 @@ public class Logger {
     private JProgressBar jProgressBar;
     private boolean wasLastCharNewLine = true;
     private boolean useLogFile = false;
+    public static final String NEWLINE = "\n";
+    public static final String LINE_SEPARATOR = "###############################################################################################################";
+    public static final String EMPTY = "";
 
     public Logger(JTextArea jTextArea, JProgressBar jProgressBar) {
         this.jTextArea = jTextArea;
@@ -32,7 +36,7 @@ public class Logger {
         this.progressBarExecutor = Executors.newSingleThreadExecutor();
     }
 
-    public void initLogFile() throws IOException {
+    public void initLogFile() {
         String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '-').replace(' ', '_');
         logFile = Config.getLocalConfigDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
         this.fileWriterExecutor = Executors.newSingleThreadExecutor();
@@ -41,14 +45,17 @@ public class Logger {
             public void run() {
                 try {
                     fw = new FileWriter(logFile);
+                    useLogFile = true;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    appendln("Logger could not initialize FileWriter for Log File. Continuing without Log File.");
+                    useLogFile = false;
                 }
             }
         });
-        new Thread(new Runnable() {
+        Thread flushFileWriter = new Thread(new Runnable() {
             @Override
             public void run() {
+                Main.threadList.add(Thread.currentThread());
                 while (!Thread.interrupted()) {
                     try {
                         Thread.sleep(500);
@@ -58,25 +65,20 @@ public class Logger {
                                 try {
                                     fw.flush();
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    appendln("WARNING: Could not flush to Log File.");
                                 }
                             }
                         });
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        dispose();
+                        System.out.println("Logger finished exiting");
                     }
                 }
-                if (Thread.interrupted()) {
-                    if (fw != null) {
-                        try {
-                            fw.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                dispose();
             }
         });
+        flushFileWriter.setName("Flush-FileWriter");
+        flushFileWriter.start();
     }
 
     public synchronized void append(CharSequence c) {
@@ -89,11 +91,11 @@ public class Logger {
                     out = threadName + "|" + out;
                 }
                 wasLastCharNewLine = false;
-                if (out.charAt(out.length() - 1) == "\n".charAt(0)) {
+                if (out.charAt(out.length() - 1) == NEWLINE.charAt(0)) {
                     wasLastCharNewLine = true;
-                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + threadName + "|") + "\n";
+                    out = out.substring(0, out.length() - 1).replace(NEWLINE, NEWLINE + threadName + "|") + NEWLINE;
                 } else {
-                    out = out.replace("\n", "\n" + threadName + "|");
+                    out = out.replace(NEWLINE, NEWLINE + threadName + "|");
                 }
                 if (useLogFile) {
                     String finalOut = out;
@@ -103,22 +105,29 @@ public class Logger {
                             try {
                                 fw.append(finalOut);
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                String s = "WARNING: Could not write to Log File!\n";
+                                if (!wasLastCharNewLine) {
+                                    s = NEWLINE + s;
+                                }
+                                jTextArea.append(s);
+                                System.out.println(s);
+                                jTextArea.append(finalOut);
+                                System.out.println(finalOut);
                             }
                         }
                     });
                 }
                 jTextArea.append(out);
-                System.out.println(out);
+                System.out.print(out);
             }
         });
     }
 
     public synchronized void appendln(CharSequence c) {
         if (!wasLastCharNewLine) {
-            c = "\n" + c;
+            c = NEWLINE + c;
         }
-        append(c + "\n");
+        append(c + NEWLINE);
     }
 
     public synchronized void resetProgressBar(int maxVal) {
@@ -147,13 +156,14 @@ public class Logger {
     }
 
     public synchronized void dispose() {
+        System.out.println("Logger is exiting.");
         try {
             loggerExecutor.shutdownNow();
             fileWriterExecutor.shutdownNow();
-            fw.close();
             progressBarExecutor.shutdownNow();
+            fw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("FileWriter for Log File could not be correctly closed. This doesn't matter as it will soon be dead anyway.");
         }
     }
 }
