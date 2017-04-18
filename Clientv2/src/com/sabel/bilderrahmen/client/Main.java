@@ -1,11 +1,13 @@
 package com.sabel.bilderrahmen.client;
 
+import com.sabel.bilderrahmen.client.utils.logger.Logger;
 import com.sabel.bilderrahmen.client.windows.ConfigWindow;
 import com.sabel.bilderrahmen.client.windows.InitWindow;
 import com.sabel.bilderrahmen.client.windows.MainWindow;
 
 import javax.swing.SwingUtilities;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -14,6 +16,7 @@ public class Main {
     private static InitWindow initWindow;
     private static MainWindow mainWindow;
     private static ConfigWindow configWindow;
+    private static List<Thread> threadList;
 
     public static InitWindow getInitWindow() {
         return initWindow;
@@ -52,10 +55,11 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        threadList = new ArrayList<>();
         start();
     }
 
-    private static void start(){
+    private static void start() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -64,42 +68,45 @@ public class Main {
         });
     }
 
-    public static void restart(){
+    public static void restart() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                setInitWindow(null);
-                setConfigWindow(null);
-                setMainWindow(null);
-                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-                for (Thread t : threadArray) {
-                    if (t != Thread.currentThread()) {
-                        t.interrupt();
-                    }
-                }
+                exit();
                 Main.start();
             }
         });
 
     }
 
-    public static void quit(){
-        new Thread(new Runnable() {
+    private static synchronized void exit() {
+        try {
+            Logger.appendln("Interrupting Threads...", Logger.LOGTYPE_INFO);
+            for (Thread t : threadList) {
+                t.interrupt();
+            }
+            Logger.appendln("Bye!", Logger.LOGTYPE_INFO);
+            Logger.dispose();
+            Logger.logProgramExit("Waiting for threads to finish.", Logger.LOGTYPE_INFO);
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            Logger.logProgramExit("You are a wizard! You interrupted the program in the few Milliseconds it needs to exit!", Logger.LOGTYPE_FATAL);
+        } finally {
+            setInitWindow(null);
+            setConfigWindow(null);
+            setMainWindow(null);
+        }
+    }
+
+    public static synchronized void quit() {
+        Thread quit = new Thread(new Runnable() {
             @Override
             public void run() {
-                setInitWindow(null);
-                setConfigWindow(null);
-                setMainWindow(null);
-                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-                for (Thread t : threadArray) {
-                    if (t != Thread.currentThread()) {
-                        t.interrupt();
-                    }
-                }
+                exit();
                 System.exit(0);
             }
         });
+        quit.setName("QUIT");
+        quit.start();
     }
 }

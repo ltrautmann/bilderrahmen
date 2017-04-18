@@ -7,121 +7,161 @@ import javax.swing.JTextArea;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Created by CheaterLL on 05.04.2017.
  */
 public class Logger {
-    private FileWriter fw;
-    private String logFile;
-    private ExecutorService loggerExecutor;
-    private ExecutorService progressBarExecutor;
-    private ExecutorService fileWriterExecutor;
-    private JTextArea jTextArea;
-    private JProgressBar jProgressBar;
-    private boolean wasLastCharNewLine = true;
-    private boolean useLogFile = false;
+    private static FileWriter fw;
+    private static String logFile;
+    private static ThreadPoolExecutor loggerExecutor;
+    private static ThreadPoolExecutor progressBarExecutor;
+    private static ThreadPoolExecutor fileWriterExecutor;
+    private static long loggerThreadCount;
+    private static long progressBarThreadCount;
+    private static long fileWriterThreadCount;
+    private static JTextArea jTextArea;
+    private static JProgressBar jProgressBar;
+    private static boolean wasLastCharNewLine = true;
+    private static boolean useLogFile = false;
+    private static Thread flushFileWriter;
+    public static String LOGTYPE_INFO = "INFO";
+    public static String LOGTYPE_WARNING = "WARNING";
+    public static String LOGTYPE_ERROR = "ERROR";
+    public static String LOGTYPE_FATAL = "FATAL";
 
-    public Logger(JTextArea jTextArea, JProgressBar jProgressBar) {
-        this.jTextArea = jTextArea;
-        this.jProgressBar = jProgressBar;
-        this.loggerExecutor = Executors.newSingleThreadExecutor();
-        this.progressBarExecutor = Executors.newSingleThreadExecutor();
+    public static synchronized void initLogger(JTextArea jTextArea, JProgressBar jProgressBar) {
+        Logger.jTextArea = jTextArea;
+        Logger.jProgressBar = jProgressBar;
+        Logger.loggerExecutor = new ThreadPoolExecutor(1, 1, 5L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Logger" + ++loggerThreadCount);
+            }
+        });
+        Logger.progressBarExecutor = new ThreadPoolExecutor(1, 1, 5L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "ProgressBar" + ++progressBarThreadCount);
+            }
+        });
+        Logger.appendln("Logging activated", LOGTYPE_INFO);
     }
 
-    public void initLogFile() throws IOException {
+    public static void initLogFile() {
         String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '-').replace(' ', '_');
-        logFile = Config.getLocalConfigDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
-        this.fileWriterExecutor = Executors.newSingleThreadExecutor();
+        logFile = Config.getLocalLogDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
+        fileWriterExecutor = new ThreadPoolExecutor(1, 1, 5L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "LogfileWriter" + ++fileWriterThreadCount);
+            }
+        });
         fileWriterExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     fw = new FileWriter(logFile);
+                    useLogFile = true;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    appendln("", LOGTYPE_ERROR);
                 }
             }
         });
-        new Thread(new Runnable() {
+        flushFileWriter = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (!Thread.interrupted()) {
                     try {
                         Thread.sleep(500);
-                        fileWriterExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    fw.flush();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                        if (!fileWriterExecutor.isShutdown()) {
+                            fileWriterExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        fw.flush();
+                                    } catch (IOException e) {
+                                        useLogFile = false;
+                                        Logger.appendln("Failed to write to Log File at " + logFile, LOGTYPE_ERROR);
+                                        useLogFile = true;
+                                    }
                                 }
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (Thread.interrupted()) {
-                    if (fw != null) {
-                        try {
-                            fw.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            });
                         }
+                    } catch (InterruptedException e) {
+                        logProgramExit("Thread was interrupted, stopping use of LogFile.", LOGTYPE_INFO);
+                        closeFW();
                     }
                 }
+                closeFW();
             }
         });
+        flushFileWriter.setName("LogfileWriter");
+        flushFileWriter.start();
+        Logger.appendln("Using logfile at \"" + logFile + "\".", LOGTYPE_INFO);
     }
 
-    public synchronized void append(CharSequence c) {
+    private static synchronized void closeFW() {
+        useLogFile = false;
+        if (fw != null) {
+            try {
+                fw.close();
+                logProgramExit("Successfully closed logfile.", LOGTYPE_INFO);
+            } catch (IOException e) {
+                logProgramExit("Could not close Logfile. It will be forcibly closed later, but may be missing several lines.", LOGTYPE_WARNING);
+            }
+        }
+        fileWriterExecutor.shutdownNow();
+    }
+
+    public static synchronized void append(CharSequence c, String logtype) {
         String threadName = Thread.currentThread().getName();
         loggerExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 String out = c.toString();
+                String prefix = logtype + " (" + threadName + "): ";
+
                 if (wasLastCharNewLine) {
-                    out = threadName + "|" + out;
+                    out = prefix + out;
                 }
                 wasLastCharNewLine = false;
                 if (out.charAt(out.length() - 1) == "\n".charAt(0)) {
                     wasLastCharNewLine = true;
-                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + threadName + "|") + "\n";
+                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + prefix + "|") + "\n";
                 } else {
-                    out = out.replace("\n", "\n" + threadName + "|");
+                    out = out.replace("\n", "\n" + prefix + "|");
                 }
                 if (useLogFile) {
                     String finalOut = out;
-                    fileWriterExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                fw.append(finalOut);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                    if (!fileWriterExecutor.isShutdown()) {
+                        fileWriterExecutor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    fw.append(finalOut);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 jTextArea.append(out);
-                System.out.println(out);
+                System.out.print(out);
             }
         });
     }
 
-    public synchronized void appendln(CharSequence c) {
+    public static synchronized void appendln(CharSequence c, String logtype) {
         if (!wasLastCharNewLine) {
             c = "\n" + c;
         }
-        append(c + "\n");
+        append(c + "\n", logtype);
     }
 
-    public synchronized void resetProgressBar(int maxVal) {
+    public static synchronized void resetProgressBar(int maxVal) {
         progressBarExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +175,7 @@ public class Logger {
         });
     }
 
-    public synchronized void updateProgressBar() {
+    public static synchronized void updateProgressBar() {
         progressBarExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -146,14 +186,23 @@ public class Logger {
         });
     }
 
-    public synchronized void dispose() {
-        try {
-            loggerExecutor.shutdownNow();
-            fileWriterExecutor.shutdownNow();
-            fw.close();
-            progressBarExecutor.shutdownNow();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static synchronized void dispose() throws InterruptedException {
+        if (useLogFile) {
+            flushFileWriter.interrupt();
         }
+        Thread.sleep(50);
+        logProgramExit("Logger exiting.", LOGTYPE_INFO);
+        loggerExecutor.shutdownNow();
+        progressBarExecutor.shutdownNow();
+    }
+
+    public static synchronized void logProgramExit(CharSequence c, String logtype) {
+        String out = c.toString();
+        String prefix = logtype + " (" + Thread.currentThread().getName() + "): ";
+        out = prefix + out;
+        if (!wasLastCharNewLine) {
+            out = "\n" + out;
+        }
+        System.out.println(out);
     }
 }
