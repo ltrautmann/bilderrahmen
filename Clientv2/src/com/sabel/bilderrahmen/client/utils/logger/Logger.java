@@ -126,12 +126,12 @@ public class Logger {
                 if (wasLastCharNewLine) {
                     out = prefix + out;
                 }
-                wasLastCharNewLine = false;
                 if (out.charAt(out.length() - 1) == "\n".charAt(0)) {
                     wasLastCharNewLine = true;
-                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + prefix + "|") + "\n";
+                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + prefix) + "\n";
                 } else {
-                    out = out.replace("\n", "\n" + prefix + "|");
+                    wasLastCharNewLine = false;
+                    out = out.replace("\n", "\n" + prefix);
                 }
                 if (useLogFile) {
                     String finalOut = out;
@@ -155,35 +155,36 @@ public class Logger {
     }
 
     public static synchronized void appendln(CharSequence c, String logtype) {
-        if (!wasLastCharNewLine) {
-            c = "\n" + c;
-        }
         append(c + "\n", logtype);
     }
 
     public static synchronized void resetProgressBar(int maxVal) {
-        progressBarExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                jProgressBar.setValue(0);
-                if (maxVal > 0) {
-                    jProgressBar.setMaximum(maxVal);
-                } else {
-                    jProgressBar.setMaximum(1);
+        if (!progressBarExecutor.isShutdown()) {
+            progressBarExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    jProgressBar.setValue(0);
+                    if (maxVal > 0) {
+                        jProgressBar.setMaximum(maxVal);
+                    } else {
+                        jProgressBar.setMaximum(1);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public static synchronized void updateProgressBar() {
-        progressBarExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (jProgressBar.getValue() < jProgressBar.getMaximum()) {
-                    jProgressBar.setValue(jProgressBar.getValue() + 1);
+        if (!progressBarExecutor.isShutdown()) {
+            progressBarExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (jProgressBar.getValue() < jProgressBar.getMaximum()) {
+                        jProgressBar.setValue(jProgressBar.getValue() + 1);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public static synchronized void dispose() throws InterruptedException {

@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.client.windows;
 
 import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.config.Config;
+import com.sabel.bilderrahmen.client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 
 import javax.swing.JFrame;
@@ -31,9 +32,10 @@ public class InitWindow extends JFrame {
     private void init() {
         initComponents();
         initEvents();
-        setSize(960, 540);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("Initializing");
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setSize(960, 540);
+        setLocationRelativeTo(null);
         setVisible(true);
         Thread init = new Thread(new Runnable() {
             @Override
@@ -48,6 +50,9 @@ public class InitWindow extends JFrame {
                 Logger.appendln("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
+                //TODO:CONFIG
+                ImageTools.resizeAllImages(false);
+
             }
         });
         init.setName("INIT");
