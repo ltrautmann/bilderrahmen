@@ -14,6 +14,7 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -39,7 +40,7 @@ public class InitWindow extends JFrame {
             @Override
             public void run() {
                 Logger.initLogger(jTextArea, jProgressBar);
-                Config.setConfigDefault();
+                Config.init();
                 Logger.initLogFile();
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 Logger.appendln("Raspi Bilderrahmen", Logger.LOGTYPE_INFO);
@@ -48,9 +49,14 @@ public class InitWindow extends JFrame {
                 Logger.appendln("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
+                if (Config.testServerConnection()) {
+
+                } else {
+                    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"!", Logger.LOGTYPE_ERROR);
+                }
             }
         });
-        init.setName("INIT");
+        init.setName("INITIALIZING");
         init.start();
     }
 

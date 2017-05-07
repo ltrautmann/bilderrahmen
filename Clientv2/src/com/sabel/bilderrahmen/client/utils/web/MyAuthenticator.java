@@ -21,4 +21,12 @@ public class MyAuthenticator extends Authenticator {
         MyAuthenticator.username = username;
         MyAuthenticator.password = password;
     }
+
+    public static void setUsername(char[] username) {
+        MyAuthenticator.username = username;
+    }
+
+    public static void setPassword(char[] password) {
+        MyAuthenticator.password = password;
+    }
 }

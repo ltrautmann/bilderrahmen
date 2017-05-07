@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.client;
 
+import com.sabel.bilderrahmen.client.utils.config.Config;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 import com.sabel.bilderrahmen.client.windows.ConfigWindow;
 import com.sabel.bilderrahmen.client.windows.InitWindow;
@@ -56,7 +57,16 @@ public class Main {
 
     public static void main(String[] args) {
         threadList = new ArrayList<>();
-        start();
+        if (args != null) {
+            String s = args[0];
+            if (s.equals("-h") || s.equals("--help") || s.equals("/?") || s.equals("/h") || s.equals("/help")) {
+                printHelp();
+                System.exit(0);
+            } else {
+                Config.passArgs(args);
+            }
+        }
+        Main.start();
     }
 
     private static void start() {
@@ -69,14 +79,27 @@ public class Main {
     }
 
     public static void restart() {
-        new Thread(new Runnable() {
+        Thread restart = new Thread(new Runnable() {
             @Override
             public void run() {
-                exit();
+                Main.exit();
                 Main.start();
             }
         });
+        restart.setName("RESTARTING");
+        restart.start();
+    }
 
+    public static synchronized void quit() {
+        Thread quit = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Main.exit();
+                System.exit(0);
+            }
+        });
+        quit.setName("QUITTING");
+        quit.start();
     }
 
     private static synchronized void exit() {
@@ -98,15 +121,46 @@ public class Main {
         }
     }
 
-    public static synchronized void quit() {
-        Thread quit = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                exit();
-                System.exit(0);
-            }
-        });
-        quit.setName("QUIT");
-        quit.start();
+    private static void printHelp() {
+        System.out.print(
+                "NAME\n" +
+                "\t\tbilderrahmen\n" +
+                "\n" +
+                "SYNOPSIS\n" +
+                "\t\tbilderrahmen [-h|--help|/h|/help|/?]\n" +
+                "\t\tbilderrahmen [-s|--server|/s|/server \"server url\"] [-u|--user|/u|/user \"server login name\"] [-p|--password|/p|/password \"server login password\"] [-n|--device-name|/n|/device-name \"device name\"] [-d|--directory|/d|/directory \"working directory\"]\n" +
+                "\n" +
+                "DESCRIPTION\n" +
+                "\tI4A Bilderrahmen-HTML Project\n" +
+                "\n" +
+                "\tOPTIONS\n" +
+                "\t\t-h|--help|/h|/help|/?\n" +
+                "\t\t\t\tDisplays this help page\n" +
+                "\n" +
+                "\t\t-s|--server|/s|/server \"server url\"\n" +
+                "\t\t\t\tThe server to pull configuration and images from\n" +
+                "\t\t\t\tThe default is \"https://bilderrahmen.cheaterll.de/files/\"\n" +
+                "\n" +
+                "\t\t-u|--user|/u|/user \"server login name\"\n" +
+                "\t\t\t\tThe login name for the server\n" +
+                "\n" +
+                "\t\t-p|--password|/p|/password \"server login password\"\n" +
+                "\t\t\t\tThe login password for the server\n" +
+                "\n" +
+                "\t\t-n|--device-name|/n|/device-name \"device name\"\n" +
+                "\t\t\t\tThe name of this device\n" +
+                "\n" +
+                "\t\t-d|--directory|/d|/directory \"working directory\"\n" +
+                "\t\t\t\tThe directory to use for storing configuration files, images and logs\n" +
+                "\t\t\t\tThe windows default is \"%LOCALAPPDATA%\\\"\n" +
+                "\t\t\t\tThe linux default is \"/home/[username]/\"(or \"/root/\" for the root user)\n" +
+                "\n" +
+                "BUGS\n" +
+                "\t\tReport bugs to info@cheaterll.de\n" +
+                "\n" +
+                "AUTHOR\n" +
+                "\t\tRobin Schippan\n" +
+                "\t\tLukas Trautmann\n"
+        );
     }
 }

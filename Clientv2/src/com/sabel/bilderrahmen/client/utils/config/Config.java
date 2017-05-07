@@ -1,9 +1,12 @@
 package com.sabel.bilderrahmen.client.utils.config;
 
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
+import com.sabel.bilderrahmen.client.utils.web.FileDownloader;
 import com.sabel.bilderrahmen.client.utils.web.MyAuthenticator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.*;
 
 /**
@@ -13,44 +16,48 @@ public class Config {
 
     private static String server;
     private static String deviceID;
+    private static String devicename;
     private static String MACAddress;
     private static String localConfigDir;
     private static String localImageDir;
     private static String localResizedDir;
     private static String localLogDir;
     private static String localRootDir;
+    private static String remoteImageDir;
+    private static String remoteConfigDir;
+    private static String remoteConfigFile;
     private static int configUpdateInterval;
-    private static boolean isUnixDevice;
+    private static boolean unixDevice;
     private static MyAuthenticator webAuth;
+    private static String[] args;
 
-    public static void setConfigDefault() {
+    public static void init() {
         Logger.appendln("Using default paths to load and save config file, images and logs.", Logger.LOGTYPE_INFO);
         setServer("https://bilderrahmen.cheaterll.de/files/");
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            setLocalRootDir(System.getenv("LOCALAPPDATA") + "\\bilderrahmen\\");
-            isUnixDevice = false;
             Logger.appendln("Detected operating system " + System.getProperty("os.name") + ". Using Windows paths.", Logger.LOGTYPE_INFO);
+            unixDevice = false;
+            setLocalRootDir(System.getenv("LOCALAPPDATA") + "\\bilderrahmen\\");
             Logger.appendln("Using directory root \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-            setLocalConfigDir(getLocalRootDir() + "config\\");
-            setLocalLogDir(getLocalRootDir() + "logs\\");
-            setLocalImageDir(getLocalRootDir() + "images\\");
-            setLocalResizedDir(getLocalRootDir() + "images\\resized\\");
         } else {
             Logger.appendln("Detected operating system " + System.getProperty("os.name") + ". Using Linux paths.", Logger.LOGTYPE_INFO);
-            isUnixDevice = true;
+            unixDevice = true;
             String uname = System.getProperty("user.name");
-            setLocalRootDir("/home/" + uname + "/bilderrahmen");
             if (uname.toLowerCase().equals("root")) {
-                setLocalRootDir("/root/bilderrahmen");
+                setLocalRootDir("/root/bilderrahmen/");
+            } else {
+                setLocalRootDir("/home/" + uname + "/bilderrahmen/");
             }
             Logger.appendln("Using directory root \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-            setLocalConfigDir(getLocalRootDir() + "/config/");
-            setLocalLogDir(getLocalRootDir() + "/config/logs/");
-            setLocalImageDir(getLocalRootDir() + "/images/");
-            setLocalResizedDir(getLocalRootDir() + "/images/resized/");
         }
-        setDeviceID("testdev");
+        setDevicename("testdevice");
+        setDeviceID();
+        setRemoteConfigDir("config/");
+        setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
+        setRemoteImageDir("images/");
         setConfigUpdateInterval(15);
+        setWebAuth(new char[]{'g','b','s'}, new char[]{'K','e','n','n','w','o','r','t','0'});
+        interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
             Logger.appendln("Directory \"" + getLocalConfigDir() + "\" did not exist yet and was created.", Logger.LOGTYPE_INFO);
         }
@@ -65,12 +72,92 @@ public class Config {
         }
     }
 
+    private static void interpretCMDArgs() {
+        int count = 0;
+        if (args != null) {
+            for (int i = 0; i + 1 < args.length; i += 2) {
+                switch (args[i]) {
+                    case "-s":
+                    case "--server":
+                    case "/s":
+                    case "/server":
+                        setServer(args[i + 1]);
+                        break;
+                    case "-u":
+                    case "--user":
+                    case "/u":
+                    case "/user":
+                        MyAuthenticator.setUsername(args[i + 1].toCharArray());
+                        break;
+                    case "-p":
+                    case "--password":
+                    case "/p":
+                    case "/password":
+                        MyAuthenticator.setPassword(args[i + 1].toCharArray());
+                        break;
+                    case "-n":
+                    case "--device-name":
+                    case "/n":
+                    case "/device-name":
+                        setDevicename(args[i + 1]);
+                        setDeviceID();
+                        break;
+                    case "-d":
+                    case "--directory":
+                    case "/d":
+                    case "/directory":
+                        setLocalLogDir(args[i + 1]);
+                        break;
+                }
+
+            }
+        }
+    }
+
+    public static boolean testServerConnection() {
+        HttpURLConnection huc = null;
+        try {
+            huc = (HttpURLConnection) new URL(Config.getServer()).openConnection();
+            huc.setRequestMethod("HEAD");
+            return huc.getResponseCode() == HttpURLConnection.HTTP_OK;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static void readServerConfig() throws FileNotFoundException {
+        try {
+            if (FileDownloader.getConfig()) {
+
+            } else {
+                Logger.appendln("Config file could not be fetched from server at \"" + getServer() + getRemoteConfigFile() + "\". Registering client and attempting to fetch default config file.", Logger.LOGTYPE_WARNING);
+                if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "defualt.xml")) {
+
+                } else {
+                    Logger.appendln("Default config file could not be fetched from server at \"" + getServer() + getRemoteConfigDir() + "config.xml\".", Logger.LOGTYPE_ERROR);
+                }
+            }
+        } catch (IOException e) {
+            Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
+        }
+        if (new File(getLocalConfigDir() + getDeviceID() + ".xml").exists()) {
+
+        } else {
+            Logger.appendln("Config file was not found in local config directory. Searching for default configuration file in local config directory.", Logger.LOGTYPE_WARNING);
+            if (new File(getLocalConfigDir() + "default.xml").exists()) {
+
+            } else {
+                Logger.appendln("Default config file was not found in local config directory. ", Logger.LOGTYPE_FATAL);
+                Logger.appendln("", Logger.LOGTYPE_FATAL);
+            }
+        }
+    }
 
     private static void readMAC() {
         try {
             NetworkInterface network = null;
             byte[] mac = null;
-            if (isUnixDevice) {
+            if (unixDevice) {
                 String iface = null;
                 if (iface == null) {
                     iface = "eth";
@@ -139,6 +226,16 @@ public class Config {
 
     public static void setLocalRootDir(String localRootDir) {
         Config.localRootDir = localRootDir;
+        String directorySeparator;
+        if (isUnixDevice()) {
+            directorySeparator = "/";
+        } else {
+            directorySeparator = "\\";
+        }
+        setLocalConfigDir(getLocalRootDir() + "config" + directorySeparator);
+        setLocalLogDir(getLocalRootDir() + "config" + directorySeparator + "logs" + directorySeparator);
+        setLocalImageDir(getLocalRootDir() + "images" + directorySeparator);
+        setLocalResizedDir(getLocalRootDir() + "images" + directorySeparator + "resized" + directorySeparator);
     }
 
     public static String getLocalConfigDir() {
@@ -200,13 +297,13 @@ public class Config {
         return deviceID;
     }
 
-    public static void setDeviceID(String deviceName) {
+    public static void setDeviceID() {
         if (MACAddress == null) readMAC();
-        deviceID = deviceName + "-" + MACAddress;
+        deviceID = getDevicename() + "-" + MACAddress;
     }
 
-    public static boolean isIsUnixDevice() {
-        return isUnixDevice;
+    public static boolean isUnixDevice() {
+        return unixDevice;
     }
 
     public static MyAuthenticator getWebAuth() {
@@ -215,5 +312,41 @@ public class Config {
 
     public static void setWebAuth(char[] username, char[] password) {
         MyAuthenticator.setPasswordAuthentication(username, password);
+    }
+
+    public static String getDevicename() {
+        return devicename;
+    }
+
+    public static void setDevicename(String devicename) {
+        Config.devicename = devicename;
+    }
+
+    public static String getRemoteConfigFile() {
+        return remoteConfigFile;
+    }
+
+    public static void setRemoteConfigFile(String remoteConfigFile) {
+        Config.remoteConfigFile = remoteConfigFile;
+    }
+
+    public static String getRemoteImageDir() {
+        return remoteImageDir;
+    }
+
+    public static void setRemoteImageDir(String remoteImageDir) {
+        Config.remoteImageDir = remoteImageDir;
+    }
+
+    public static String getRemoteConfigDir() {
+        return remoteConfigDir;
+    }
+
+    public static void setRemoteConfigDir(String remoteConfigDir) {
+        Config.remoteConfigDir = remoteConfigDir;
+    }
+
+    public static void passArgs(String[] args) {
+        Config.args = args;
     }
 }
