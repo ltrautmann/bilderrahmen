@@ -15,7 +15,6 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 /**
  * Created by CheaterLL on 05.04.2017.
