@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.client.windows;
 
 import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.config.Config;
+import com.sabel.bilderrahmen.client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 
 import javax.swing.JFrame;
@@ -32,9 +33,10 @@ public class InitWindow extends JFrame {
     private void init() {
         initComponents();
         initEvents();
-        setSize(960, 540);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle("Initializing");
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setSize(960, 540);
+        setLocationRelativeTo(null);
         setVisible(true);
         Thread init = new Thread(new Runnable() {
             @Override
@@ -54,6 +56,7 @@ public class InitWindow extends JFrame {
                 } else {
                     Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"!", Logger.LOGTYPE_ERROR);
                 }
+                ImageTools.resizeAllImages(false);
             }
         });
         init.setName("INITIALIZING");
