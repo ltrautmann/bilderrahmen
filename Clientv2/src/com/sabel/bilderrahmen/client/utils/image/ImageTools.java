@@ -61,6 +61,7 @@ public class ImageTools {
                         while (tries < maxTries && !Thread.interrupted()) {
                             try {
                                 ImageIO.write(resize(ImageIO.read(f), !multistepResize), fileExtension, new File(resizedPath));
+                                ImageService.accessImage(resizedPath, resize((BufferedImage) ImageService.accessImage(f.getPath(), null, null), !multistepResize), fileExtension);
                                 resizedCount++;
                                 tries += maxTries;
                             } catch (OutOfMemoryError e) {

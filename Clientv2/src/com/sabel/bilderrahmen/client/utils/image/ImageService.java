@@ -1,9 +1,8 @@
 package com.sabel.bilderrahmen.client.utils.image;
 
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
-
 import javax.imageio.ImageIO;
 import java.awt.Image;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,26 +13,26 @@ import java.util.Random;
  * Created by CheaterLL on 18.04.2017.
  */
 public class ImageService {
-    private List<String> images;
+    private List<SavedImage> images;
     private Random random;
 
     public ImageService() {
         images = new ArrayList<>();
     }
 
-    public ImageService(List<String> imagePaths) {
+    public ImageService(List<SavedImage> imagePaths) {
         this.images = imagePaths;
     }
 
-    public void addImage(String imagePath) {
-        images.add(imagePath);
+    public void addImage(SavedImage image) {
+        images.add(image);
     }
 
-    public Image getImage(int index) {
-        return (index >= 0 && index < images.size()) ? readImage(images.get(index)) : null;
+    public SavedImage getImage(int index) throws IOException {
+        return (index >= 0 && index < images.size()) ? images.get(index) : null;
     }
 
-    public int indexOfImage(Image i) {
+    public int indexOfImage(SavedImage i) {
         return images.indexOf(i);
     }
 
@@ -41,44 +40,37 @@ public class ImageService {
         images.remove(index);
     }
 
-    public void removeImage(Image image) {
+    public void removeImage(SavedImage image) {
         removeImage(images.indexOf(image));
     }
 
-    public Image next(Image image) {
+    public SavedImage next(SavedImage image) throws IOException {
         int index = images.indexOf(image);
-        return readImage((index == images.size() - 1) ? images.get(0) : images.get(index + 1));
+        if (index < 0) {
+            index = 0;
+        }
+        return (index == images.size() - 1) ? images.get(0) : images.get(index + 1);
     }
 
-    public Image previous(Image image) {
+    public SavedImage previous(SavedImage image) throws IOException {
         int index = images.indexOf(image);
-        return readImage((index == 0) ? images.get(images.size() - 1) : images.get(index - 1));
+        if (index < 0) {
+            index = 0;
+        }
+        return (index == 0) ? images.get(images.size() - 1) : images.get(index - 1);
     }
 
-    public Image randomImage() {
+    public SavedImage randomImage() throws IOException {
         if (random == null) random = new Random();
-        return readImage(images.get(random.nextInt(images.size() - 1)));
+        return images.get(random.nextInt(images.size() - 1));
     }
 
-    public int size() {
-        return images.size();
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    private Image readImage(String path) {
+    public static synchronized Image accessImage(String path, RenderedImage image, String imageFormat) throws IOException {
         if (path != null) {
-            try {
+            if (image == null) {
                 return ImageIO.read(new File(path));
-            } catch (IOException e) {
-                Logger.appendln("Image \"" + path + "\" could not be loaded.", Logger.LOGTYPE_INFO);
-                return null;
+            } else {
+                ImageIO.write(image, imageFormat, new File(path));
             }
         }
         return null;

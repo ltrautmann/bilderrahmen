@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.client.windows;
 
 import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.config.Config;
+import com.sabel.bilderrahmen.client.utils.image.ImageService;
 import com.sabel.bilderrahmen.client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 
@@ -15,6 +16,8 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -50,16 +53,14 @@ public class InitWindow extends JFrame {
                 Logger.appendln("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
-                if (Config.testServerConnection()) {
+                int serverResponseCode = Config.testServerConnection();
+                if (serverResponseCode== HttpURLConnection.HTTP_OK) {
                     Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
-                    //TODO:Config Herunterladen
-                    //TODO: Config Einlesen
-                    //TODO: Bilder Herunterladen
-                    ImageTools.resizeAllImages(false);
+                    Config.readServerConfig();
                     Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
                     Main.setMainWindow(new MainWindow());
                 } else {
-                    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"!", Logger.LOGTYPE_ERROR);
+                    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
                     Main.setConfigWindow(new ConfigWindow());
                 }
             }

@@ -1,9 +1,12 @@
 package com.sabel.bilderrahmen.client.utils.config;
 
 import com.sabel.bilderrahmen.client.Main;
+import com.sabel.bilderrahmen.client.utils.image.ImageService;
+import com.sabel.bilderrahmen.client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 import com.sabel.bilderrahmen.client.utils.web.FileDownloader;
 import com.sabel.bilderrahmen.client.utils.web.MyAuthenticator;
+import com.sun.deploy.util.StringUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -30,8 +33,10 @@ public class Config {
     private static String remoteConfigFile;
     private static int configUpdateInterval;
     private static boolean unixDevice;
+    private static boolean randomImageOrder;
     private static MyAuthenticator webAuth;
     private static String[] args;
+    private static ImageService imageService;
 
     public static void init() {
         Logger.appendln("Using default paths to load and save config file, images and logs.", Logger.LOGTYPE_INFO);
@@ -158,30 +163,53 @@ public class Config {
                         setLocalRootDir(args[i + 1]);
                         Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
                         break;
+                    case "-i":
+                    case "--update-interval":
+                    case "/i":
+                    case "/update-interval":
+                        try {
+                            int interval = Integer.parseInt(args[i + 1]);
+                            if (interval > 0) {
+                                setConfigUpdateInterval(interval);
+                                Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                            } else {
+                                Logger.appendln("Update Interval must be bigger than 0. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
+                            }
+                            break;
+                        } catch (NumberFormatException e) {
+                            Logger.appendln("Update Interval must be numeric. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
+                            break;
+                        }
                 }
 
             }
         }
     }
 
-    public static boolean testServerConnection() {
+    public static int testServerConnection() {
         HttpURLConnection huc = null;
         try {
+            Authenticator.setDefault(Config.getWebAuth());
             huc = (HttpURLConnection) new URL(Config.getServer()).openConnection();
             huc.setRequestMethod("HEAD");
-            return huc.getResponseCode() == HttpURLConnection.HTTP_OK;
+            return HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
-            return false;
+            return 0;
         }
     }
 
-    public static void readServerConfig() throws FileNotFoundException {
+    public static void readServerConfig(){
         try {
             if (FileDownloader.getConfig()) {
-
+                //TODO: Config Herunterladen
             } else {
                 Logger.appendln("Config file could not be fetched from server at \"" + getServer() + getRemoteConfigFile() + "\". Registering client and attempting to fetch default config file.", Logger.LOGTYPE_WARNING);
-                if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "defualt.xml")) {
+                Authenticator.setDefault(Config.getWebAuth());
+                HttpURLConnection huc = (HttpURLConnection) new URL(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8")).openConnection();
+                if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
+                }
+                if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "default.xml")) {
 
                 } else {
                     Logger.appendln("Default config file could not be fetched from server at \"" + getServer() + getRemoteConfigDir() + "config.xml\".", Logger.LOGTYPE_ERROR);
@@ -191,7 +219,7 @@ public class Config {
             Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
         }
         if (new File(getLocalConfigDir() + getDeviceID() + ".xml").exists()) {
-
+            //TODO: Config Einlesen
         } else {
             Logger.appendln("Config file was not found in local config directory. Searching for default configuration file in local config directory.", Logger.LOGTYPE_WARNING);
             if (new File(getLocalConfigDir() + "default.xml").exists()) {
@@ -201,6 +229,10 @@ public class Config {
                 Logger.appendln("", Logger.LOGTYPE_FATAL);
             }
         }
+        //TODO: Bilder Herunterladen
+        ImageTools.resizeAllImages(false);
+        //TODO: Bilder in ImageService speichern
+        Config.setImageService(new ImageService());
     }
 
     private static void readMAC() {
@@ -398,5 +430,21 @@ public class Config {
 
     public static void passArgs(String[] args) {
         Config.args = args;
+    }
+
+    public static boolean isRandomImageOrder() {
+        return randomImageOrder;
+    }
+
+    public static void setRandomImageOrder(boolean randomImageOrder) {
+        Config.randomImageOrder = randomImageOrder;
+    }
+
+    public static ImageService getImageService() {
+        return imageService;
+    }
+
+    public static void setImageService(ImageService imageService) {
+        Config.imageService = imageService;
     }
 }

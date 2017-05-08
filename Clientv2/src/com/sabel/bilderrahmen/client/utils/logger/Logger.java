@@ -121,7 +121,7 @@ public class Logger {
             @Override
             public void run() {
                 String out = c.toString();
-                String prefix = logtype + " (" + threadName + "): ";
+                String prefix = "[" + new Timestamp(System.currentTimeMillis()) + "] " + logtype + " (" + threadName + "): ";
 
                 if (wasLastCharNewLine) {
                     out = prefix + out;
