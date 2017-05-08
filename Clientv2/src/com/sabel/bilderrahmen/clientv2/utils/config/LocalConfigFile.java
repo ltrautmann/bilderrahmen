@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils.config;
+package com.sabel.bilderrahmen.clientv2.utils.config;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

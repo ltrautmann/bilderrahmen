@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils.image;
+package com.sabel.bilderrahmen.clientv2.utils.image;
 
 /**
  * Created by you shall not pass on 08.05.2017.

@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils.image;
+package com.sabel.bilderrahmen.clientv2.utils.image;
 
 import javax.imageio.ImageIO;
 import java.awt.Image;

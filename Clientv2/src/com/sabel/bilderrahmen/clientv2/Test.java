@@ -1,8 +1,4 @@
-package com.sabel.bilderrahmen.client;
-
-import com.sabel.bilderrahmen.client.utils.web.FileDownloader;
-
-import java.io.IOException;
+package com.sabel.bilderrahmen.clientv2;
 
 /**
  * Created by CheaterLL on 07.05.2017.

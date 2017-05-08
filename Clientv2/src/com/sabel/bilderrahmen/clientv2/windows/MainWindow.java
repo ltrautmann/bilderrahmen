@@ -1,11 +1,10 @@
-package com.sabel.bilderrahmen.client.windows;
+package com.sabel.bilderrahmen.clientv2.windows;
 
-import com.sabel.bilderrahmen.client.Main;
-import com.sabel.bilderrahmen.client.utils.config.Config;
-import com.sabel.bilderrahmen.client.utils.image.ImageService;
-import com.sabel.bilderrahmen.client.utils.image.ImageTools;
-import com.sabel.bilderrahmen.client.utils.image.SavedImage;
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.Main;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.image.ImageService;
+import com.sabel.bilderrahmen.clientv2.utils.image.SavedImage;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
 import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 
 import javax.swing.JFrame;
@@ -15,7 +14,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**

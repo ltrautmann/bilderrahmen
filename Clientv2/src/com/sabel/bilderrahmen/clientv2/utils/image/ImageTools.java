@@ -1,7 +1,7 @@
-package com.sabel.bilderrahmen.client.utils.image;
+package com.sabel.bilderrahmen.clientv2.utils.image;
 
-import com.sabel.bilderrahmen.client.utils.config.Config;
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

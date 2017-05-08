@@ -1,12 +1,11 @@
-package com.sabel.bilderrahmen.client.utils.web;
+package com.sabel.bilderrahmen.clientv2.utils.web;
 
-import com.sabel.bilderrahmen.client.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;

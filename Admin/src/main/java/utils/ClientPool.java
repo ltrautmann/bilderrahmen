@@ -56,10 +56,11 @@ public class ClientPool extends AbstractListModel implements I_GotClients {
             clientArrayList.add(client);
 
     }
-   public Client getClientByName(String name){
-        for(Client c : clients.getArraylist())
-          if(c.getName().equals(name))
-            return c;
-     return null;
-     }
+
+    public Client getClientByName(String name) {
+        for (Client c : clientArrayList)
+            if (c.getName().equals(name))
+                return c;
+        return null;
+    }
 }

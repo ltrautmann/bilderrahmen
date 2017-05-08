@@ -1,6 +1,6 @@
-package com.sabel.bilderrahmen.client.utils.panels;
+package com.sabel.bilderrahmen.clientv2.utils.panels;
 
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
 
 import javax.swing.*;
 import java.awt.*;

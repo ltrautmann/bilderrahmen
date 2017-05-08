@@ -1,10 +1,10 @@
-package com.sabel.bilderrahmen.client;
+package com.sabel.bilderrahmen.clientv2;
 
-import com.sabel.bilderrahmen.client.utils.config.Config;
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
-import com.sabel.bilderrahmen.client.windows.ConfigWindow;
-import com.sabel.bilderrahmen.client.windows.InitWindow;
-import com.sabel.bilderrahmen.client.windows.MainWindow;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.windows.ConfigWindow;
+import com.sabel.bilderrahmen.clientv2.windows.InitWindow;
+import com.sabel.bilderrahmen.clientv2.windows.MainWindow;
 
 import javax.swing.SwingUtilities;
 import java.util.ArrayList;

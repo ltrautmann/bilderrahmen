@@ -1,4 +1,4 @@
-package com.sabel.bilderrahmen.client.utils.web;
+package com.sabel.bilderrahmen.clientv2.utils.web;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.net.Authenticator;

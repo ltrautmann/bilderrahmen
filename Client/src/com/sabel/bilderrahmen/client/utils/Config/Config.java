@@ -1,7 +1,7 @@
 package com.sabel.bilderrahmen.client.utils.Config;
 
-import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 import com.sabel.bilderrahmen.client.utils.WebService.MyAuthenticator;
+import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
 
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;

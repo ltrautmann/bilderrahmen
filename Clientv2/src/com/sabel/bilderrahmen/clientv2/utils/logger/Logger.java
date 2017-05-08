@@ -1,6 +1,6 @@
-package com.sabel.bilderrahmen.client.utils.logger;
+package com.sabel.bilderrahmen.clientv2.utils.logger;
 
-import com.sabel.bilderrahmen.client.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
 
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -51,7 +51,7 @@ public class Logger {
 
     public static void initLogFile() {
         String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '-').replace(' ', '_');
-        logFile = Config.getLocalLogDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
+        logFile = Config.getLocalLogDir() + "bilderrahmen-clientv2-log_" + timestamp + ".txt";
         fileWriterExecutor = new ThreadPoolExecutor(1, 1, 5L, TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {

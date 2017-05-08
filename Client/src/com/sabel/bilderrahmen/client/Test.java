@@ -5,7 +5,6 @@ import com.sabel.bilderrahmen.client.utils.Logger.Logger;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**

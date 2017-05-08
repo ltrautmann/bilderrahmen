@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.client;
 
 import com.sabel.bilderrahmen.client.Windows.ConfigWindow;
 import com.sabel.bilderrahmen.client.Windows.InitWindow;
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.Windows.MainWindow;
 
 /**

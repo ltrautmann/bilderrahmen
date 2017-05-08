@@ -1,10 +1,9 @@
 package com.sabel.bilderrahmen.client.Windows;
 
-import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.Config.ConfigUpdater;
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
-import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MainWindow extends JFrame {
     private Container c;
-    private ImagePanel imagePanel;
+    private com.sabel.bilderrahmen.client.utils.panels.ImagePanel imagePanel;
     private ImageService imageService;
     private ConfigUpdater updater;
     private Thread updaterThread;
@@ -66,7 +65,7 @@ public class MainWindow extends JFrame {
 
     private void initComponents(){
         System.out.println("init components");
-        imagePanel = new ImagePanel();
+        imagePanel = new com.sabel.bilderrahmen.client.utils.panels.ImagePanel();
         c.add(imagePanel);
     }
 

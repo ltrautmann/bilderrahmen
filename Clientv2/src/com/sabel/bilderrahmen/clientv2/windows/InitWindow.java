@@ -1,10 +1,8 @@
-package com.sabel.bilderrahmen.client.windows;
+package com.sabel.bilderrahmen.clientv2.windows;
 
-import com.sabel.bilderrahmen.client.Main;
-import com.sabel.bilderrahmen.client.utils.config.Config;
-import com.sabel.bilderrahmen.client.utils.image.ImageService;
-import com.sabel.bilderrahmen.client.utils.image.ImageTools;
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.Main;
+import com.sabel.bilderrahmen.clientv2.utils.config.Config;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -16,7 +14,6 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 
 /**

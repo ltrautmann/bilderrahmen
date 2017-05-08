@@ -3,14 +3,11 @@ package com.sabel.bilderrahmen.client.utils.Logger;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Created by you shall not pass on 03.04.2017.
@@ -26,7 +23,7 @@ public class Logger {
 
     public Logger(JTextArea jTextArea, JProgressBar jProgressBar) {
         String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(':', '-').replace(' ', '_');
-        logFileName = Config.getLocalConfigDir() + "bilderrahmen-client-log_" + timestamp + ".txt";
+        logFileName = Config.getLocalConfigDir() + "bilderrahmen-clientv2-log_" + timestamp + ".txt";
         this.jTextArea = jTextArea;
         this.jProgressBar = jProgressBar;
         executor = Executors.newSingleThreadExecutor();

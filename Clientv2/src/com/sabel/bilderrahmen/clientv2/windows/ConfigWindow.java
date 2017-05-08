@@ -1,6 +1,6 @@
-package com.sabel.bilderrahmen.client.windows;
+package com.sabel.bilderrahmen.clientv2.windows;
 
-import com.sabel.bilderrahmen.client.Main;
+import com.sabel.bilderrahmen.clientv2.Main;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

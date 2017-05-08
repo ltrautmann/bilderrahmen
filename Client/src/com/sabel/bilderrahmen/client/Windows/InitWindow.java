@@ -1,9 +1,9 @@
 package com.sabel.bilderrahmen.client.Windows;
 
+import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
 import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.Config.Config;
 import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageService;
-import com.sabel.bilderrahmen.client.utils.ImageDisplay.ImageTools;
 import com.sabel.bilderrahmen.client.utils.panels.MessageConsole;
 
 import javax.swing.*;

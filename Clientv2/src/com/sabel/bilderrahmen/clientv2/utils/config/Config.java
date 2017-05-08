@@ -1,16 +1,14 @@
-package com.sabel.bilderrahmen.client.utils.config;
+package com.sabel.bilderrahmen.clientv2.utils.config;
 
-import com.sabel.bilderrahmen.client.Main;
-import com.sabel.bilderrahmen.client.utils.image.ImageService;
-import com.sabel.bilderrahmen.client.utils.image.ImageTools;
-import com.sabel.bilderrahmen.client.utils.logger.Logger;
-import com.sabel.bilderrahmen.client.utils.web.FileDownloader;
-import com.sabel.bilderrahmen.client.utils.web.MyAuthenticator;
-import com.sun.deploy.util.StringUtils;
+import com.sabel.bilderrahmen.clientv2.Main;
+import com.sabel.bilderrahmen.clientv2.utils.image.ImageService;
+import com.sabel.bilderrahmen.clientv2.utils.image.ImageTools;
+import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
+import com.sabel.bilderrahmen.clientv2.utils.web.FileDownloader;
+import com.sabel.bilderrahmen.clientv2.utils.web.MyAuthenticator;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.*;
 
@@ -203,11 +201,11 @@ public class Config {
             if (FileDownloader.getConfig()) {
                 //TODO: Config Herunterladen
             } else {
-                Logger.appendln("Config file could not be fetched from server at \"" + getServer() + getRemoteConfigFile() + "\". Registering client and attempting to fetch default config file.", Logger.LOGTYPE_WARNING);
+                Logger.appendln("Config file could not be fetched from server at \"" + getServer() + getRemoteConfigFile() + "\". Registering clientv2 and attempting to fetch default config file.", Logger.LOGTYPE_WARNING);
                 Authenticator.setDefault(Config.getWebAuth());
                 HttpURLConnection huc = (HttpURLConnection) new URL(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8")).openConnection();
                 if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
+                    Logger.appendln("Failed to register clientv2, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
                 }
                 if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "default.xml")) {
 
