@@ -11,10 +11,12 @@ import java.net.PasswordAuthentication;
 public class MyAuthenticator extends Authenticator {
     private static char[] username = "".toCharArray();
     private static char[] password = "".toCharArray();
+    private static PasswordAuthentication passwordAuthentication;
 
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(new String(MyAuthenticator.username), MyAuthenticator.password);
+        passwordAuthentication = new PasswordAuthentication(new String(MyAuthenticator.username), MyAuthenticator.password);
+        return passwordAuthentication;
     }
 
     public static void setPasswordAuthentication(char[] username, char[] password) {
@@ -24,9 +26,19 @@ public class MyAuthenticator extends Authenticator {
 
     public static void setUsername(char[] username) {
         MyAuthenticator.username = username;
+        passwordAuthentication = new PasswordAuthentication(new String(MyAuthenticator.username), MyAuthenticator.password);
     }
 
     public static void setPassword(char[] password) {
         MyAuthenticator.password = password;
+        passwordAuthentication = new PasswordAuthentication(new String(MyAuthenticator.username), MyAuthenticator.password);
+    }
+
+    public static char[] getUsername() {
+        return username;
+    }
+
+    public static char[] getPassword() {
+        return password;
     }
 }

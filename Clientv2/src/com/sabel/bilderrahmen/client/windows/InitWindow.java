@@ -51,11 +51,17 @@ public class InitWindow extends JFrame {
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 if (Config.testServerConnection()) {
-
+                    Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
+                    //TODO:Config Herunterladen
+                    //TODO: Config Einlesen
+                    //TODO: Bilder Herunterladen
+                    ImageTools.resizeAllImages(false);
+                    Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
+                    Main.setMainWindow(new MainWindow());
                 } else {
                     Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"!", Logger.LOGTYPE_ERROR);
+                    Main.setConfigWindow(new ConfigWindow());
                 }
-                ImageTools.resizeAllImages(false);
             }
         });
         init.setName("INITIALIZING");

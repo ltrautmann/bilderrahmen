@@ -1,9 +1,11 @@
 package com.sabel.bilderrahmen.client.utils.config;
 
+import com.sabel.bilderrahmen.client.Main;
 import com.sabel.bilderrahmen.client.utils.logger.Logger;
 import com.sabel.bilderrahmen.client.utils.web.FileDownloader;
 import com.sabel.bilderrahmen.client.utils.web.MyAuthenticator;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +58,8 @@ public class Config {
         setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
         setRemoteImageDir("images/");
         setConfigUpdateInterval(15);
-        setWebAuth(new char[]{'g','b','s'}, new char[]{'K','e','n','n','w','o','r','t','0'});
+        setWebAuth(new char[]{'g', 'b', 's'}, new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
+        interpretLocalConfigFile();
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
             Logger.appendln("Directory \"" + getLocalConfigDir() + "\" did not exist yet and was created.", Logger.LOGTYPE_INFO);
@@ -70,6 +73,48 @@ public class Config {
         if (new File(getLocalResizedDir()).mkdirs()) {
             Logger.appendln("Directory \"" + getLocalResizedDir() + "\" did not exist yet and was created.", Logger.LOGTYPE_INFO);
         }
+        if (!(new File(getLocalRootDir()).exists() && new File(getLocalConfigDir()).exists() && new File(getLocalImageDir()).exists() && new File(getLocalResizedDir()).exists() && new File(getLocalLogDir()).exists())) {
+            Logger.appendln("Not all required directories could be created. Please check that you have sufficient permissions on the folder \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_FATAL);
+            Main.quit();
+        }
+        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(MyAuthenticator.getUsername()), new String(MyAuthenticator.getPassword()));
+    }
+
+    private static void interpretLocalConfigFile() {
+        String localConfig = getLocalConfigDir() + "local-config.xml";
+        if (new File(localConfig).exists()) {
+            try {
+                LocalConfigFile lcf = LocalConfigFile.read(localConfig);
+                if (lcf.getServer() != null && lcf.getServer().equals("")) {
+                    setServer(lcf.getServer());
+                    Logger.appendln("Download Server changed to \"" + getServer() + "\".", Logger.LOGTYPE_INFO);
+                }
+                if (lcf.getDevicename() != null && !lcf.getDevicename().equals("")) {
+                    setDevicename(lcf.getDevicename());
+                    Logger.appendln("Device name changed to \"" + getDevicename() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                }
+                if (lcf.getLocalRootDir() != null && !lcf.getLocalRootDir().equals("")) {
+                    setLocalRootDir(lcf.getLocalRootDir());
+                    Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                }
+                if (lcf.getConfigUpdateInterval() != 0) {
+                    setConfigUpdateInterval(lcf.getConfigUpdateInterval());
+                    Logger.appendln("Update Interval changed to \"" + getConfigUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
+                }
+                if (lcf.getUname() != null && !lcf.getUname().equals("")) {
+                    MyAuthenticator.setUsername(lcf.getUname().toCharArray());
+                    Logger.appendln("Device name changed to \"" + lcf.getUname() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                }
+                if (lcf.getPasswd() != null && !lcf.getPasswd().equals("")) {
+                    MyAuthenticator.setPassword(lcf.getPasswd().toCharArray());
+                    Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                }
+            } catch (JAXBException e) {
+                Logger.appendln("Local config file was found but could not be read. This may result in an inability to connect to the Server.", Logger.LOGTYPE_ERROR);
+            }
+        } else {
+            Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+        }
     }
 
     private static void interpretCMDArgs() {
@@ -82,18 +127,21 @@ public class Config {
                     case "/s":
                     case "/server":
                         setServer(args[i + 1]);
+                        Logger.appendln("Download Server changed to \"" + getServer() + "\".", Logger.LOGTYPE_INFO);
                         break;
                     case "-u":
                     case "--user":
                     case "/u":
                     case "/user":
                         MyAuthenticator.setUsername(args[i + 1].toCharArray());
+                        Logger.appendln("Download Server Login Name changed.", Logger.LOGTYPE_INFO);
                         break;
                     case "-p":
                     case "--password":
                     case "/p":
                     case "/password":
                         MyAuthenticator.setPassword(args[i + 1].toCharArray());
+                        Logger.appendln("Download Server Password changed.", Logger.LOGTYPE_INFO);
                         break;
                     case "-n":
                     case "--device-name":
@@ -101,12 +149,14 @@ public class Config {
                     case "/device-name":
                         setDevicename(args[i + 1]);
                         setDeviceID();
+                        Logger.appendln("Device Name changed to \"" + getDevicename() + "\", Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
                         break;
                     case "-d":
                     case "--directory":
                     case "/d":
                     case "/directory":
-                        setLocalLogDir(args[i + 1]);
+                        setLocalRootDir(args[i + 1]);
+                        Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
                         break;
                 }
 

@@ -131,7 +131,7 @@ public class Main {
                 "\t\tbilderrahmen [-s|--server|/s|/server \"server url\"] [-u|--user|/u|/user \"server login name\"] [-p|--password|/p|/password \"server login password\"] [-n|--device-name|/n|/device-name \"device name\"] [-d|--directory|/d|/directory \"working directory\"]\n" +
                 "\n" +
                 "DESCRIPTION\n" +
-                "\tI4A Bilderrahmen-HTML Project\n" +
+                "\t\tI4A Bilderrahmen-HTML Project\n" +
                 "\n" +
                 "\tOPTIONS\n" +
                 "\t\t-h|--help|/h|/help|/?\n" +
