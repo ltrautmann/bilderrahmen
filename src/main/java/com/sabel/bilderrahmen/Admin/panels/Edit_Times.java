@@ -1,7 +1,7 @@
 package com.sabel.bilderrahmen.Admin.panels;
 
 import com.sabel.bilderrahmen.Admin.interfaces.Got_Pictures;
-import com.sabel.bilderrahmen.Admin.interfaces.MyAbstractTableModel;
+import com.sabel.bilderrahmen.Admin.interfaces.TimeTableModel;
 import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 import com.sabel.bilderrahmen.Admin.resources.GroupPool;
 
@@ -21,7 +21,7 @@ public class Edit_Times extends JPanel {
     private int modus;
     private JScrollPane jScrollPane;
     private JTable table;
-    private MyAbstractTableModel model;
+    private TimeTableModel model;
 
     public Edit_Times(int modi) {
         modus = modi;
@@ -39,12 +39,12 @@ public class Edit_Times extends JPanel {
         jComboBox.setModel(comboBoxModel);
         jComboBox.validate();
         jScrollPane = new JScrollPane();
-        model = new MyAbstractTableModel((Got_Pictures) jComboBox.getSelectedItem());
+        model = new TimeTableModel((Got_Pictures) jComboBox.getSelectedItem());
         table = new JTable(model);
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model = new MyAbstractTableModel((Got_Pictures) jComboBox.getSelectedItem());
+                model = new TimeTableModel((Got_Pictures) jComboBox.getSelectedItem());
                 table.setModel(model);
                // model.fireTableDataChanged();
 
@@ -55,6 +55,5 @@ public class Edit_Times extends JPanel {
         add(jScrollPane);
         jScrollPane.setViewportView(table);
     }
-//todo JTable verwenden
 
 }

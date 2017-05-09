@@ -10,6 +10,7 @@ import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.web.WebService;
 
+import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
