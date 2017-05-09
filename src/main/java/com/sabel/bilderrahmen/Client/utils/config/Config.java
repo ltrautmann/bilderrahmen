@@ -8,7 +8,7 @@ import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
 import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
-import com.sabel.bilderrahmen.Client.utils.web.MyAuthenticator;
+import com.sabel.bilderrahmen.Client.utils.web.WebService;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -35,7 +35,6 @@ public class Config {
     private static int configUpdateInterval;
     private static boolean unixDevice;
     private static boolean randomImageOrder;
-    private static MyAuthenticator webAuth;
     private static String[] args;
     private static ImageService imageService;
 
@@ -64,7 +63,8 @@ public class Config {
         setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
         setRemoteImageDir("images/");
         setConfigUpdateInterval(15);
-        setWebAuth(new char[]{'g', 'b', 's'}, new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
+        WebService.setUname(new char[]{'g', 'b', 's'});
+        WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
         interpretLocalConfigFile();
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
@@ -83,7 +83,7 @@ public class Config {
             Logger.appendln("Not all required directories could be created. Please check that you have sufficient permissions on the folder \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_FATAL);
             Main.quit();
         }
-        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(MyAuthenticator.getUsername()), new String(MyAuthenticator.getPassword()));
+        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()));
     }
 
     private static void interpretLocalConfigFile() {
@@ -108,11 +108,11 @@ public class Config {
                     Logger.appendln("Update Interval changed to \"" + getConfigUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
                 }
                 if (lcf.getUname() != null && !lcf.getUname().equals("")) {
-                    MyAuthenticator.setUsername(lcf.getUname().toCharArray());
+                    WebService.setUname(lcf.getUname().toCharArray());
                     Logger.appendln("Device name changed to \"" + lcf.getUname() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
                 }
                 if (lcf.getPasswd() != null && !lcf.getPasswd().equals("")) {
-                    MyAuthenticator.setPassword(lcf.getPasswd().toCharArray());
+                    WebService.setPasswd(lcf.getPasswd().toCharArray());
                     Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
                 }
             } catch (JAXBException e) {
@@ -139,14 +139,14 @@ public class Config {
                     case "--user":
                     case "/u":
                     case "/user":
-                        MyAuthenticator.setUsername(args[i + 1].toCharArray());
+                        WebService.setUname(args[i + 1].toCharArray());
                         Logger.appendln("Download Server Login Name changed.", Logger.LOGTYPE_INFO);
                         break;
                     case "-p":
                     case "--password":
                     case "/p":
                     case "/password":
-                        MyAuthenticator.setPassword(args[i + 1].toCharArray());
+                        WebService.setPasswd(args[i + 1].toCharArray());
                         Logger.appendln("Download Server Password changed.", Logger.LOGTYPE_INFO);
                         break;
                     case "-n":
@@ -190,8 +190,7 @@ public class Config {
     public static int testServerConnection() {
         HttpURLConnection huc = null;
         try {
-            Authenticator.setDefault(Config.getWebAuth());
-            huc = (HttpURLConnection) new URL(Config.getServer()).openConnection();
+            huc = WebService.getAuthenticatedConnection(getServer());
             huc.setRequestMethod("HEAD");
             return HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
@@ -203,77 +202,70 @@ public class Config {
         try {
             boolean success = true;
             Logger.appendln(Config.getLocalConfigDir() + "Clients.xml", Logger.LOGTYPE_INFO);
-            //success = success && FileDownloader.getConfig("Clients.xml");
-            //success = success && FileDownloader.getConfig("Groups.xml");
+            Logger.appendln(getServer() + getRemoteConfigDir() + "Clients.xml", Logger.LOGTYPE_INFO);
+            success = success && WebService.getConfig("Clients.xml");
+            success = success && WebService.getConfig("Groups.xml");
             if (success) {
                 FileService.readClients(new File(getLocalConfigDir() + "Clients.xml"));
                 FileService.readGroups(new File(getLocalConfigDir() + "Groups.xml"));
                 Client thisClient = ClientPool.getInstance().getClientByName("ll");
                 if (thisClient == null) {
                     Logger.appendln("Client was not found in configuration file, registering client with Server and exiting.", Logger.LOGTYPE_WARNING);
-                    HttpURLConnection huc = (HttpURLConnection) new URL(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8")).openConnection();
+                    HttpURLConnection huc = WebService.getAuthenticatedConnection(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8"));
                     if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
                     }
                     Main.quit();
-                }
-                Logger.appendln("SUCCESS", Logger.LOGTYPE_INFO);
-                Logger.appendln(thisClient.toString(), Logger.LOGTYPE_INFO);
-                for (Picture_Properties picture_properties : thisClient.getShownPictures()) {
-                    System.out.println(picture_properties +"|"+ picture_properties.getPresentationTime());
-                }
+                } else {
+                    Logger.appendln("SUCCESS", Logger.LOGTYPE_INFO);
+                    Logger.appendln(thisClient.toString(), Logger.LOGTYPE_INFO);
+                    for (Picture_Properties picture_properties : thisClient.getShownPictures()) {
+                        System.out.println(picture_properties + "|" + picture_properties.getPresentationTime());
+                    }
 
-                //TODO: Bilder Herunterladen
-                ImageTools.resizeAllImages(false);
-                //TODO: Bilder in ImageService speichern
-                Config.setImageService(new ImageService());
+                    //TODO: Bilder Herunterladen
+                    ImageTools.resizeAllImages(false);
+                    //TODO: Bilder in ImageService speichern
+                    Config.setImageService(new ImageService());
+                }
             } else {
-                Logger.appendln("dhdsgfvbjfvt", Logger.LOGTYPE_ERROR);
+                Logger.appendln("Unable to get configuration files from server", Logger.LOGTYPE_ERROR);
             }
         } catch (IOException e) {
-            Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
-            e.printStackTrace();
+            Logger.appendln("Could not write downloaded configuration file or download server could not be reached", Logger.LOGTYPE_ERROR);
         }
     }
 
     private static void readMAC() {
         try {
-            NetworkInterface network = null;
             byte[] mac = null;
             if (unixDevice) {
-                String iface = null;
-                if (iface == null) {
-                    iface = "eth";
-                } else {
-                    iface = "wlan";
-                }
                 int ifacenum = 0;
                 while (mac == null && ifacenum < 10) {
-                    try {
-                        network = NetworkInterface.getByName(iface + ifacenum);
-                        Logger.appendln("Attempting to read MAC of interface " + iface + ifacenum, Logger.LOGTYPE_INFO);
-                        mac = network.getHardwareAddress();
-                    } catch (Exception e) {
+                    mac = readLinuxMac("eth" + ifacenum);
+                    if (mac == null) {
                         Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
-                        ifacenum++;
                     }
+                    mac = readLinuxMac("wlan" + ifacenum);
                     if (mac == null) {
                         Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
                         ifacenum++;
                     }
                 }
             } else {
-                InetAddress inetAddress = InetAddress.getLocalHost();
-                network = NetworkInterface.getByInetAddress(inetAddress);
-                Logger.appendln("Reading MAC of interface with IP " + inetAddress.getHostAddress().toString(), Logger.LOGTYPE_INFO);
-                mac = network.getHardwareAddress();
+                mac = readWindowsMac();
             }
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < mac.length; i++) {
-                sb.append(String.format("%02X", mac[i]));
+            if (mac == null) {
+                MACAddress = "";
+                Logger.appendln("Failed to read MAC Address(No available Interface found)", Logger.LOGTYPE_ERROR);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < mac.length; i++) {
+                    sb.append(String.format("%02X", mac[i]));
+                }
+                MACAddress = sb.toString();
+                Logger.appendln("Detected MAC Address " + MACAddress, Logger.LOGTYPE_INFO);
             }
-            MACAddress = sb.toString();
-            Logger.appendln("Detected MAC Address " + MACAddress, Logger.LOGTYPE_INFO);
         } catch (UnknownHostException e) {
             Logger.appendln("Failed to read MAC Address(UnknownHostException)", Logger.LOGTYPE_ERROR);
             MACAddress = "";
@@ -281,6 +273,24 @@ public class Config {
             Logger.appendln("Failed to read MAC Address(SocketException)", Logger.LOGTYPE_ERROR);
             MACAddress = "";
         }
+    }
+
+    private static byte[] readLinuxMac(String iface) {
+        try {
+            NetworkInterface network = NetworkInterface.getByName(iface);
+            Logger.appendln("Attempting to read MAC of interface " + iface, Logger.LOGTYPE_INFO);
+            return network.getHardwareAddress();
+        } catch (Exception e) {
+            Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
+            return null;
+        }
+    }
+
+    private static byte[] readWindowsMac() throws UnknownHostException, SocketException {
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        NetworkInterface network = NetworkInterface.getByInetAddress(inetAddress);
+        Logger.appendln("Reading MAC of interface with IP " + inetAddress.getHostAddress(), Logger.LOGTYPE_INFO);
+        return network.getHardwareAddress();
     }
 
     public static String getServer() {
@@ -387,14 +397,6 @@ public class Config {
 
     public static boolean isUnixDevice() {
         return unixDevice;
-    }
-
-    public static MyAuthenticator getWebAuth() {
-        return webAuth;
-    }
-
-    public static void setWebAuth(char[] username, char[] password) {
-        MyAuthenticator.setPasswordAuthentication(username, password);
     }
 
     public static String getDevicename() {
