@@ -18,8 +18,8 @@ public class FileDownloader {
         return download(Config.getServer() + Config.getRemoteImageDir() + file, Config.getLocalImageDir() + file);
     }
 
-    public static boolean getConfig() throws IOException {
-        return download(Config.getServer() + Config.getRemoteConfigFile(), Config.getLocalConfigDir() + "config.xml");
+    public static boolean getConfig(String file) throws IOException {
+        return download(Config.getRemoteConfigDir() + file, Config.getLocalConfigDir() + file);
     }
 
     public static boolean getFile(String srcURL, String destPath) throws IOException {

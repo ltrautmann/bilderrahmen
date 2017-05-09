@@ -197,36 +197,19 @@ public class Config {
         }
     }
 
-    public static void readServerConfig(){
+    public static void readServerConfig() {
         try {
-            if (FileDownloader.getConfig()) {
-                //TODO: Config Herunterladen
+            boolean success = true;
+            success = success && FileDownloader.getConfig("Clients.xml");
+            success = success && FileDownloader.getConfig("Groups.xml");
+            if (success) {
+                //TODO: Config
+                //TODO: If client missing, register client on server
             } else {
-                Logger.appendln("Config file could not be fetched from server at \"" + getServer() + getRemoteConfigFile() + "\". Registering clientv2 and attempting to fetch default config file.", Logger.LOGTYPE_WARNING);
-                Authenticator.setDefault(Config.getWebAuth());
-                HttpURLConnection huc = (HttpURLConnection) new URL(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8")).openConnection();
-                if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Logger.appendln("Failed to register clientv2, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
-                }
-                if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "default.xml")) {
-                    FileService.readClients(null);
-                } else {
-                    Logger.appendln("Default config file could not be fetched from server at \"" + getServer() + getRemoteConfigDir() + "config.xml\".", Logger.LOGTYPE_ERROR);
-                }
+                Logger.appendln("", Logger.LOGTYPE_ERROR);
             }
         } catch (IOException e) {
             Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
-        }
-        if (new File(getLocalConfigDir() + getDeviceID() + ".xml").exists()) {
-
-        } else {
-            Logger.appendln("Config file was not found in local config directory. Searching for default configuration file in local config directory.", Logger.LOGTYPE_WARNING);
-            if (new File(getLocalConfigDir() + "default.xml").exists()) {
-
-            } else {
-                Logger.appendln("Default config file was not found in local config directory. ", Logger.LOGTYPE_FATAL);
-                Logger.appendln("", Logger.LOGTYPE_FATAL);
-            }
         }
         //TODO: Bilder Herunterladen
         ImageTools.resizeAllImages(false);
