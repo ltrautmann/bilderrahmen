@@ -58,7 +58,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.sabel.bilderrahmen.Main</mainClass>
+                                    <mainClass>com.sabel.bilderrahmen.Admin.Main</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
