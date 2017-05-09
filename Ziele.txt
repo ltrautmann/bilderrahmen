@@ -1,4 +1,4 @@
-Team "The-Brains"
+Team "TrauSchi"
 
 Server:
 	XML,CSV o.ä. für Bilddaten
