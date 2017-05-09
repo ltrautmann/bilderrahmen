@@ -47,7 +47,7 @@ public class GroupPool {
         return null;
     }
 
-    public  ArrayList<Group> getGreoupByName(ArrayList<String> names) {
+    public  ArrayList<Group> getGroupByName(ArrayList<String> names) {
         ArrayList<Group> groups = new ArrayList<>();
         for (String name : names) {
             groups.add(getGroupByName(name));
