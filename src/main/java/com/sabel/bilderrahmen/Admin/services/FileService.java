@@ -15,13 +15,10 @@ import java.io.File;
  * Created by robin on 19.04.17.
  */
 public class FileService {
-    private static FtpService ftpService;
 
-    static {
-        ftpService = FtpService.getInstance();
-    }
 
     public static PicturePool readPictures() {
+        FtpService ftpService = FtpService.getInstance();
         FTPFile[] folder = ftpService.getFolder("/files/images");
         PicturePool picturePool = PicturePool.getInstance();
         for (FTPFile file : folder) {
@@ -32,6 +29,7 @@ public class FileService {
     }
 
     public static GroupPool readGroups() {
+        FtpService ftpService = FtpService.getInstance();
         File xml = ftpService.getFile("/files/config/Groups.xml");
         GroupPool groups = readGroups(xml);
         xml.delete();
@@ -55,6 +53,7 @@ public class FileService {
     public static boolean writeGroups() {
 
         File tmp = new File("Groups.xml");
+        FtpService ftpService = FtpService.getInstance();
         JAXBContext jaxbContext = null;
         try {
             Marshaller jaxbMarshaller;
@@ -76,7 +75,7 @@ public class FileService {
 
     public static ClientPool readClients() {
 
-
+        FtpService ftpService = FtpService.getInstance();
         File xml = ftpService.getFile("/files/config/Clients.xml");
         ClientPool clients = readClients(xml);
         xml.delete();
@@ -100,6 +99,7 @@ public class FileService {
     }
 
     public static boolean writeClients() {
+        FtpService ftpService = FtpService.getInstance();
         File tmp = new File("Clients.xml");
         JAXBContext jaxbContext = null;
         try {
