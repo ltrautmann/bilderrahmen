@@ -242,6 +242,10 @@ public class Client implements Got_Pictures {
                 }
             }
         }
+        for (Picture_Properties iPic : getIgnoredPictures()) {
+            allPics.remove(iPic);
+        }
+
         for (Picture_Properties p : getPrivatePictures()) {
             if (allPics.contains(p)) {
                 allPics.remove(p);
