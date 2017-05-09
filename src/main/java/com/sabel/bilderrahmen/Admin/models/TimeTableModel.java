@@ -47,6 +47,17 @@ public class TimeTableModel extends AbstractTableModel{
     }
 
     @Override
+    public String getColumnName(int column) {
+        switch (column) {
+            case 0:
+                return "Bilder";
+            case 1:
+                return "Anzeigedauer";
+        }
+        return null;
+    }
+
+    @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case 0:
