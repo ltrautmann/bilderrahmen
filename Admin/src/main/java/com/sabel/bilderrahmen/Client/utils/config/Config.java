@@ -1,5 +1,6 @@
 package com.sabel.bilderrahmen.Client.utils.config;
 
+import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
 import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
@@ -208,7 +209,7 @@ public class Config {
                     Logger.appendln("Failed to register clientv2, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
                 }
                 if (FileDownloader.getFile(getRemoteConfigDir() + "default.xml", Config.getLocalConfigDir() + "default.xml")) {
-
+                    FileService.readClients(null);
                 } else {
                     Logger.appendln("Default config file could not be fetched from server at \"" + getServer() + getRemoteConfigDir() + "config.xml\".", Logger.LOGTYPE_ERROR);
                 }
