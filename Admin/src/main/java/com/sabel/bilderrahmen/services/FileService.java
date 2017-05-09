@@ -23,7 +23,7 @@ public class FileService {
 
     public static PicturePool readPictures() {
         FTPFile[] folder = ftpService.getFolder("/files/images");
-        PicturePool picturePool =  PicturePool.getInstance();
+        PicturePool picturePool = PicturePool.getInstance();
         for (FTPFile file : folder) {
             if (!file.getName().equals(".."))
                 picturePool.addPicture(file.getName());
@@ -32,13 +32,19 @@ public class FileService {
     }
 
     public static GroupPool readGroups() {
+        File xml = ftpService.getFile("/files/config/Groups.xml");
+        GroupPool groups = readGroups(xml);
+        xml.delete();
+        return groups;
+    }
+
+    public static GroupPool readGroups(File GroupsXml) {
         try {
             JAXBContext jc = JAXBContext.newInstance(GroupPool.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            File xml = ftpService.getFile("/files/config/Groups.xml");
+
             GroupPool groups = GroupPool.getInstance();
-            groups.setGroupArrayList(((GroupPool) unmarshaller.unmarshal(xml)).getGroupArrayList());
-            xml.delete();
+            groups.setGroupArrayList(((GroupPool) unmarshaller.unmarshal(GroupsXml)).getGroupArrayList());
             return groups;
         } catch (JAXBException e) {
             e.printStackTrace();
@@ -57,7 +63,7 @@ public class FileService {
             // output pretty printed
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(GroupPool.getInstance(), tmp);
-            ftpService.upload("files/config",tmp);
+            ftpService.upload("files/config", tmp);
             tmp.delete();
             System.out.println("Temp Datei geloescht: " + !tmp.exists());
         } catch (JAXBException e) {
@@ -103,7 +109,7 @@ public class FileService {
             // output pretty printed
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(ClientPool.getInstance(), tmp);
-            ftpService.upload("files/config",tmp);
+            ftpService.upload("files/config", tmp);
             tmp.delete();
             System.out.println("Temp Datei geloescht: " + !tmp.exists());
         } catch (JAXBException e) {
