@@ -43,7 +43,8 @@ public class ImageTools {
         forceResize = compareLastResolution(screenwidth, screenheight) || forceResize;
         Logger.appendln("Resizing images:", Logger.LOGTYPE_INFO);
         Logger.resetProgressBar(images.length + 1);
-        for (File f : images) {
+        for (SavedImage s : Config.getImageService().getImages()) {
+            File f = new File(s.getOriginalPath());
             String filename = f.getName();
             String resizedName = renamedFilePrefix + filename;
             String resizedPath = Config.getLocalResizedDir() + resizedName;
@@ -62,6 +63,7 @@ public class ImageTools {
                             try {
                                 ImageIO.write(resize(ImageIO.read(f), !multistepResize), fileExtension, new File(resizedPath));
                                 ImageService.accessImage(resizedPath, resize((BufferedImage) ImageService.accessImage(f.getPath(), null, null), !multistepResize), fileExtension);
+                                s.setResizedPath(resizedPath);
                                 resizedCount++;
                                 tries += maxTries;
                             } catch (OutOfMemoryError e) {
@@ -74,6 +76,7 @@ public class ImageTools {
                                     tries++;
                                     File f2 = new File(resizedPath);
                                     f2.delete();
+                                    Config.getImageService().removeImage(s);
                                     tries += maxTries;
                                     outOfMemoryImages++;
                                 }
@@ -107,6 +110,7 @@ public class ImageTools {
                 }
             } else {
                 Logger.appendln("\tResized image \"" + resizedName + "\" already exists", Logger.LOGTYPE_INFO);
+                s.setResizedPath(resizedPath);
                 imageCount++;
             }
             if (Thread.interrupted()) {
@@ -189,7 +193,7 @@ public class ImageTools {
         int failed = 0;
         for (File f : images) {
             if (supportedExtensions.contains(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
-                if (!new File(f.getPath().replace(Config.getLocalResizedDir() + renamedFilePrefix, Config.getLocalImageDir())).exists()) {
+                if (!Config.getImageService().contains(f.getName())) {
                     if (f.delete()) {
                         Logger.appendln("Deleted obsolete image \"" + f.getPath() + "\"", Logger.LOGTYPE_INFO);
                         count++;

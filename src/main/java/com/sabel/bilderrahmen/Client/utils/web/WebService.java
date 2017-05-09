@@ -6,6 +6,7 @@ import sun.misc.BASE64Encoder;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -36,14 +37,18 @@ public class WebService {
         URL web = new URL(url);
         HttpURLConnection huc = getAuthenticatedConnection(web);
         Logger.appendln("Attempting to download file \"" + url + "\" to \"" + file + "\". Response code is " + huc.getResponseCode(), Logger.LOGTYPE_INFO);
-        //if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            ReadableByteChannel rbc = Channels.newChannel(web.openStream());
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            InputStream inputStream = huc.getInputStream();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            int bytesRead = -1;
+            byte[] buffer = new byte[4096];
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
             return true;
-        //} else {
-        //    return false;
-        //}
+        } else {
+            return false;
+        }
     }
 
     public static HttpURLConnection authenticateConnection(HttpURLConnection con){

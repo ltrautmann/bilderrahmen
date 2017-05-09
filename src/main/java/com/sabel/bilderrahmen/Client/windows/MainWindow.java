@@ -46,24 +46,31 @@ public class MainWindow extends JFrame {
                 Main.registerThread(Thread.currentThread());
                 try {
                     SavedImage img = null;
-                    while (!Thread.currentThread().isInterrupted()) {
-                        try {
-                            if (Config.isRandomImageOrder()) {
-                                img = imageService.randomImage();
-                                imagePanel.setImage(ImageService.accessImage(img.getPath(), null, null));
-                            } else {
-                                img = imageService.next(img);
-                                imagePanel.setImage(ImageService.accessImage(img.getPath(), null, null));
+                    if (Config.getImageService().size() < 1) {
+                        Logger.appendln("No images provided to display thread. Exiting.", Logger.LOGTYPE_FATAL);
+                        Main.quit();
+                    } else {
+                        while (!Thread.currentThread().isInterrupted()) {
+                            try {
+                                if (Config.isRandomImageOrder()) {
+                                    img = imageService.randomImage();
+                                    Logger.appendln("Applying random image: " + img.getPicture_properties().getName(), Logger.LOGTYPE_INFO);
+                                    System.out.println(img);
+                                    imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
+                                } else {
+                                    img = imageService.next(img);
+                                    imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
+                                }
+                            } catch (IOException e) {
+                                Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
                             }
-                        } catch (IOException e) {
-                            Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
+                            TimeUnit.MILLISECONDS.sleep(img.getDisplayTime());
                         }
-                        TimeUnit.MILLISECONDS.sleep(img.getDisplayTime());
                     }
                 } catch (InterruptedException e) {
-                    Logger.appendln("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+                    Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
                 }
-                Logger.appendln("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+                Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
             }
         });
         configUpdateThread = new Thread(new Runnable() {
@@ -78,15 +85,16 @@ public class MainWindow extends JFrame {
                         Config.readServerConfig();
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                     } catch (InterruptedException e) {
-                        Logger.appendln("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+                        Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
                     }
                 }
-                Logger.appendln("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+                Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
             }
         });
         imageUpdateThread.setName("IMAGEUPDATE");
         configUpdateThread.setName("CONFIGUPDATE");
-
+        imageUpdateThread.start();
+        configUpdateThread.start();
     }
 
     private void initComponents() {

@@ -24,12 +24,24 @@ public class ImageService {
         this.images = imagePaths;
     }
 
+    public List<SavedImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<SavedImage> images) {
+        this.images = images;
+    }
+
     public void addImage(SavedImage image) {
         images.add(image);
     }
 
     public SavedImage getImage(int index) throws IOException {
         return (index >= 0 && index < images.size()) ? images.get(index) : null;
+    }
+
+    public int size() {
+        return images.size();
     }
 
     public int indexOfImage(SavedImage i) {
@@ -74,5 +86,38 @@ public class ImageService {
             }
         }
         return null;
+    }
+
+    public boolean contains(String name) {
+        if (name != null && !"".equals(name)) {
+            for (SavedImage s : images) {
+                if (name.equals(s.getPicture_properties().getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int find(String name) {
+        if (name != null && !"".equals(name)) {
+            for (SavedImage s : images) {
+                if (name.equals(s.getPicture_properties().getName())) {
+                    return images.indexOf(s);
+                }
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ImageService");
+        for (SavedImage s : images) {
+            sb.append("|");
+            sb.append(s);
+        }
+        return sb.toString();
     }
 }

@@ -117,41 +117,45 @@ public class Logger {
 
     public static synchronized void append(CharSequence c, String logtype) {
         String threadName = Thread.currentThread().getName();
-        loggerExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                String out = c.toString();
-                String prefix = "[" + new Timestamp(System.currentTimeMillis()) + "] " + logtype + " (" + threadName + "): ";
+        try {
+            loggerExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    String out = c.toString();
+                    String prefix = "[" + new Timestamp(System.currentTimeMillis()) + "] " + logtype + " (" + threadName + "): ";
 
-                if (wasLastCharNewLine) {
-                    out = prefix + out;
-                }
-                if (out.charAt(out.length() - 1) == "\n".charAt(0)) {
-                    wasLastCharNewLine = true;
-                    out = out.substring(0, out.length() - 1).replace("\n", "\n" + prefix) + "\n";
-                } else {
-                    wasLastCharNewLine = false;
-                    out = out.replace("\n", "\n" + prefix);
-                }
-                if (useLogFile) {
-                    String finalOut = out;
-                    if (!fileWriterExecutor.isShutdown()) {
-                        fileWriterExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    fw.append(finalOut);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+                    if (wasLastCharNewLine) {
+                        out = prefix + out;
                     }
+                    if (out.charAt(out.length() - 1) == "\n".charAt(0)) {
+                        wasLastCharNewLine = true;
+                        out = out.substring(0, out.length() - 1).replace("\n", "\n" + prefix) + "\n";
+                    } else {
+                        wasLastCharNewLine = false;
+                        out = out.replace("\n", "\n" + prefix);
+                    }
+                    if (useLogFile) {
+                        String finalOut = out;
+                        if (!fileWriterExecutor.isShutdown()) {
+                            fileWriterExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        fw.append(finalOut);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    jTextArea.append(out);
+                    System.out.print(out);
                 }
-                jTextArea.append(out);
-                System.out.print(out);
-            }
-        });
+            });
+        } catch (RejectedExecutionException e) {
+            System.out.println("Something tried to log after logger was shut down, this is the message to log: " + "[" + new Timestamp(System.currentTimeMillis()) + "] " + logtype + " (" + threadName + "): " + c);
+        }
     }
 
     public static synchronized void appendln(CharSequence c, String logtype) {
@@ -199,7 +203,7 @@ public class Logger {
 
     public static synchronized void logProgramExit(CharSequence c, String logtype) {
         String out = c.toString();
-        String prefix = logtype + " (" + Thread.currentThread().getName() + "): ";
+        String prefix = "[" + new Timestamp(System.currentTimeMillis()) + "] " + logtype + " (" + Thread.currentThread().getName() + "): ";
         out = prefix + out;
         if (!wasLastCharNewLine) {
             out = "\n" + out;

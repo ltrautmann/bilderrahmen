@@ -7,6 +7,7 @@ import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
 import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
+import com.sabel.bilderrahmen.Client.utils.image.SavedImage;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.web.WebService;
 
@@ -14,6 +15,8 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -65,6 +68,7 @@ public class Config {
         setConfigUpdateInterval(15);
         WebService.setUname(new char[]{'g', 'b', 's'});
         WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
+        setRandomImageOrder(true);
         interpretLocalConfigFile();
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
@@ -201,8 +205,6 @@ public class Config {
     public static void readServerConfig() {
         try {
             boolean success = true;
-            Logger.appendln(Config.getLocalConfigDir() + "Clients.xml", Logger.LOGTYPE_INFO);
-            Logger.appendln(getServer() + getRemoteConfigDir() + "Clients.xml", Logger.LOGTYPE_INFO);
             success = success && WebService.getConfig("Clients.xml");
             success = success && WebService.getConfig("Groups.xml");
             if (success) {
@@ -217,22 +219,39 @@ public class Config {
                     }
                     Main.quit();
                 } else {
-                    Logger.appendln("SUCCESS", Logger.LOGTYPE_INFO);
-                    Logger.appendln(thisClient.toString(), Logger.LOGTYPE_INFO);
-                    for (Picture_Properties picture_properties : thisClient.getShownPictures()) {
-                        System.out.println(picture_properties + "|" + picture_properties.getPresentationTime());
+                    Logger.appendln("Successfully downloaded and read configuration file, downloading images.", Logger.LOGTYPE_INFO);
+                    List<Picture_Properties> shownPictures = thisClient.getShownPictures();
+                    List<SavedImage> savedImages = new ArrayList<>();
+                    for (Picture_Properties p : shownPictures) {
+                        try {
+                            String name = p.getName();
+                            if (new File(getLocalImageDir() + name).exists()) {
+                                Logger.appendln("Image \"" + name + "\" already exists, skipping download.", Logger.LOGTYPE_INFO);
+                                savedImages.add(new SavedImage(getLocalImageDir() + name, new Picture_Properties(p.getPresentationTime() * 1000, p.getName())));
+                            } else {
+                                Logger.appendln("Attempting download of image \"" + name + "\"", Logger.LOGTYPE_INFO);
+                                boolean downloaded = WebService.getImage(p.getName());
+                                if (downloaded) {
+                                    savedImages.add(new SavedImage(getLocalImageDir() + p.getName(), p));
+                                } else {
+                                    Logger.appendln("Image download failed (Unable to access image), image will be ignored.", Logger.LOGTYPE_ERROR);
+                                }
+                            }
+                        } catch (IOException e) {
+                            Logger.appendln("Image download failed (IOException), image will be ignored.", Logger.LOGTYPE_ERROR);
+                        }
                     }
-
-                    //TODO: Bilder Herunterladen
+                    setImageService(new ImageService(savedImages));
+                    System.out.println(savedImages);
+                    System.out.println(imageService);
                     ImageTools.resizeAllImages(false);
-                    //TODO: Bilder in ImageService speichern
-                    Config.setImageService(new ImageService());
                 }
             } else {
                 Logger.appendln("Unable to get configuration files from server", Logger.LOGTYPE_ERROR);
             }
         } catch (IOException e) {
             Logger.appendln("Could not write downloaded configuration file or download server could not be reached", Logger.LOGTYPE_ERROR);
+            e.printStackTrace();
         }
     }
 

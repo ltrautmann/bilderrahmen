@@ -14,6 +14,7 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.HttpURLConnection;
 
 /**
  * Created by CheaterLL on 05.04.2017.
@@ -49,16 +50,16 @@ public class InitWindow extends JFrame {
                 Logger.appendln("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
-                //int serverResponseCode = Config.testServerConnection();
-                //if (serverResponseCode== HttpURLConnection.HTTP_OK) {
+                int serverResponseCode = Config.testServerConnection();
+                if (serverResponseCode== HttpURLConnection.HTTP_OK) {
                     Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
                     Config.readServerConfig();
                     Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
                     Main.setMainWindow(new MainWindow());
-                //} else {
-                //    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
-                //    Main.setConfigWindow(new ConfigWindow());
-                //}
+                } else {
+                    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
+                    Main.setConfigWindow(new ConfigWindow());
+                }
             }
         });
         init.setName("INITIALIZING");
