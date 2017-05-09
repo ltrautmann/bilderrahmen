@@ -49,8 +49,9 @@ public class ClientPool {
     }
 
     public Client getClientByMac(String mac) {
+        if(mac!=null)
         for (Client c : clientArrayList)
-            if (c.getMac().equals(mac))
+            if (c.getMac()!=null&&c.getMac().equals(mac))
                 return c;
         return null;
     }

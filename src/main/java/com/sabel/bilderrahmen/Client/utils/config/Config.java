@@ -211,10 +211,10 @@ public class Config {
             if (success) {
                 FileService.readClients(new File(getLocalConfigDir() + "Clients.xml"));
                 FileService.readGroups(new File(getLocalConfigDir() + "Groups.xml"));
-                Client thisClient = ClientPool.getInstance().getClientByName("ll");
+                Client thisClient = ClientPool.getInstance().getClientByMac(MACAddress);
                 if (thisClient == null) {
                     Logger.appendln("Client was not found in configuration file, registering client with Server and exiting.", Logger.LOGTYPE_WARNING);
-                    HttpURLConnection huc = WebService.getAuthenticatedConnection(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8"));
+                    HttpURLConnection huc = WebService.getAuthenticatedConnection(Config.getServer() + "clients/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8"));
                     if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
                     }
@@ -261,6 +261,7 @@ public class Config {
             byte[] mac = null;
             if (unixDevice) {
                 int ifacenum = 0;
+                mac = readLinuxMac("wlp2s0");
                 while (mac == null && ifacenum < 10) {
                     mac = readLinuxMac("eth" + ifacenum);
                     if (mac == null) {
@@ -302,6 +303,7 @@ public class Config {
             return network.getHardwareAddress();
         } catch (Exception e) {
             Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
+            JOptionPane.showMessageDialog(null,e);
             return null;
         }
     }
