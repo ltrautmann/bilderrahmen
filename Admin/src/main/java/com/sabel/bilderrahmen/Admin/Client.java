@@ -1,6 +1,7 @@
 package com.sabel.bilderrahmen.Admin;
 
 import com.sabel.bilderrahmen.Admin.interfaces.Got_Pictures;
+import com.sabel.bilderrahmen.Admin.resources.GroupPool;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -229,5 +230,25 @@ public class Client implements Got_Pictures {
             System.err.println("Its not a group its a " + o);
         }
 
+    }
+    public ArrayList<Picture_Properties> getShownPictures(){
+        ArrayList<Picture_Properties> allPics = new ArrayList<>();
+
+        ArrayList<Group> groupByName = GroupPool.getInstance().getGroupByName(getGroups());
+        for (Group group : groupByName) {
+            for (Picture_Properties p : group.getPictureList()) {
+                if (!allPics.contains(p)) {
+                    allPics.add(p);
+                }
+            }
+        }
+        for (Picture_Properties p : getPrivatePictures()) {
+            if (allPics.contains(p)) {
+                allPics.remove(p);
+            }
+            allPics.add(p);
+        }
+
+        return allPics;
     }
 }

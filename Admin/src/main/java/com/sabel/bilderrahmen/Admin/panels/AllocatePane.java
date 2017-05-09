@@ -312,7 +312,7 @@ public class AllocatePane extends JPanel {
 
     private JList collectAllPictures() {
         ArrayList<Picture_Properties> allPictures = new ArrayList<>();
-        ArrayList<Group> groupes = GroupPool.getInstance().getGreoupByName(((Client) jComboBox.getSelectedItem()).getGroups());
+        ArrayList<Group> groupes = GroupPool.getInstance().getGroupByName(((Client) jComboBox.getSelectedItem()).getGroups());
         for (Group g : groupes) {
             for (Picture_Properties p : g.getPictureList()) {
                 if (!allPictures.contains(p)) {
