@@ -19,7 +19,7 @@ public class FileDownloader {
     }
 
     public static boolean getConfig(String file) throws IOException {
-        return download(Config.getRemoteConfigDir() + file, Config.getLocalConfigDir() + file);
+        return download(Config.getServer() + Config.getRemoteConfigDir() + file, Config.getLocalConfigDir() + file);
     }
 
     public static boolean getFile(String srcURL, String destPath) throws IOException {
@@ -31,13 +31,13 @@ public class FileDownloader {
         URL web = new URL(url);
         HttpURLConnection huc = (HttpURLConnection) web.openConnection();
         huc.setRequestMethod("HEAD");
-        if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
+        //if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
             ReadableByteChannel rbc = Channels.newChannel(web.openStream());
             FileOutputStream fos = new FileOutputStream(file);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             return true;
-        } else {
-            return false;
-        }
+        //} else {
+        //    return false;
+        //}
     }
 }

@@ -1,6 +1,7 @@
 package com.sabel.bilderrahmen.Client.utils.config;
 
 import com.sabel.bilderrahmen.Admin.Client;
+import com.sabel.bilderrahmen.Admin.Picture_Properties;
 import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Client.Main;
@@ -202,8 +203,9 @@ public class Config {
     public static void readServerConfig() {
         try {
             boolean success = true;
-            success = success && FileDownloader.getConfig("Clients.xml");
-            success = success && FileDownloader.getConfig("Groups.xml");
+            Logger.appendln(Config.getLocalConfigDir() + "Clients.xml", Logger.LOGTYPE_INFO);
+            //success = success && FileDownloader.getConfig("Clients.xml");
+            //success = success && FileDownloader.getConfig("Groups.xml");
             if (success) {
                 FileService.readClients(new File(getLocalConfigDir() + "Clients.xml"));
                 FileService.readGroups(new File(getLocalConfigDir() + "Groups.xml"));
@@ -217,15 +219,21 @@ public class Config {
                     Main.quit();
                 }
                 Logger.appendln("SUCCESS", Logger.LOGTYPE_INFO);
+                Logger.appendln(thisClient.toString(), Logger.LOGTYPE_INFO);
+                for (Picture_Properties picture_properties : thisClient.getShownPictures()) {
+                    System.out.println(picture_properties +"|"+ picture_properties.getPresentationTime());
+                }
+
                 //TODO: Bilder Herunterladen
                 ImageTools.resizeAllImages(false);
                 //TODO: Bilder in ImageService speichern
                 Config.setImageService(new ImageService());
             } else {
-                Logger.appendln("", Logger.LOGTYPE_ERROR);
+                Logger.appendln("dhdsgfvbjfvt", Logger.LOGTYPE_ERROR);
             }
         } catch (IOException e) {
             Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
+            e.printStackTrace();
         }
     }
 
