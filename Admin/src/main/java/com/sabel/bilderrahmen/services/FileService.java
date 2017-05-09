@@ -69,13 +69,23 @@ public class FileService {
 
 
     public static ClientPool readClients() {
+
+
+        File xml = ftpService.getFile("/files/config/Clients.xml");
+        ClientPool clients = readClients(xml);
+        xml.delete();
+
+        return clients;
+    }
+
+
+    public static ClientPool readClients(File ClientsXml) {
         try {
             JAXBContext jc = JAXBContext.newInstance(ClientPool.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
-            File xml = ftpService.getFile("/files/config/Clients.xml");
+
             ClientPool clients = ClientPool.getInstance();
-            clients.setClientArrayList(((ClientPool) unmarshaller.unmarshal(xml)).getClientArrayList());
-            xml.delete();
+            clients.setClientArrayList(((ClientPool) unmarshaller.unmarshal(ClientsXml)).getClientArrayList());
             return clients;
         } catch (JAXBException e) {
             e.printStackTrace();
