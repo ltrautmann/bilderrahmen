@@ -245,11 +245,11 @@ public class Config {
                     mac = readLinuxMac("eth" + ifacenum);
                     if (mac == null) {
                         Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
-                    }
-                    mac = readLinuxMac("wlan" + ifacenum);
-                    if (mac == null) {
-                        Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
-                        ifacenum++;
+                        mac = readLinuxMac("wlan" + ifacenum);
+                        if (mac == null) {
+                            Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
+                            ifacenum++;
+                        }
                     }
                 }
             } else {
