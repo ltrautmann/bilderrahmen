@@ -5,11 +5,11 @@ import javax.swing.table.AbstractTableModel;
 /**
  * Created by Robin on 08.05.2017.
  */
-public class MyAbstractTableModel  extends AbstractTableModel{
+public class TimeTableModel extends AbstractTableModel{
     private Got_Pictures obj;
     private String[] titel = {"Name", "Dauer"};
 
-    public MyAbstractTableModel(Got_Pictures obj) {
+    public TimeTableModel(Got_Pictures obj) {
         this.obj = obj;
     }
 

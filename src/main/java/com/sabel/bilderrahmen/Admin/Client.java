@@ -74,12 +74,11 @@ public class Client implements Got_Pictures {
         return privatePictures.get(index);
     }
 
+
     @Override
     public int size() {
         return privatePictures.size();
     }
-
-
 
 
     public boolean addPrivatePicture(Picture_Properties privatePicture) {
@@ -231,7 +230,8 @@ public class Client implements Got_Pictures {
         }
 
     }
-    public ArrayList<Picture_Properties> getShownPictures(){
+
+    public ArrayList<Picture_Properties> getShownPictures() {
         ArrayList<Picture_Properties> allPics = new ArrayList<>();
 
         ArrayList<Group> groupByName = GroupPool.getInstance().getGroupByName(getGroups());

@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 /**
  * Created by robin on 05.05.17.
  */
+@Deprecated
 public class ModPictureTime extends JPanel {
     private JLabel name;
     private JFormattedTextField numberfield;

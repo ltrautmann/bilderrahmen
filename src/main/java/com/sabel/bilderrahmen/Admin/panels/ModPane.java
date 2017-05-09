@@ -1,3 +1,4 @@
+
 package com.sabel.bilderrahmen.Admin.panels;
 
 import com.sabel.bilderrahmen.Admin.Client;
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by robin on 05.05.17.
  */
+@Deprecated
 public class ModPane extends JScrollPane {
     public final static int MOD_CLIENT = 1;
     public final static int MOD_Gruppe = 2;
