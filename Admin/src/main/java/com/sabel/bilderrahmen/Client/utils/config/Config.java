@@ -1,5 +1,7 @@
 package com.sabel.bilderrahmen.Client.utils.config;
 
+import com.sabel.bilderrahmen.Admin.Client;
+import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
@@ -203,18 +205,28 @@ public class Config {
             success = success && FileDownloader.getConfig("Clients.xml");
             success = success && FileDownloader.getConfig("Groups.xml");
             if (success) {
-                //TODO: Config
-                //TODO: If client missing, register client on server
+                FileService.readClients(new File(getLocalConfigDir() + "Clients.xml"));
+                FileService.readGroups(new File(getLocalConfigDir() + "Groups.xml"));
+                Client thisClient = ClientPool.getInstance().getClientByName("ll");
+                if (thisClient == null) {
+                    Logger.appendln("Client was not found in configuration file, registering client with Server and exiting.", Logger.LOGTYPE_WARNING);
+                    HttpURLConnection huc = (HttpURLConnection) new URL(Config.getServer() + "config/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8")).openConnection();
+                    if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                        Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
+                    }
+                    Main.quit();
+                }
+                Logger.appendln("SUCCESS", Logger.LOGTYPE_INFO);
+                //TODO: Bilder Herunterladen
+                ImageTools.resizeAllImages(false);
+                //TODO: Bilder in ImageService speichern
+                Config.setImageService(new ImageService());
             } else {
                 Logger.appendln("", Logger.LOGTYPE_ERROR);
             }
         } catch (IOException e) {
             Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
         }
-        //TODO: Bilder Herunterladen
-        ImageTools.resizeAllImages(false);
-        //TODO: Bilder in ImageService speichern
-        Config.setImageService(new ImageService());
     }
 
     private static void readMAC() {
