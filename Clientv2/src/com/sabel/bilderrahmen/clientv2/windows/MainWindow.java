@@ -5,7 +5,7 @@ import com.sabel.bilderrahmen.clientv2.utils.config.Config;
 import com.sabel.bilderrahmen.clientv2.utils.image.ImageService;
 import com.sabel.bilderrahmen.clientv2.utils.image.SavedImage;
 import com.sabel.bilderrahmen.clientv2.utils.logger.Logger;
-import com.sabel.bilderrahmen.client.utils.panels.ImagePanel;
+import com.sabel.bilderrahmen.clientv2.utils.panels.ImagePanel;
 
 import javax.swing.JFrame;
 import java.awt.*;
