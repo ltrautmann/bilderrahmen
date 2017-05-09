@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 public class Edit_Times extends JPanel {
     public final static int MOD_CLIENT = 1;
     public final static int MOD_Gruppe = 2;
-    private JComboBox jComboBox;
+    public JComboBox jComboBox;
     private JPanel jPanel;
     private ComboBoxModel comboBoxModel;
     private int modus;

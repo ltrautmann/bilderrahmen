@@ -206,7 +206,7 @@ public class MainWindow extends JFrame {
         jTabbedPane.add("Gruppe Einstellungen",new Edit_Times(Edit_Times.MOD_Gruppe));
         jTabbedPane.add("Gruppen zuordnen", allocatePaneGroupToClient);
         jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
-        jTabbedPane.add("Client Einstellungen",new Edit_Times(Edit_Times.MOD_CLIENT));
+        jTabbedPane.add("Client Einstellungen",new EditClient());
 
         jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
 
