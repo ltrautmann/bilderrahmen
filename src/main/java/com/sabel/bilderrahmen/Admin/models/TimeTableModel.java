@@ -1,4 +1,6 @@
-package com.sabel.bilderrahmen.Admin.interfaces;
+package com.sabel.bilderrahmen.Admin.models;
+
+import com.sabel.bilderrahmen.Admin.interfaces.Got_Pictures;
 
 import javax.swing.table.AbstractTableModel;
 

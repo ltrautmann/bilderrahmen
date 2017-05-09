@@ -65,6 +65,7 @@ public class ClientPool {
             System.err.println("Nicht hinzugefügt");
             return false;
         }
+
         return true;
     }
 

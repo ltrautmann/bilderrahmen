@@ -1,7 +1,7 @@
 package com.sabel.bilderrahmen.Admin.panels;
 
 import com.sabel.bilderrahmen.Admin.interfaces.Got_Pictures;
-import com.sabel.bilderrahmen.Admin.interfaces.TimeTableModel;
+import com.sabel.bilderrahmen.Admin.models.TimeTableModel;
 import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 import com.sabel.bilderrahmen.Admin.resources.GroupPool;
 

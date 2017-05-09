@@ -255,4 +255,5 @@ public class Client implements Got_Pictures {
 
         return allPics;
     }
+
 }
