@@ -217,7 +217,7 @@ public class Config {
             Logger.appendln("Could not write local configuration file.", Logger.LOGTYPE_ERROR);
         }
         if (new File(getLocalConfigDir() + getDeviceID() + ".xml").exists()) {
-            //TODO: Config Einlesen
+
         } else {
             Logger.appendln("Config file was not found in local config directory. Searching for default configuration file in local config directory.", Logger.LOGTYPE_WARNING);
             if (new File(getLocalConfigDir() + "default.xml").exists()) {
