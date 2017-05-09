@@ -13,6 +13,7 @@ public class Main {
 
         FileService.readClients();
         FileService.readGroups();
+
         FileService.readPictures();
         FtpService.getInstance().disconnect();
 

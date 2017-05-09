@@ -25,7 +25,7 @@ public class FileService {
         FTPFile[] folder = ftpService.getFolder("/files/images");
         PicturePool picturePool = PicturePool.getInstance();
         for (FTPFile file : folder) {
-            if (!file.getName().equals(".."))
+            if (!file.getName().equals(""))
                 picturePool.addPicture(file.getName());
         }
         return picturePool;

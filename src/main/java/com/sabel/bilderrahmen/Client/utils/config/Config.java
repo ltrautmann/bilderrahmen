@@ -8,7 +8,6 @@ import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
 import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
-import com.sabel.bilderrahmen.Client.utils.web.FileDownloader;
 import com.sabel.bilderrahmen.Client.utils.web.MyAuthenticator;
 
 import javax.xml.bind.JAXBException;
