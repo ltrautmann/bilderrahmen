@@ -34,8 +34,8 @@ public class FtpService {
                 System.err.println("FTP server refused connection.");
             }
             ftpClient.login("bilderrahmen@bilderrahmen.cheaterll.de", "Kennwort0");
-            if(ftpClient.isConnected())
-            System.out.println("FTP Connected");
+            if (ftpClient.isConnected())
+                System.out.println("FTP Connected");
         } catch (IOException e) {
             e.printStackTrace();
         }

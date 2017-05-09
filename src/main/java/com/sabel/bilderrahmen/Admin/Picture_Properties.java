@@ -12,17 +12,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Picture_Properties {
+    @XmlElement
+    private int presentationTime;
+    @XmlElement
+    private String name;
     public Picture_Properties(int presentationTime, String name) {
         this.presentationTime = presentationTime;
         this.name = name;
     }
 
-    @XmlElement
-    private int presentationTime;
-    @XmlElement
-    private String name;
-
-    private Picture_Properties(){
+    private Picture_Properties() {
 
     }
 
@@ -63,6 +62,6 @@ public class Picture_Properties {
     @Override
     public String toString() {
         return
-                name ;
+                name;
     }
 }

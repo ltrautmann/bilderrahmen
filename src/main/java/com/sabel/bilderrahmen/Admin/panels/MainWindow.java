@@ -60,7 +60,7 @@ public class MainWindow extends JFrame {
         jScrollPaneCenter = new JScrollPane();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin-Bilderrahmen");
-        setMinimumSize(new Dimension(600,450));
+        setMinimumSize(new Dimension(600, 450));
         c = getContentPane();
         panel1 = new JPanel();
         jpCenter = new JPanel();
@@ -116,6 +116,22 @@ public class MainWindow extends JFrame {
         jpCenter.add(jTabbedPane);
         jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         reload();
+
+    }
+
+    public void reload() {
+
+        jTabbedPane.removeAll();
+        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
+        allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
+        allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
+        allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
+        jTabbedPane.add("Gruppe bekommt Bilder", allocatePaneGroupPicture);
+        jTabbedPane.add("Gruppe Einstellungen", new Edit_Times(Edit_Times.MOD_Gruppe));
+        jTabbedPane.add("Gruppen zuordnen", allocatePaneGroupToClient);
+        jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
+        jTabbedPane.add("Client Einstellungen", new EditClient());
+        jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
 
     }
 
@@ -187,29 +203,12 @@ public class MainWindow extends JFrame {
                 chooser.showOpenDialog(null);
                 File[] files = chooser.getSelectedFiles();
                 for (File file : files) {
-                    FtpService.getInstance().upload("files/images",file);
+                    FtpService.getInstance().upload("files/images", file);
                 }
-                JOptionPane.showMessageDialog(null,"Uploade done");
+                JOptionPane.showMessageDialog(null, "Uploade done");
 
             }
         });
-    }
-
-    public void reload() {
-
-        jTabbedPane.removeAll();
-        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
-        allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
-        allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
-        allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
-        jTabbedPane.add("Gruppe bekommt Bilder", allocatePaneGroupPicture);
-        jTabbedPane.add("Gruppe Einstellungen",new Edit_Times(Edit_Times.MOD_Gruppe));
-        jTabbedPane.add("Gruppen zuordnen", allocatePaneGroupToClient);
-        jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
-        jTabbedPane.add("Client Einstellungen",new EditClient());
-
-        jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
-
     }
 
 

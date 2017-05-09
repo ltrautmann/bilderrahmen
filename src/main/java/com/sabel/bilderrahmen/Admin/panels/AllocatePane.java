@@ -49,7 +49,6 @@ public class AllocatePane extends JPanel {
         });
         if (targets.get(0) instanceof Client && itmePool.get(0) instanceof Picture_Properties) {
             kindeOfPane = 2;
-
         }
         if (targets.get(0) instanceof Client && itmePool.get(0) instanceof Group) {
             kindeOfPane = 4;
@@ -71,7 +70,6 @@ public class AllocatePane extends JPanel {
         initComponents();
         buildWindow();
         initEvents();
-
 
     }
 
@@ -181,7 +179,7 @@ public class AllocatePane extends JPanel {
     }
 
     private void showGroupPictures() {
-       items = new JList(new AbstractListModel() {
+        items = new JList(new AbstractListModel() {
             @Override
             public int getSize() {
                 return ((Group) jComboBox.getSelectedItem()).getPictureList().size();
@@ -227,27 +225,28 @@ public class AllocatePane extends JPanel {
 
     private void showClientGroups() {
         items =
-        new JList(new AbstractListModel() {
-            @Override
-            public int getSize() {
-                Object selectedItem = jComboBox.getSelectedItem();
-                if (selectedItem instanceof Client) {
-                    return ((Client) selectedItem).getGroups().size();
+                new JList(new AbstractListModel() {
+                    @Override
+                    public int getSize() {
+                        Object selectedItem = jComboBox.getSelectedItem();
+                        if (selectedItem instanceof Client) {
+                            return ((Client) selectedItem).getGroups().size();
 
-                }
-                System.err.println("Client erwartet aber " + selectedItem + " erhalten");
-                return 0;
-            }
+                        }
+                        System.err.println("Client erwartet aber " + selectedItem + " erhalten");
+                        return 0;
+                    }
 
-            @Override
-            public Object getElementAt(int index) {
-                Object selectedItem = jComboBox.getSelectedItem();
-                if (selectedItem instanceof Client) {
-                    return ((Client) selectedItem).getGroups().get(index);
-                }
-                return null;
-            }
-        });jScrollPaneRight.setViewportView(items);
+                    @Override
+                    public Object getElementAt(int index) {
+                        Object selectedItem = jComboBox.getSelectedItem();
+                        if (selectedItem instanceof Client) {
+                            return ((Client) selectedItem).getGroups().get(index);
+                        }
+                        return null;
+                    }
+                });
+        jScrollPaneRight.setViewportView(items);
     }
 
     private void initComponents() {
@@ -281,7 +280,7 @@ public class AllocatePane extends JPanel {
 
     private JList ignoredPicturesofTarget() {
 
-         items = new JList(new AbstractListModel() {
+        items = new JList(new AbstractListModel() {
             @Override
             public int getSize() {
                 return ((Client) jComboBox.getSelectedItem()).getIgnoredPictures().size();
@@ -296,7 +295,7 @@ public class AllocatePane extends JPanel {
     }
 
     private JList privatePicturesofTarget() {
-         items = new JList(new AbstractListModel() {
+        items = new JList(new AbstractListModel() {
             @Override
             public int getSize() {
                 return ((Client) jComboBox.getSelectedItem()).getPrivatePictures().size();

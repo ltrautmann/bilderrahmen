@@ -28,10 +28,7 @@ public class IgnoreTabelModel extends AbstractTableModel {
                     groupPictures.add(picture_properties);
                 }
             }
-
         }
-
-
     }
 
     @Override
@@ -51,8 +48,8 @@ public class IgnoreTabelModel extends AbstractTableModel {
                 return groupPictures.get(rowIndex);
             case 1:
                 return client.getIgnoredPictures().contains(groupPictures.get(rowIndex));
-                default:
-                    return null;
+            default:
+                return null;
         }
     }
 
@@ -63,16 +60,14 @@ public class IgnoreTabelModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-
         switch (columnIndex) {
             case 0:
                 return String.class;
             case 1:
                 return Boolean.class;
-                default:
-                    return null;
+            default:
+                return null;
         }
-
     }
 
     @Override
@@ -81,9 +76,7 @@ public class IgnoreTabelModel extends AbstractTableModel {
             if (((Boolean) aValue).booleanValue()) {
                 client.addIgnoredPicture(groupPictures.get(rowIndex));
             } else {
-
                 client.removeIgnoredPicture(groupPictures.get(rowIndex));
-
             }
         }
     }
@@ -95,8 +88,8 @@ public class IgnoreTabelModel extends AbstractTableModel {
                 return "Bilder aus Gruppen";
             case 1:
                 return "Verborgen";
-                default:
-                    return null;
+            default:
+                return null;
         }
     }
 }

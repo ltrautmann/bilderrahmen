@@ -11,18 +11,19 @@ import java.util.ArrayList;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ClientPool {
+    @XmlTransient
+    private static ClientPool instance = null;
     @XmlElementWrapper(name = "Clients")
     @XmlElement(name = "Client")
     private ArrayList<Client> clientArrayList;
-    @XmlTransient
-    private static ClientPool instance = null;
 
 
-    private  ClientPool() {
+    private ClientPool() {
 
         clientArrayList = new ArrayList<>();
     }
-    public static ClientPool getInstance(){
+
+    public static ClientPool getInstance() {
         if (instance == null) {
             instance = new ClientPool();
 
@@ -40,14 +41,13 @@ public class ClientPool {
     }
 
 
-
-
     public Client getClientByName(String name) {
         for (Client c : clientArrayList)
             if (c.getName().equals(name))
                 return c;
         return null;
     }
+
     public Client getClientByMac(String mac) {
         for (Client c : clientArrayList)
             if (c.getMac().equals(mac))

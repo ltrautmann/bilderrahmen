@@ -81,7 +81,7 @@ public class EditClient extends Edit_Times {
 
     private void showName() {
         jTextFieldName.setText(jComboBox.getSelectedItem().toString());
-        if(jComboBox.getSelectedItem()instanceof Client)
-            jTextFieldMac.setText(((Client)jComboBox.getSelectedItem()).getMac());
+        if (jComboBox.getSelectedItem() instanceof Client)
+            jTextFieldMac.setText(((Client) jComboBox.getSelectedItem()).getMac());
     }
 }

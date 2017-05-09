@@ -1,4 +1,3 @@
-
 package com.sabel.bilderrahmen.Admin.panels;
 
 import com.sabel.bilderrahmen.Admin.Client;

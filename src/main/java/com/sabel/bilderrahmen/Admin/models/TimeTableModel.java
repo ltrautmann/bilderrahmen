@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  * Created by Robin on 08.05.2017.
  */
-public class TimeTableModel extends AbstractTableModel{
+public class TimeTableModel extends AbstractTableModel {
     private Got_Pictures obj;
     private String[] titel = {"Name", "Dauer"};
 
@@ -28,10 +28,10 @@ public class TimeTableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0:return obj.getPictureAt(rowIndex).getName();
-
-
-            case 1: return obj.getPictureAt(rowIndex).getPresentationTime();
+            case 0:
+                return obj.getPictureAt(rowIndex).getName();
+            case 1:
+                return obj.getPictureAt(rowIndex).getPresentationTime();
         }
         return null;
     }
@@ -67,6 +67,5 @@ public class TimeTableModel extends AbstractTableModel{
         }
         return null;
     }
-
 
 }

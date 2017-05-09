@@ -13,18 +13,18 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupPool {
 
-    @XmlElementWrapper(name = "Groups")
-    @XmlElement(name = "Group")
-    private  ArrayList<Group> groupArrayList = null;
     @XmlTransient
     private static GroupPool instance = null;
+    @XmlElementWrapper(name = "Groups")
+    @XmlElement(name = "Group")
+    private ArrayList<Group> groupArrayList = null;
 
     private GroupPool() {
-        if(groupArrayList==null)
-        groupArrayList = new ArrayList<>();
+        if (groupArrayList == null)
+            groupArrayList = new ArrayList<>();
     }
 
-    public static GroupPool getInstance(){
+    public static GroupPool getInstance() {
         if (instance == null) {
             instance = new GroupPool();
         }
@@ -32,22 +32,22 @@ public class GroupPool {
     }
 
     @XmlTransient
-    public  ArrayList<Group> getGroupArrayList() {
+    public ArrayList<Group> getGroupArrayList() {
         return groupArrayList;
     }
 
-    public  void setGroupArrayList(ArrayList<Group> ArrayList) {
+    public void setGroupArrayList(ArrayList<Group> ArrayList) {
         groupArrayList = ArrayList;
     }
 
-    public  Group getGroupByName(String name) {
+    public Group getGroupByName(String name) {
         for (Group c : groupArrayList)
             if (c.getGroupName().equals(name))
                 return c;
         return null;
     }
 
-    public  ArrayList<Group> getGroupByName(ArrayList<String> names) {
+    public ArrayList<Group> getGroupByName(ArrayList<String> names) {
         ArrayList<Group> groups = new ArrayList<>();
         for (String name : names) {
             groups.add(getGroupByName(name));
@@ -55,7 +55,7 @@ public class GroupPool {
         return groups;
     }
 
-    public  boolean addGroup(Group group) {
+    public boolean addGroup(Group group) {
         if (groupArrayList.contains(group)) {
             System.err.println("Gruppe bereits in der Liste");
             return false;
@@ -68,7 +68,7 @@ public class GroupPool {
         return true;
     }
 
-    public  boolean removeGroup(Group group) {
+    public boolean removeGroup(Group group) {
         if (!groupArrayList.contains(group)) {
             System.err.println("Gruppe nicht in der Liste");
             return false;

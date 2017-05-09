@@ -12,6 +12,11 @@ import java.util.List;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group implements Got_Pictures {
+    private String groupName;
+    @XmlElementWrapper(name = "GroupPictures")
+    @XmlElement(name = "Picture")
+    private ArrayList<Picture_Properties> pictureList;
+
     public Group(String groupName) {
         this.groupName = groupName;
         pictureList = new ArrayList<Picture_Properties>();
@@ -20,14 +25,12 @@ public class Group implements Got_Pictures {
     public Group() {
     }
 
-    private String groupName;
-
-    @XmlElementWrapper(name = "GroupPictures")
-    @XmlElement(name = "Picture")
-    private ArrayList<Picture_Properties> pictureList;
-
     public ArrayList<Picture_Properties> getPictureList() {
         return pictureList;
+    }
+
+    public void setPictureList(ArrayList<Picture_Properties> pictureList) {
+        this.pictureList = pictureList;
     }
 
     public String getGroupName() {
@@ -40,7 +43,7 @@ public class Group implements Got_Pictures {
 
     public void addPicture(Picture_Properties picture_properties) {
         if (!pictureList.contains(picture_properties)) {
-            pictureList.add(new Picture_Properties(picture_properties.getPresentationTime(),picture_properties.getName()));
+            pictureList.add(new Picture_Properties(picture_properties.getPresentationTime(), picture_properties.getName()));
         }
     }
 
@@ -52,10 +55,6 @@ public class Group implements Got_Pictures {
         if (pictureList.contains(picture_propertie)) {
             System.err.println("Löschen von " + picture_propertie + " fehlgeschlagen");
         }
-    }
-
-    public void setPictureList(ArrayList<Picture_Properties> pictureList) {
-        this.pictureList = pictureList;
     }
 
     public Picture_Properties getPictureByID(int pictureIndex) {
@@ -83,8 +82,7 @@ public class Group implements Got_Pictures {
             if (o instanceof Picture_Properties) {
                 addPicture((Picture_Properties) o);
 
-            }
-            else {
+            } else {
                 System.err.println("Its not a Picture its a " + o);
             }
         }
@@ -96,8 +94,7 @@ public class Group implements Got_Pictures {
             if (o instanceof Picture_Properties) {
                 removePicture((Picture_Properties) o);
 
-            }
-            else {
+            } else {
                 System.err.println("Its not a picture its a " + o);
             }
         }

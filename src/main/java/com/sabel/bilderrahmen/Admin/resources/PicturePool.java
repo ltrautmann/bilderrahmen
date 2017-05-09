@@ -14,13 +14,14 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PicturePool {
 
+    private static PicturePool instance = null;
     private ArrayList<Picture_Properties> pictureList;
-    private static PicturePool instance= null;
 
     private PicturePool() {
         this.pictureList = new ArrayList<Picture_Properties>();
     }
-    public static PicturePool getInstance(){
+
+    public static PicturePool getInstance() {
         if (instance == null) {
             instance = new PicturePool();
         }
