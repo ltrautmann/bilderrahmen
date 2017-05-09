@@ -14,6 +14,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 /**
@@ -119,7 +121,7 @@ public class MainWindow extends JFrame {
 
     }
 
-    public void reload() {
+    private void reload() {
 
         jTabbedPane.removeAll();
         allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
@@ -136,79 +138,65 @@ public class MainWindow extends JFrame {
     }
 
     private void initEvents() {
-        jmSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FileService.writeClients();
-                FileService.writeGroups();
+        jmSave.addActionListener(e -> {
+            FileService.writeClients();
+            FileService.writeGroups();
+        });
+        jmReload.addActionListener(e -> {
+            FileService.readClients();
+            FileService.readGroups();
+            reload();
+        });
+        jTabbedPane.addChangeListener(e -> {
+            if (jTabbedPane.getSelectedComponent() instanceof AllocatePane) {
+                ((AllocatePane) jTabbedPane.getSelectedComponent()).refreshPane();
             }
         });
-        jmReload.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FileService.readClients();
-                FileService.readGroups();
-                reload();
-            }
+        jmNewClient.addActionListener(e -> {
+            String name ,mac;
+            do {
+                name = JOptionPane.showInputDialog("name of New Client");
+                mac = JOptionPane.showInputDialog("mac of New Client");
+            } while (
+                    !ClientPool.getInstance().addClient(new Client(name, mac)));
+            reload();
         });
-        jTabbedPane.addChangeListener(new ChangeListener() {
+        jmNewGroup.addActionListener(e -> {
+            while (!GroupPool.getInstance().addGroup(new Group(JOptionPane.showInputDialog("Groupname"))));
+            reload();
+
+        });
+        jmRemGroup.addActionListener(e -> {
+            GroupPool.getInstance().removeGroup((Group) JOptionPane.showInputDialog(null, "Welche Gruppe willst du löschen", "Löschdialog", JOptionPane.QUESTION_MESSAGE, null, GroupPool.getInstance().getGroupArrayList().toArray(), GroupPool.getInstance().getGroupArrayList().get(0)));
+            reload();
+
+        });
+        jmRemClient.addActionListener(e -> {
+            ClientPool.getInstance().removeClient((Client) JOptionPane.showInputDialog(null, "Welchen Client wills du löschen", "Löschdialog", JOptionPane.QUESTION_MESSAGE, null, ClientPool.getInstance().getClientArrayList().toArray(), ClientPool.getInstance().getClientArrayList().get(0)));
+            reload();
+        });
+        jmFileUpload.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(true);
+            chooser.showOpenDialog(null);
+            File[] files = chooser.getSelectedFiles();
+            for (File file : files) {
+                FtpService.getInstance().upload("files/images", file);
+            }
+            JOptionPane.showMessageDialog(null, "Uploade done");
+
+        });
+        addWindowListener(new WindowAdapter() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (jTabbedPane.getSelectedComponent() instanceof AllocatePane) {
-                    ((AllocatePane) jTabbedPane.getSelectedComponent()).refreshPane();
+            public void windowClosing(WindowEvent e) {
+                int speichern = JOptionPane.showConfirmDialog(null, "Änderungen speichern?", "Speichern?", JOptionPane.YES_NO_OPTION);
+                if (speichern == JOptionPane.YES_OPTION) {
+                    FileService.writeClients();
+                    FileService.writeGroups();
                 }
             }
         });
-        jmNewClient.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = "";
-                String mac = "";
-                do {
-                    name = JOptionPane.showInputDialog("name of New Client");
-                    mac = JOptionPane.showInputDialog("mac of New Client");
-                } while (
-                        !ClientPool.getInstance().addClient(new Client(name, mac)));
-                reload();
-            }
-        });
-        jmNewGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                while (!GroupPool.getInstance().addGroup(new Group(JOptionPane.showInputDialog("Groupname")))) ;
-                reload();
 
-            }
-        });
-        jmRemGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GroupPool.getInstance().removeGroup((Group) JOptionPane.showInputDialog(null, "Welche Gruppe willst du löschen", "Löschdialog", JOptionPane.QUESTION_MESSAGE, null, GroupPool.getInstance().getGroupArrayList().toArray(), GroupPool.getInstance().getGroupArrayList().get(0)));
-                reload();
-
-            }
-        });
-        jmRemClient.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ClientPool.getInstance().removeClient((Client) JOptionPane.showInputDialog(null, "Welchen Client wills du löschen", "Löschdialog", JOptionPane.QUESTION_MESSAGE, null, ClientPool.getInstance().getClientArrayList().toArray(), ClientPool.getInstance().getClientArrayList().get(0)));
-                reload();
-            }
-        });
-        jmFileUpload.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.setMultiSelectionEnabled(true);
-                chooser.showOpenDialog(null);
-                File[] files = chooser.getSelectedFiles();
-                for (File file : files) {
-                    FtpService.getInstance().upload("files/images", file);
-                }
-                JOptionPane.showMessageDialog(null, "Uploade done");
-
-            }
-        });
     }
 
 
