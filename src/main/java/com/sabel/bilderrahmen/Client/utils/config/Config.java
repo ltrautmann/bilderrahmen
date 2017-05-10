@@ -256,8 +256,6 @@ public class Config {
                         }
                     }
                     setImageService(new ImageService(savedImages));
-                    System.out.println(savedImages);
-                    System.out.println(imageService);
                     ImageTools.resizeAllImages(false);
                     return true;
                 }

@@ -61,6 +61,9 @@ public class ImageService {
         if (index < 0) {
             index = 0;
         }
+        if (size() < 1) {
+            return null;
+        }
         return (index == images.size() - 1) ? images.get(0) : images.get(index + 1);
     }
 
@@ -69,11 +72,17 @@ public class ImageService {
         if (index < 0) {
             index = 0;
         }
+        if (size() < 1) {
+            return null;
+        }
         return (index == 0) ? images.get(images.size() - 1) : images.get(index - 1);
     }
 
     public SavedImage randomImage() throws IOException {
         if (random == null) random = new Random();
+        if (size() < 1) {
+            return null;
+        }
         return images.get(random.nextInt(images.size()));
     }
 

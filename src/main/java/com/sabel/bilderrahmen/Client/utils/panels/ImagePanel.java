@@ -17,7 +17,7 @@ public class ImagePanel extends JPanel {
         add(picture);
     }
 
-    public void setImage(Image i) {
+    public void setImage(Image i) throws NullPointerException {
         if (i == null) {
             throw new NullPointerException("Image to be updated was null.");
         } else {

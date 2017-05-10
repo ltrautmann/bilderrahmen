@@ -62,6 +62,8 @@ public class MainWindow extends JFrame {
                                 }
                             } catch (IOException e) {
                                 Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
+                            } catch (NullPointerException e) {
+                                Logger.appendln("Image to be updated was null, skipping image. This is probably due to attempting to read a new image that is currently being scaled.", Logger.LOGTYPE_WARNING);
                             }
                             TimeUnit.SECONDS.sleep(img.getDisplayTime());
                         }
@@ -85,6 +87,10 @@ public class MainWindow extends JFrame {
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                         Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);
                         Logger.appendln(Config.getImageService().toString(), Logger.LOGTYPE_INFO);
+                        if (Config.getImageService().size() < 1) {
+                            Logger.appendln("No images provided to display thread. Exiting.", Logger.LOGTYPE_FATAL);
+                            Main.quit();
+                        }
                     } catch (InterruptedException e) {
                         Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
                     }

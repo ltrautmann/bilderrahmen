@@ -7,10 +7,7 @@ import sun.misc.BASE64Encoder;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -22,15 +19,15 @@ public class WebService {
     private static char[] passwd;
 
     public static boolean getImage(String file) throws IOException {
-        return download(Config.getServer() + Config.getRemoteImageDir() + file, Config.getLocalImageDir() + file);
+        return download(Config.getServer() + Config.getRemoteImageDir() + urlEncode(file), Config.getLocalImageDir() + file);
     }
 
     public static boolean getConfig(String file) throws IOException {
-        return download(Config.getServer() + Config.getRemoteConfigDir() + file, Config.getLocalConfigDir() + file);
+        return download(Config.getServer() + Config.getRemoteConfigDir() + urlEncode(file), Config.getLocalConfigDir() + file);
     }
 
     public static boolean getFile(String srcURL, String destPath) throws IOException {
-        return download(Config.getServer() + srcURL, destPath);
+        return download(Config.getServer() + urlEncode(srcURL), destPath);
     }
 
     private static boolean download(String url, String file) throws IOException {
@@ -49,6 +46,11 @@ public class WebService {
         } else {
             return false;
         }
+    }
+
+    private static String urlEncode(String s) {
+        return s.replaceAll(" ", "%20")
+                .replaceAll(",", "%2C");
     }
 
     public static HttpURLConnection authenticateConnection(HttpURLConnection con) {
