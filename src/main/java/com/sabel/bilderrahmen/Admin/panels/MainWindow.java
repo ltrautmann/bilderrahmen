@@ -185,6 +185,8 @@ public class MainWindow extends JFrame {
                 FtpService.getInstance().upload("files/images", file);
             }
             JOptionPane.showMessageDialog(null, "Uploade done");
+            FileService.readPictures();
+            reload();
 
         });
         addWindowListener(new WindowAdapter() {
