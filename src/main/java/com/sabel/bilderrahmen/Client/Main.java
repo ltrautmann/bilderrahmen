@@ -1,6 +1,7 @@
 package com.sabel.bilderrahmen.Client;
 
 import com.sabel.bilderrahmen.Client.utils.config.Config;
+import com.sabel.bilderrahmen.Client.utils.helper.MouseMover;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 import com.sabel.bilderrahmen.Client.windows.ConfigWindow;
@@ -75,6 +76,9 @@ public class Main {
             }
         }
         Main.start();
+        Thread mouse = new Thread(new MouseMover());
+        mouse.setName("MOUSEMOVER");
+        mouse.start();
     }
 
     private static void start() {
