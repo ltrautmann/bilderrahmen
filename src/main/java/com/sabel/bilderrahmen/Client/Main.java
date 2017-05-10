@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.Client;
 
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
+import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 import com.sabel.bilderrahmen.Client.windows.ConfigWindow;
 import com.sabel.bilderrahmen.Client.windows.InitWindow;
 import com.sabel.bilderrahmen.Client.windows.MainWindow;
@@ -65,6 +66,9 @@ public class Main {
             String s = args[0];
             if (s.equals("-h") || s.equals("--help") || s.equals("/?") || s.equals("/h") || s.equals("/help")) {
                 printHelp();
+                System.exit(0);
+            } else if (s.equals("-t")) {
+                USBService.test();
                 System.exit(0);
             } else {
                 Config.passArgs(args);

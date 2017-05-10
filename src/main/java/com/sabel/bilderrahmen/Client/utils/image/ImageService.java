@@ -74,7 +74,7 @@ public class ImageService {
 
     public SavedImage randomImage() throws IOException {
         if (random == null) random = new Random();
-        return images.get(random.nextInt(images.size() - 1));
+        return images.get(random.nextInt(images.size()));
     }
 
     public static synchronized Image accessImage(String path, RenderedImage image, String imageFormat) throws IOException {
