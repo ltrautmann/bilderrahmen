@@ -40,6 +40,9 @@ public class LocalConfigFile {
         this.passwd = passwd;
     }
 
+    public LocalConfigFile() {
+    }
+
     public String getServer() {
         return server;
     }

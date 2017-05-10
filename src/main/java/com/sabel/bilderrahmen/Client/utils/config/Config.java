@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public class Config {
         setRemoteConfigDir("config/");
         setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
         setRemoteImageDir("images/");
-        setConfigUpdateInterval(15);
+        setConfigUpdateInterval(1800);
         WebService.setUname(new char[]{'g', 'b', 's'});
         WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
         setRandomImageOrder(true);
@@ -92,39 +93,49 @@ public class Config {
     }
 
     private static void interpretLocalConfigFile() {
-        String localConfig = getLocalConfigDir() + "local-config.xml";
-        if (new File(localConfig).exists()) {
-            try {
-                LocalConfigFile lcf = LocalConfigFile.read(localConfig);
-                if (lcf.getServer() != null && lcf.getServer().equals("")) {
-                    setServer(lcf.getServer());
-                    Logger.appendln("Download Server changed to \"" + getServer() + "\".", Logger.LOGTYPE_INFO);
-                }
-                if (lcf.getDevicename() != null && !lcf.getDevicename().equals("")) {
-                    setDevicename(lcf.getDevicename());
-                    Logger.appendln("Device name changed to \"" + getDevicename() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
-                }
-                if (lcf.getLocalRootDir() != null && !lcf.getLocalRootDir().equals("")) {
-                    setLocalRootDir(lcf.getLocalRootDir());
-                    Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-                }
-                if (lcf.getConfigUpdateInterval() != 0) {
-                    setConfigUpdateInterval(lcf.getConfigUpdateInterval());
-                    Logger.appendln("Update Interval changed to \"" + getConfigUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
-                }
-                if (lcf.getUname() != null && !lcf.getUname().equals("")) {
-                    WebService.setUname(lcf.getUname().toCharArray());
-                    Logger.appendln("Device name changed to \"" + lcf.getUname() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
-                }
-                if (lcf.getPasswd() != null && !lcf.getPasswd().equals("")) {
-                    WebService.setPasswd(lcf.getPasswd().toCharArray());
-                    Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
-                }
-            } catch (JAXBException e) {
-                Logger.appendln("Local config file was found but could not be read. This may result in an inability to connect to the Server.", Logger.LOGTYPE_ERROR);
+        try {
+            String localConfig = getLocalConfigDir() + "local-config.xml";
+            if (!new File(localConfig).exists()) {
+                Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()));
+                lcf.write(localConfig);
             }
-        } else {
-            Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+            LocalConfigFile lcf = LocalConfigFile.read(localConfig);
+            int count = 0;
+            if (lcf.getServer() != null && lcf.getServer().equals("") && !lcf.getServer().equals(getServer())) {
+                setServer(lcf.getServer());
+                Logger.appendln("Download Server changed to \"" + getServer() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.getDevicename() != null && !lcf.getDevicename().equals("") && !lcf.getDevicename().equals(getDevicename())) {
+                setDevicename(lcf.getDevicename());
+                Logger.appendln("Device name changed to \"" + getDevicename() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.getLocalRootDir() != null && !lcf.getLocalRootDir().equals("") && !lcf.getLocalRootDir().equals(getLocalRootDir())) {
+                setLocalRootDir(lcf.getLocalRootDir());
+                Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.getConfigUpdateInterval() != 0 && lcf.getConfigUpdateInterval() != getConfigUpdateInterval()) {
+                setConfigUpdateInterval(lcf.getConfigUpdateInterval());
+                Logger.appendln("Update Interval changed to \"" + getConfigUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.getUname() != null && !lcf.getUname().equals("") && !Arrays.equals(lcf.getUname().toCharArray(), WebService.getUname())) {
+                WebService.setUname(lcf.getUname().toCharArray());
+                Logger.appendln("Device name changed to \"" + lcf.getUname() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.getPasswd() != null && !lcf.getPasswd().equals("") && !Arrays.equals(lcf.getPasswd().toCharArray(), WebService.getPasswd())) {
+                WebService.setPasswd(lcf.getPasswd().toCharArray());
+                Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            Logger.appendln("Local config file was found, " + count + ((count == 1) ? " value was changed." : " values were changed"), Logger.LOGTYPE_INFO);
+        } catch (JAXBException e) {
+            Logger.appendln("Local config file could not be accessed. This may result in an inability to connect to the Server.", Logger.LOGTYPE_ERROR);
+            e.printStackTrace();
         }
     }
 

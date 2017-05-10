@@ -39,7 +39,6 @@ public class MainWindow extends JFrame {
     }
 
     private void start() {
-        imageService = Config.getImageService();
         imageUpdateThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,11 +52,11 @@ public class MainWindow extends JFrame {
                         while (!Thread.currentThread().isInterrupted()) {
                             try {
                                 if (Config.isRandomImageOrder()) {
-                                    img = imageService.randomImage();
+                                    img = Config.getImageService().randomImage();
                                     Logger.appendln("Applying random image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
                                     imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
                                 } else {
-                                    img = imageService.next(img);
+                                    img = Config.getImageService().next(img);
                                     Logger.appendln("Applying next image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
                                     imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
                                 }
