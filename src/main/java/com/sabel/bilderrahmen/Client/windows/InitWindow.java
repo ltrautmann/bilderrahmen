@@ -51,9 +51,9 @@ public class InitWindow extends JFrame {
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 int serverResponseCode = Config.testServerConnection();
-                if (serverResponseCode== HttpURLConnection.HTTP_OK) {
+                if (serverResponseCode == HttpURLConnection.HTTP_OK) {
                     Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
-                    if (Config.readServerConfig()){
+                    if (Config.readServerConfig()) {
                         Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
                         Main.setMainWindow(new MainWindow());
                     }

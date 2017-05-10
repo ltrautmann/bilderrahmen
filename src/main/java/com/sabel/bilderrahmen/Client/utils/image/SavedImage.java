@@ -32,7 +32,7 @@ public class SavedImage {
         return picture_properties;
     }
 
-    public int getDisplayTime(){
+    public int getDisplayTime() {
         return getPicture_properties().getPresentationTime();
     }
 

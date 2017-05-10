@@ -307,7 +307,7 @@ public class Config {
             return network.getHardwareAddress();
         } catch (Exception e) {
             Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
-            JOptionPane.showMessageDialog(null,e);
+            JOptionPane.showMessageDialog(null, e);
             return null;
         }
     }

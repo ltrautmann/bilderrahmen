@@ -37,7 +37,7 @@ public class ConfigWindow extends JFrame {
 
     }
 
-    public void exitForRestart(){
+    public void exitForRestart() {
         JOptionPane.showMessageDialog(ConfigWindow.this, "Configuration Changes saved. Program will now exit.", "Configuration Changes Applied", JOptionPane.INFORMATION_MESSAGE);
         Main.restart();
     }

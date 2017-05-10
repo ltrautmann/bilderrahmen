@@ -51,7 +51,7 @@ public class WebService {
         }
     }
 
-    public static HttpURLConnection authenticateConnection(HttpURLConnection con){
+    public static HttpURLConnection authenticateConnection(HttpURLConnection con) {
         String login = new BASE64Encoder().encode((new String(uname) + ":" + new String(passwd)).getBytes());
         con.setRequestProperty("Authorization", "Basic " + login);
         return con;

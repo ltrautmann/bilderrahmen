@@ -22,7 +22,7 @@ public class LocalConfigFile {
 
     public static LocalConfigFile read(String path) throws JAXBException {
         Unmarshaller um = JAXBContext.newInstance(LocalConfigFile.class).createUnmarshaller();
-        return  (LocalConfigFile) um.unmarshal(new File(path));
+        return (LocalConfigFile) um.unmarshal(new File(path));
     }
 
     public void write(String path) throws JAXBException {
