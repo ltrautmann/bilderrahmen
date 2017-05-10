@@ -50,7 +50,7 @@ public class FtpService {
             FileInputStream fi = new FileInputStream(file);
             ftpClient.setFileTransferMode(FTP.BLOCK_TRANSFER_MODE);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.storeFile(file.getName(), fi);
+            ftpClient.storeFile(file.getName().replace(' ','_'), fi);
             fi.close();
             //file.delete();
             // ftpClient.logout();
