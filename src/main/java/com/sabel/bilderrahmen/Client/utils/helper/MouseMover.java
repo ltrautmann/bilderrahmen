@@ -12,16 +12,14 @@ public class MouseMover implements Runnable {
 
     static {
         try {
-            Robot hal = new Robot();
+            hal = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
 
-    public static void runit()
-
-    {
+    public static void runit() {
         while (!Thread.currentThread().isInterrupted()) {
             hal.delay(1000);
             int x = MouseInfo.getPointerInfo().getLocation().x ^ 10; // + - 1 Pixel
