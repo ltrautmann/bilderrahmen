@@ -22,8 +22,8 @@ public class MouseMover implements Runnable {
     public static void runit() {
         while (!Thread.currentThread().isInterrupted()) {
             hal.delay(1000);
-            int x = MouseInfo.getPointerInfo().getLocation().x ^ 10; // + - 1 Pixel
-            int y = MouseInfo.getPointerInfo().getLocation().y ^ 10; // + - 1 Pixel
+            int x = MouseInfo.getPointerInfo().getLocation().x ^ 1; // + - 1 Pixel
+            int y = MouseInfo.getPointerInfo().getLocation().y ^ 1; // + - 1 Pixel
             hal.mouseMove(x, y);
         }
     }
