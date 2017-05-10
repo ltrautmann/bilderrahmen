@@ -230,7 +230,7 @@ public class Config {
                             String name = p.getName();
                             if (new File(getLocalImageDir() + name).exists()) {
                                 Logger.appendln("Image \"" + name + "\" already exists, skipping download.", Logger.LOGTYPE_INFO);
-                                savedImages.add(new SavedImage(getLocalImageDir() + name, new Picture_Properties(p.getPresentationTime() * 1000, p.getName())));
+                                savedImages.add(new SavedImage(getLocalImageDir() + name, p));
                             } else {
                                 Logger.appendln("Attempting download of image \"" + name + "\"", Logger.LOGTYPE_INFO);
                                 boolean downloaded = WebService.getImage(p.getName());
@@ -269,10 +269,8 @@ public class Config {
                 while (mac == null && ifacenum < 10) {
                     mac = readLinuxMac("eth" + ifacenum);
                     if (mac == null) {
-                        Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
                         mac = readLinuxMac("wlan" + ifacenum);
                         if (mac == null) {
-                            Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
                             ifacenum++;
                         }
                     }
@@ -307,7 +305,6 @@ public class Config {
             return network.getHardwareAddress();
         } catch (Exception e) {
             Logger.appendln("Unsuccessful, attempting next interface", Logger.LOGTYPE_INFO);
-            JOptionPane.showMessageDialog(null, e);
             return null;
         }
     }

@@ -54,17 +54,17 @@ public class MainWindow extends JFrame {
                             try {
                                 if (Config.isRandomImageOrder()) {
                                     img = imageService.randomImage();
-                                    Logger.appendln("Applying random image: " + img.getPicture_properties().getName(), Logger.LOGTYPE_INFO);
-                                    System.out.println(img);
+                                    Logger.appendln("Applying random image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
                                     imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
                                 } else {
                                     img = imageService.next(img);
+                                    Logger.appendln("Applying next image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
                                     imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
                                 }
                             } catch (IOException e) {
                                 Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
                             }
-                            TimeUnit.MILLISECONDS.sleep(img.getDisplayTime());
+                            TimeUnit.SECONDS.sleep(img.getDisplayTime());
                         }
                     }
                 } catch (InterruptedException e) {
@@ -84,6 +84,8 @@ public class MainWindow extends JFrame {
                         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                         Config.readServerConfig();
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+                        Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);
+                        Logger.appendln(Config.getImageService().toString(), Logger.LOGTYPE_INFO);
                     } catch (InterruptedException e) {
                         Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
                     }
