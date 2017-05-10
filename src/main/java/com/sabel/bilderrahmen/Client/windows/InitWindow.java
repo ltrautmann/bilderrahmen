@@ -53,9 +53,10 @@ public class InitWindow extends JFrame {
                 int serverResponseCode = Config.testServerConnection();
                 if (serverResponseCode== HttpURLConnection.HTTP_OK) {
                     Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
-                    Config.readServerConfig();
-                    Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
-                    Main.setMainWindow(new MainWindow());
+                    if (Config.readServerConfig()){
+                        Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
+                        Main.setMainWindow(new MainWindow());
+                    }
                 } else {
                     Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
                     Main.setConfigWindow(new ConfigWindow());

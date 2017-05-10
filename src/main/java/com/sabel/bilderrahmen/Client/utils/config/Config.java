@@ -203,7 +203,7 @@ public class Config {
         }
     }
 
-    public static void readServerConfig() {
+    public static boolean readServerConfig() {
         try {
             boolean success = true;
             success = success && WebService.getConfig("Clients.xml");
@@ -218,7 +218,9 @@ public class Config {
                     if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
                     }
+                    Logger.appendln("No Configuration Available.", Logger.LOGTYPE_FATAL);
                     Main.quit();
+                    return false;
                 } else {
                     Logger.appendln("Successfully downloaded and read configuration file, downloading images.", Logger.LOGTYPE_INFO);
                     List<Picture_Properties> shownPictures = thisClient.getShownPictures();
@@ -246,13 +248,15 @@ public class Config {
                     System.out.println(savedImages);
                     System.out.println(imageService);
                     ImageTools.resizeAllImages(false);
+                    return true;
                 }
             } else {
                 Logger.appendln("Unable to get configuration files from server", Logger.LOGTYPE_ERROR);
+                return false;
             }
         } catch (IOException e) {
             Logger.appendln("Could not write downloaded configuration file or download server could not be reached", Logger.LOGTYPE_ERROR);
-            e.printStackTrace();
+            return false;
         }
     }
 

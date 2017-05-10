@@ -66,7 +66,7 @@ public class WebService {
     }
 
     public static HttpURLConnection getConnection(URL url) throws IOException {
-        return authenticateConnection((HttpURLConnection) url.openConnection());
+        return (HttpURLConnection) url.openConnection();
     }
 
     public static HttpURLConnection getConnection(String url) throws IOException {
