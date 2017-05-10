@@ -46,7 +46,6 @@ public class Edit_Times extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 model = new TimeTableModel((Got_Pictures) jComboBox.getSelectedItem());
                 table.setModel(model);
-                // model.fireTableDataChanged();
 
             }
         });
