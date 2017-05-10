@@ -233,7 +233,7 @@ public class Client implements Got_Pictures {
     }
 
     public ArrayList<Picture_Properties> getShownPictures() {
-        ArrayList<Picture_Properties> allPics = new ArrayList<>();
+        ArrayList<Picture_Properties> allPics = new ArrayList<Picture_Properties>();
 
         ArrayList<Group> groupByName = GroupPool.getInstance().getGroupByName(getGroups());
         for (Group group : groupByName) {
