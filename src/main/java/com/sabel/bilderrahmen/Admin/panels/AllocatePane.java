@@ -128,6 +128,7 @@ public class AllocatePane extends JPanel {
         jBrem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println(kindeOfPane);
                 switch (kindeOfPane) {
                     case 1: {
                         ((Client) jComboBox.getSelectedItem()).removeIgnoredPicture(items.getSelectedValuesList());
