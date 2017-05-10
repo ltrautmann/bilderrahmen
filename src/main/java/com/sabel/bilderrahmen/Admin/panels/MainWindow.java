@@ -145,6 +145,7 @@ public class MainWindow extends JFrame {
         jmReload.addActionListener(e -> {
             FileService.readClients();
             FileService.readGroups();
+            FileService.readPictures();
             reload();
         });
         jTabbedPane.addChangeListener(e -> {
@@ -196,6 +197,7 @@ public class MainWindow extends JFrame {
                 }
             }
         });
+        reload();
 
     }
 
