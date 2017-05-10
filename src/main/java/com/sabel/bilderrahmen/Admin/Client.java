@@ -223,16 +223,17 @@ public class Client implements Got_Pictures {
 
     public void removeGroup(List selectedValuesList) {
         for (Object o : selectedValuesList) {
-            if (o instanceof Group) {
-                removeGroup(o.toString());
+            if (o instanceof Group || o instanceof String) {
+                removeGroup((String) o);
             }
+            else
             System.err.println("Its not a group its a " + o);
         }
 
     }
 
     public ArrayList<Picture_Properties> getShownPictures() {
-        ArrayList<Picture_Properties> allPics = new ArrayList<>();
+        ArrayList<Picture_Properties> allPics = new ArrayList<Picture_Properties>();
 
         ArrayList<Group> groupByName = GroupPool.getInstance().getGroupByName(getGroups());
         for (Group group : groupByName) {
