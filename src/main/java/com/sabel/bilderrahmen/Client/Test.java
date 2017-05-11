@@ -7,6 +7,6 @@ import com.sabel.bilderrahmen.Client.utils.usb.USBService;
  */
 public class Test {
     public static void main(String[] args) {
-        USBService.test();
+        //USBService.test();
     }
 }
