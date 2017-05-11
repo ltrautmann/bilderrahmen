@@ -1,24 +1,29 @@
 package com.sabel.bilderrahmen.Admin.models;
 
+import com.sabel.bilderrahmen.Admin.services.Client_Create;
 import com.sabel.bilderrahmen.Admin.services.FtpService;
 import org.apache.commons.net.ftp.FTPFile;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by robin on 10.05.17.
  */
 public class CreateClientTableModel extends AbstractTableModel {
-    private List<String> files;
+    private ArrayList<Client_Create> newClients;
+
+    public ArrayList<Client_Create> getNewClients() {
+        return newClients;
+    }
 
     public CreateClientTableModel() {
-        files = new ArrayList<>();
+        newClients = new ArrayList<>();
         FTPFile[] folder = FtpService.getInstance().getFolder("files/clients");
         for (FTPFile ftpFile : folder) {
-            files.add(ftpFile.getName());
 
+            if(!ftpFile.getName().equals(".")&&!ftpFile.getName().equals("..")&&!ftpFile.getName().contains(".php"))
+                newClients.add(new Client_Create(ftpFile.getName()));
         }
 
     }
@@ -31,24 +36,35 @@ public class CreateClientTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0:
-                return files.get(rowIndex+2).toString().substring(0, files.get(rowIndex+2).toString().lastIndexOf("-") - 1);
-            case 1:
-                return files.get(rowIndex+2).toString().substring( files.get(rowIndex+2).toString().lastIndexOf("-") + 1,files.get(rowIndex+2).toString().length()-1);
+            case 0:return  newClients.get(rowIndex).getName();
+            case 1:return  newClients.get(rowIndex).getMac();
 
-            case 2:return true;
+            case 2:return newClients.get(rowIndex).createMe;
         }
         return true;
     }
 
     @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex !=1;
+    }
+
+    @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return super.getColumnClass(columnIndex);
+        switch (columnIndex) {
+            case 0:return String.class;
+            case 1:return String.class;
+            case 2:return Boolean.class;
+        }
+        return null;
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        super.setValueAt(aValue, rowIndex, columnIndex);
+        switch (columnIndex) {
+            case 0: newClients.get(rowIndex).setName(aValue.toString()); break;
+            case 2: newClients.get(rowIndex).createMe = (boolean) aValue;break;
+        }
     }
 
     @Override
@@ -68,11 +84,13 @@ public class CreateClientTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return files.size()-2;
+        return newClients.size();
     }
 
     @Override
     public void fireTableRowsDeleted(int firstRow, int lastRow) {
         super.fireTableRowsDeleted(firstRow, lastRow);
     }
+
+
 }

@@ -104,4 +104,16 @@ public class FtpService {
             }
         }
     }
+
+    public boolean delFile(String pfad) {
+        if (!ftpClient.isConnected()) {
+            login();
+        }
+        try {
+            return ftpClient.deleteFile(pfad);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
