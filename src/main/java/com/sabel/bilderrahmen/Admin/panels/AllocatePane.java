@@ -32,6 +32,7 @@ public class AllocatePane extends JPanel {
     private JButton jBadd;
     private JButton jBrem;
     private int kindeOfPane; // 1= ignore Pictures; 2= Bild >> Client; 3= Bild >> Gruppe; 4 = Gruppe >> Client
+    private JPanel jGridMiddle;
 
     public AllocatePane(ArrayList itmePool, ArrayList targets) {
         this.targets = targets;
@@ -202,8 +203,6 @@ public class AllocatePane extends JPanel {
         jPanelRight.setLayout(new BorderLayout());
         jPanelLeft.add(jScrollPaneLeft);
         jPanelRight.add(jScrollPaneRight);
-        //  jPanelRight.setPreferredSize(new Dimension(200, 300));
-        // jPanelLeft.setPreferredSize(new Dimension(200, 300));
         jSplitPane1.setLeftComponent(jPanelLeft);
         jSplitPane1.setRightComponent(jSplitPane2);
         jSplitPane2.setLeftComponent(jPanelMiddle);
@@ -213,8 +212,11 @@ public class AllocatePane extends JPanel {
         jPanelAdd.add(jBadd);
         jPanelRem.add(jBrem);
         add(jPanelCombobox,BorderLayout.NORTH);
-        jPanelMiddle.add(jPanelAdd);
-        jPanelMiddle.add(jPanelRem);
+        jGridMiddle.add(jPanelAdd);
+        jGridMiddle.add(jPanelRem);
+        jGridMiddle.setSize(20,20);
+        jPanelMiddle.setLayout(new GridBagLayout());
+        jPanelMiddle.add(jGridMiddle);
         if (itmePool == null) {
             showTarget();
         } else {
@@ -255,6 +257,8 @@ public class AllocatePane extends JPanel {
 
     private void initComponents() {
 
+        jGridMiddle = new JPanel();
+        jGridMiddle.setLayout(new BoxLayout(jGridMiddle,BoxLayout.Y_AXIS));
         jPanelAdd = new JPanel();
         jPanelRem = new JPanel();
         jPanelCombobox = new JPanel();
@@ -267,7 +271,7 @@ public class AllocatePane extends JPanel {
         jBrem = new JButton("<<");
         jBadd.setSize(60, 20);
         jBrem.setSize(60, 20);
-        jPanelMiddle.setLayout(new GridLayout(3, 1));
+        jPanelMiddle.setLayout(new BorderLayout());
         jScrollPaneRight = new JScrollPane();
         jScrollPaneLeft = new JScrollPane();
     }
