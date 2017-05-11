@@ -18,7 +18,6 @@ public class Main {
         FileService.readPictures();
         FtpService.getInstance().disconnect();
 
-        new AcceptClient();
         new MainWindow();
 
     }

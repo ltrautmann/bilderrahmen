@@ -37,12 +37,11 @@ public class MainWindow extends JFrame {
     private JMenuItem jmSave;
     private JMenuItem jmReload;
     private JMenuItem jmNewClient;
+    private JMenuItem jmAcceptClient;
     private JMenuItem jmNewGroup;
     private JMenuItem jmRemClient;
     private JMenuItem jmRemGroup;
     private JTabbedPane jTabbedPane;
-
-    private AllocatePane allocatePaneIgnore;
     private AllocatePane allocatePaneGroupToClient;
     private AllocatePane allocatePaneClientPictures;
     private AllocatePane allocatePaneGroupPicture;
@@ -73,6 +72,7 @@ public class MainWindow extends JFrame {
         jMenuNeu = new JMenu("Neu");
         jMenuRemove = new JMenu("Löschen");
         jmNewClient = new JMenuItem("Client");
+        jmAcceptClient = new JMenuItem("AcceptClient");
         jmRemClient = new JMenuItem("Client");
         jmNewGroup = new JMenuItem("Gruppe");
         jmRemGroup = new JMenuItem("Gruppe");
@@ -81,7 +81,6 @@ public class MainWindow extends JFrame {
         jmFileUpload = new JMenuItem("FileUpload");
         jTabbedPane = new JTabbedPane();
 
-        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
@@ -101,6 +100,7 @@ public class MainWindow extends JFrame {
         jMenuDatei.add(jmSave);
         jMenuDatei.add(jmReload);
         jMenuBar.add(jMenuNeu);
+        jMenuNeu.add(jmAcceptClient);
         jMenuNeu.add(jmNewClient);
         jMenuNeu.add(jmNewGroup);
         jMenuBar.add(jMenuRemove);
@@ -120,7 +120,6 @@ public class MainWindow extends JFrame {
     private void reload() {
 
         jTabbedPane.removeAll();
-        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
@@ -134,6 +133,10 @@ public class MainWindow extends JFrame {
     }
 
     private void initEvents() {
+        jmAcceptClient.addActionListener(e -> {
+            new AcceptClient();
+        });
+
         jmSave.addActionListener(e -> {
             FileService.writeClients();
             FileService.writeGroups();
