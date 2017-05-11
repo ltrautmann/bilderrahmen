@@ -11,7 +11,6 @@ import com.sabel.bilderrahmen.Client.utils.image.SavedImage;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.web.WebService;
 
-import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +37,8 @@ public class Config {
     private static String remoteConfigDir;
     private static String remoteConfigFile;
     private static int configUpdateInterval;
+    private static int usbUpdateInterval;
+    private static boolean usbEnabled;
     private static boolean unixDevice;
     private static boolean randomImageOrder;
     private static String[] args;
@@ -89,7 +90,7 @@ public class Config {
             Logger.appendln("Not all required directories could be created. Please check that you have sufficient permissions on the folder \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_FATAL);
             Main.quit();
         }
-        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()));
+        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder());
     }
 
     private static void interpretLocalConfigFile() {
@@ -97,7 +98,7 @@ public class Config {
             String localConfig = getLocalConfigDir() + "local-config.xml";
             if (!new File(localConfig).exists()) {
                 Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()));
+                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder());
                 lcf.write(localConfig);
             }
             LocalConfigFile lcf = LocalConfigFile.read(localConfig);
@@ -132,7 +133,22 @@ public class Config {
                 Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
                 count++;
             }
-            Logger.appendln("Local config file was found, " + count + ((count == 1) ? " value was changed." : " values were changed"), Logger.LOGTYPE_INFO);
+            if (lcf.getUsbUpdateInterval() != 0 && lcf.getUsbUpdateInterval() != getUsbUpdateInterval()) {
+                setUsbUpdateInterval(lcf.getUsbUpdateInterval());
+                Logger.appendln("USB update Interval changed to \"" + getUsbUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.isUsbEnabled() != isUsbEnabled()) {
+                setUsbEnabled(lcf.isUsbEnabled());
+                Logger.appendln("USB now " + ((isUsbEnabled()) ? "enabled." : "disabled"), Logger.LOGTYPE_INFO);
+                count++;
+            }
+            if (lcf.isRandomImageOrder() != isRandomImageOrder()) {
+                setRandomImageOrder(lcf.isRandomImageOrder());
+                Logger.appendln("Random image order now " + ((isRandomImageOrder()) ? "enabled." : "disabled"), Logger.LOGTYPE_INFO);
+                count++;
+            }
+            Logger.appendln("Local config file was found, " + count + ((count == 1) ? " setting was changed." : " settings were changed"), Logger.LOGTYPE_INFO);
         } catch (JAXBException e) {
             Logger.appendln("Local config file could not be accessed. This may result in an inability to connect to the Server.", Logger.LOGTYPE_ERROR);
             e.printStackTrace();
@@ -188,7 +204,7 @@ public class Config {
                             int interval = Integer.parseInt(args[i + 1]);
                             if (interval > 0) {
                                 setConfigUpdateInterval(interval);
-                                Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                                Logger.appendln("Update interval changed to " + getConfigUpdateInterval() + " seconds.", Logger.LOGTYPE_INFO);
                             } else {
                                 Logger.appendln("Update Interval must be bigger than 0. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
                             }
@@ -197,6 +213,41 @@ public class Config {
                             Logger.appendln("Update Interval must be numeric. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
                             break;
                         }
+                    case "--enable-usb":
+                    case "/enable-usb":
+                        setUsbEnabled(true);
+                        Logger.appendln("USB enabled.", Logger.LOGTYPE_INFO);
+                        break;
+                    case "--disable-usb":
+                    case "/disable-usb":
+                        setUsbEnabled(false);
+                        Logger.appendln("USB disabled.", Logger.LOGTYPE_INFO);
+                        break;
+                    case "--usb-update-interval":
+                    case "/usb-update-interval":
+                        try {
+                            int interval = Integer.parseInt(args[i + 1]);
+                            if (interval > 0) {
+                                setUsbUpdateInterval(interval);
+                                Logger.appendln("USB update interval changed to " + getUsbUpdateInterval() + " seconds.", Logger.LOGTYPE_INFO);
+                            } else {
+                                Logger.appendln("USB update Interval must be bigger than 0. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
+                            }
+                            break;
+                        } catch (NumberFormatException e) {
+                            Logger.appendln("USB update Interval must be numeric. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
+                            break;
+                        }
+                    case "--random-order":
+                    case "/random-order":
+                        setRandomImageOrder(true);
+                        Logger.appendln("Random image order enabled.", Logger.LOGTYPE_INFO);
+                        break;
+                    case "--sorted-order":
+                    case "/sorted-order":
+                        setRandomImageOrder(false);
+                        Logger.appendln("Random image order disabled.", Logger.LOGTYPE_INFO);
+                        break;
                 }
 
             }
@@ -482,4 +533,22 @@ public class Config {
     public static void setImageService(ImageService imageService) {
         Config.imageService = imageService;
     }
+
+    public static int getUsbUpdateInterval() {
+        return usbUpdateInterval;
+    }
+
+    public static void setUsbUpdateInterval(int usbUpdateInterval) {
+        Config.usbUpdateInterval = usbUpdateInterval;
+    }
+
+    public static boolean isUsbEnabled() {
+        return usbEnabled;
+    }
+
+    public static void setUsbEnabled(boolean usbEnabled) {
+        Config.usbEnabled = usbEnabled;
+    }
+
+
 }

@@ -17,6 +17,9 @@ public class LocalConfigFile {
     private String devicename;
     private String localRootDir;
     private int configUpdateInterval;
+    private int usbUpdateInterval;
+    private boolean usbEnabled;
+    private boolean randomImageOrder;
     private String uname;
     private String passwd;
 
@@ -31,13 +34,16 @@ public class LocalConfigFile {
         m.marshal(this, new File(path));
     }
 
-    public LocalConfigFile(String server, String devicename, String localRootDir, int configUpdateInterval, String uname, String passwd) {
+    public LocalConfigFile(String server, String devicename, String localRootDir, int configUpdateInterval, String uname, String passwd, int usbUpdateInterval, boolean usbEnabled, boolean randomImageOrder) {
         this.server = server;
         this.devicename = devicename;
         this.localRootDir = localRootDir;
         this.configUpdateInterval = configUpdateInterval;
         this.uname = uname;
         this.passwd = passwd;
+        this.usbUpdateInterval = usbUpdateInterval;
+        this.usbEnabled = usbEnabled;
+        this.randomImageOrder = randomImageOrder;
     }
 
     public LocalConfigFile() {
@@ -95,6 +101,30 @@ public class LocalConfigFile {
     @XmlElement
     public void setPasswd(String passwd) {
         this.passwd = passwd;
+    }
+
+    public int getUsbUpdateInterval() {
+        return usbUpdateInterval;
+    }
+
+    public void setUsbUpdateInterval(int usbUpdateInterval) {
+        this.usbUpdateInterval = usbUpdateInterval;
+    }
+
+    public boolean isUsbEnabled() {
+        return usbEnabled;
+    }
+
+    public void setUsbEnabled(boolean usbEnabled) {
+        this.usbEnabled = usbEnabled;
+    }
+
+    public boolean isRandomImageOrder() {
+        return randomImageOrder;
+    }
+
+    public void setRandomImageOrder(boolean randomImageOrder) {
+        this.randomImageOrder = randomImageOrder;
     }
 
     @Override
