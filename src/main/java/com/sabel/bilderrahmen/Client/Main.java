@@ -69,7 +69,7 @@ public class Main {
                 printHelp();
                 System.exit(0);
             } else if (s.equals("-t")) {
-                USBService.test();
+                Test.main(null);
                 System.exit(0);
             } else {
                 Config.passArgs(args);
@@ -179,7 +179,7 @@ public class Main {
                         "\n" +
                         "\t\t--usb-update-interval|/usb-update-interval updateinterval\n" +
                         "\t\t\t\tThe frequency of scans for connected storage media in seconds\n" +
-                        "\t\t\t\tThe default is 60 (1 min)\n" +
+                        "\t\t\t\tThe default is 300 (5 min)\n" +
                         "\n" +
                         "\t\t--random-order|/random-order|--sorted-order|/sorted-order\n" +
                         "\t\t\t\tStates whether the images should be displayed in random or original order. \n" +

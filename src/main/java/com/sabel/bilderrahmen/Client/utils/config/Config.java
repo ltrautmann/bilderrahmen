@@ -38,6 +38,7 @@ public class Config {
     private static String remoteConfigFile;
     private static int configUpdateInterval;
     private static int usbUpdateInterval;
+    private static int usbDisplayTime;
     private static boolean usbEnabled;
     private static boolean unixDevice;
     private static boolean randomImageOrder;
@@ -72,6 +73,9 @@ public class Config {
         WebService.setUname(new char[]{'g', 'b', 's'});
         WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
         setRandomImageOrder(true);
+        setUsbUpdateInterval(300);
+        setUsbEnabled(true);
+        setUsbDisplayTime(2);
         interpretLocalConfigFile();
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
@@ -255,9 +259,8 @@ public class Config {
     }
 
     public static int testServerConnection() {
-        HttpURLConnection huc = null;
         try {
-            huc = WebService.getAuthenticatedConnection(getServer());
+            HttpURLConnection huc = WebService.getAuthenticatedConnection(getServer());
             huc.setRequestMethod("HEAD");
             return HttpURLConnection.HTTP_OK;
         } catch (IOException e) {
@@ -550,5 +553,11 @@ public class Config {
         Config.usbEnabled = usbEnabled;
     }
 
+    public static int getUsbDisplayTime() {
+        return usbDisplayTime;
+    }
 
+    public static void setUsbDisplayTime(int usbDisplayTime) {
+        Config.usbDisplayTime = usbDisplayTime;
+    }
 }

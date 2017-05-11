@@ -3,6 +3,7 @@ package com.sabel.bilderrahmen.Client.windows;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
+import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -54,6 +55,12 @@ public class InitWindow extends JFrame {
                 if (serverResponseCode == HttpURLConnection.HTTP_OK) {
                     Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
                     if (Config.readServerConfig()) {
+                        if (Config.isUsbEnabled()) {
+                            Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
+                            USBService.update();
+                        } else {
+                            Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
+                        }
                         Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
                         Main.setMainWindow(new MainWindow());
                     }
