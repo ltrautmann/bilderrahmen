@@ -200,8 +200,8 @@ public class AllocatePane extends JPanel {
         jPanelRight.setLayout(new BorderLayout());
         jPanelLeft.add(jScrollPaneLeft);
         jPanelRight.add(jScrollPaneRight);
-        jPanelRight.setPreferredSize(new Dimension(200, 300));
-        jPanelLeft.setPreferredSize(new Dimension(200, 300));
+        //  jPanelRight.setPreferredSize(new Dimension(200, 300));
+        // jPanelLeft.setPreferredSize(new Dimension(200, 300));
         jSplitPane1.setLeftComponent(jPanelLeft);
         jSplitPane1.setRightComponent(jSplitPane2);
         jSplitPane2.setLeftComponent(jPanelMiddle);

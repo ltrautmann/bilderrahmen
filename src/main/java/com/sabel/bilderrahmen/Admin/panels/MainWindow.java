@@ -28,7 +28,6 @@ public class MainWindow extends JFrame {
     private JPanel jpSouth;
     private JPanel jpWest;
     private JPanel jpEast;
-    private JPanel jpCenter;
     private JScrollPane jScrollPaneCenter;
     private JMenuBar jMenuBar;
     private JMenu jMenuDatei;
@@ -65,7 +64,6 @@ public class MainWindow extends JFrame {
         setMinimumSize(new Dimension(600, 450));
         c = getContentPane();
         panel1 = new JPanel();
-        jpCenter = new JPanel();
         jpEast = new JPanel();
         jpNorth = new JPanel();
         jpSouth = new JPanel();
@@ -92,13 +90,12 @@ public class MainWindow extends JFrame {
 
     private void buildWindow() {
         panel1.setLayout(new BorderLayout());
-        c.add(panel1);
-        panel1.setLayout(new BorderLayout());
-        panel1.add(jScrollPaneCenter, BorderLayout.CENTER);
-        panel1.add(jpEast, BorderLayout.EAST);
-        panel1.add(jpNorth, BorderLayout.NORTH);
-        panel1.add(jpSouth, BorderLayout.SOUTH);
-        panel1.add(jpWest, BorderLayout.WEST);
+
+        c.add(jScrollPaneCenter, BorderLayout.CENTER);
+        c.add(jpEast, BorderLayout.EAST);
+        c.add(jpNorth, BorderLayout.NORTH);
+        c.add(jpSouth, BorderLayout.SOUTH);
+        c.add(jpWest, BorderLayout.WEST);
         setJMenuBar(jMenuBar);
         jMenuBar.add(jMenuDatei);
         jMenuDatei.add(jmSave);
@@ -114,8 +111,7 @@ public class MainWindow extends JFrame {
         jmReload.setToolTipText("Alle Einstellungen werden verworfen");
         jmSave.setToolTipText("Config wird auf FTP-Server geschrieben und überschreibt alte Config");
 
-        jScrollPaneCenter.setViewportView(jpCenter);
-        jpCenter.add(jTabbedPane);
+        jScrollPaneCenter.setViewportView(jTabbedPane);
         jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         reload();
 
