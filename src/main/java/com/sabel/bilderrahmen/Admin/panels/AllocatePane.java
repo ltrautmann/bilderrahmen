@@ -195,7 +195,9 @@ public class AllocatePane extends JPanel {
     }
 
     private void buildWindow() {
-        add(jSplitPane1);
+        setLayout(new BorderLayout());
+
+        add(jSplitPane1,BorderLayout.CENTER);
         jPanelLeft.setLayout(new BorderLayout());
         jPanelRight.setLayout(new BorderLayout());
         jPanelLeft.add(jScrollPaneLeft);
@@ -210,7 +212,7 @@ public class AllocatePane extends JPanel {
         jPanelCombobox.add(jComboBox);
         jPanelAdd.add(jBadd);
         jPanelRem.add(jBrem);
-        jPanelMiddle.add(jPanelCombobox);
+        add(jPanelCombobox,BorderLayout.NORTH);
         jPanelMiddle.add(jPanelAdd);
         jPanelMiddle.add(jPanelRem);
         if (itmePool == null) {
@@ -222,6 +224,7 @@ public class AllocatePane extends JPanel {
                 showClientGroups();
             }
         }
+
     }
 
     private void showClientGroups() {
