@@ -76,7 +76,7 @@ public class Config {
         setUsbUpdateInterval(300);
         setUsbEnabled(true);
         setUsbDisplayTime(2);
-        interpretLocalConfigFile();
+        interpretLocalConfigFile();//TODO:??
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
             Logger.appendln("Directory \"" + getLocalConfigDir() + "\" did not exist yet and was created.", Logger.LOGTYPE_INFO);
