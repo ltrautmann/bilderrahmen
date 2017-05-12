@@ -13,6 +13,7 @@ public class MouseMover implements Runnable {
     static {
         try {
             hal = new Robot();
+            hal.mouseMove(0,0);
         } catch (AWTException e) {
             e.printStackTrace();
         }
