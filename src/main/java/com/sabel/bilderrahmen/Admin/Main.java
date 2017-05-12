@@ -12,25 +12,19 @@ import javax.swing.*;
  * Created by robin on 18.04.17.
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 
+        FtpService.getInstance("bilderrahmen@bilderrahmen.cheaterll.de","Kennwort0","ftp.strato.de");
         FileService.readClients();
         FileService.readGroups();
 
         FileService.readPictures();
         FtpService.getInstance().disconnect();
 
-        try {
+
+
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+
         new MainWindow();
 
     }

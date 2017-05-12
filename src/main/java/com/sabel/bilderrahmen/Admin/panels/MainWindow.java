@@ -112,7 +112,6 @@ public class MainWindow extends JFrame {
         jmSave.setToolTipText("Config wird auf FTP-Server geschrieben und überschreibt alte Config");
 
         jScrollPaneCenter.setViewportView(jTabbedPane);
-        jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         reload();
 
     }
@@ -134,7 +133,12 @@ public class MainWindow extends JFrame {
 
     private void initEvents() {
         jmAcceptClient.addActionListener(e -> {
-            new AcceptClient();
+            new AcceptClient().addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    reload();
+                }
+            });
         });
 
         jmSave.addActionListener(e -> {
