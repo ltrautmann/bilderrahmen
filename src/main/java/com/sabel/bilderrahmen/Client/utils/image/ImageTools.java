@@ -182,10 +182,20 @@ public class ImageTools {
             if (supportedExtensions.contains(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
                 if (!Config.getImageService().contains(f.getName())) {
                     if (f.delete()) {
-                        Logger.appendln("Deleted obsolete image \"" + f.getPath() + "\"", Logger.LOGTYPE_INFO);
+                        Logger.appendln("Deleted obsolete resized image \"" + f.getPath() + "\"", Logger.LOGTYPE_INFO);
+                        File original = new File((Config.getLocalImageDir() + f.getName()).replace("resized-", ""));
+                        if (original.exists()) {
+                            if (original.delete()) {
+                                Logger.appendln("Deleted obsolete image \"" + f.getPath() + "\"", Logger.LOGTYPE_INFO);
+                                count++;
+                            } else {
+                                Logger.appendln("Could not delete obsolete image \"" + f.getPath() + "\"", Logger.LOGTYPE_WARNING);
+                                failed++;
+                            }
+                        }
                         count++;
                     } else {
-                        Logger.appendln("Could not delete obsolete image \"" + f.getPath() + "\"", Logger.LOGTYPE_WARNING);
+                        Logger.appendln("Could not delete obsolete resized image \"" + f.getPath() + "\"", Logger.LOGTYPE_WARNING);
                         failed++;
                     }
                 }
