@@ -29,10 +29,13 @@ public class Client implements Got_Pictures {
     @XmlElementWrapper(name = "SpecialPictures")
     @XmlElement(name = "Pictures")
     private ArrayList<Picture_Properties> privatePictures;
+    @XmlElement
+    private boolean randomImageOrder;
 
     public Client(String name, String mac) {
         this.name = name;
         this.mac = mac;
+        randomImageOrder =false;
 
         groups = new ArrayList<String>();
         ignoredPictures = new ArrayList<Picture_Properties>();
@@ -257,4 +260,11 @@ public class Client implements Got_Pictures {
         return allPics;
     }
 
+    public boolean isRandomImageOrder() {
+        return randomImageOrder;
+    }
+
+    public void setRandomImageOrder(boolean randomImageOrder) {
+        this.randomImageOrder = randomImageOrder;
+    }
 }

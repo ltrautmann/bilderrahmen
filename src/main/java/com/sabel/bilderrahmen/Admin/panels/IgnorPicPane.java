@@ -5,6 +5,7 @@ import com.sabel.bilderrahmen.Admin.models.IgnoreTabelModel;
 import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -46,8 +47,9 @@ public class IgnorPicPane extends JPanel {
     }
 
     private void build() {
+        setLayout(new BorderLayout());
         jPanelCombobox.add(jComboBox);
-        add(jPanelCombobox);
+        add(jPanelCombobox,BorderLayout.NORTH);
         jScrollPane.setViewportView(table);
         add(jScrollPane);
         table.getColumnModel().getColumn(1).setPreferredWidth(1);

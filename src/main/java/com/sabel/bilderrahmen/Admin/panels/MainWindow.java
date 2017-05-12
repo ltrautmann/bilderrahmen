@@ -28,7 +28,6 @@ public class MainWindow extends JFrame {
     private JPanel jpSouth;
     private JPanel jpWest;
     private JPanel jpEast;
-    private JPanel jpCenter;
     private JScrollPane jScrollPaneCenter;
     private JMenuBar jMenuBar;
     private JMenu jMenuDatei;
@@ -38,12 +37,11 @@ public class MainWindow extends JFrame {
     private JMenuItem jmSave;
     private JMenuItem jmReload;
     private JMenuItem jmNewClient;
+    private JMenuItem jmAcceptClient;
     private JMenuItem jmNewGroup;
     private JMenuItem jmRemClient;
     private JMenuItem jmRemGroup;
     private JTabbedPane jTabbedPane;
-
-    private AllocatePane allocatePaneIgnore;
     private AllocatePane allocatePaneGroupToClient;
     private AllocatePane allocatePaneClientPictures;
     private AllocatePane allocatePaneGroupPicture;
@@ -65,7 +63,6 @@ public class MainWindow extends JFrame {
         setMinimumSize(new Dimension(600, 450));
         c = getContentPane();
         panel1 = new JPanel();
-        jpCenter = new JPanel();
         jpEast = new JPanel();
         jpNorth = new JPanel();
         jpSouth = new JPanel();
@@ -75,6 +72,7 @@ public class MainWindow extends JFrame {
         jMenuNeu = new JMenu("Neu");
         jMenuRemove = new JMenu("Löschen");
         jmNewClient = new JMenuItem("Client");
+        jmAcceptClient = new JMenuItem("AcceptClient");
         jmRemClient = new JMenuItem("Client");
         jmNewGroup = new JMenuItem("Gruppe");
         jmRemGroup = new JMenuItem("Gruppe");
@@ -83,7 +81,6 @@ public class MainWindow extends JFrame {
         jmFileUpload = new JMenuItem("FileUpload");
         jTabbedPane = new JTabbedPane();
 
-        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
@@ -92,18 +89,18 @@ public class MainWindow extends JFrame {
 
     private void buildWindow() {
         panel1.setLayout(new BorderLayout());
-        c.add(panel1);
-        panel1.setLayout(new BorderLayout());
-        panel1.add(jScrollPaneCenter, BorderLayout.CENTER);
-        panel1.add(jpEast, BorderLayout.EAST);
-        panel1.add(jpNorth, BorderLayout.NORTH);
-        panel1.add(jpSouth, BorderLayout.SOUTH);
-        panel1.add(jpWest, BorderLayout.WEST);
+
+        c.add(jScrollPaneCenter, BorderLayout.CENTER);
+        c.add(jpEast, BorderLayout.EAST);
+        c.add(jpNorth, BorderLayout.NORTH);
+        c.add(jpSouth, BorderLayout.SOUTH);
+        c.add(jpWest, BorderLayout.WEST);
         setJMenuBar(jMenuBar);
         jMenuBar.add(jMenuDatei);
         jMenuDatei.add(jmSave);
         jMenuDatei.add(jmReload);
         jMenuBar.add(jMenuNeu);
+        jMenuNeu.add(jmAcceptClient);
         jMenuNeu.add(jmNewClient);
         jMenuNeu.add(jmNewGroup);
         jMenuBar.add(jMenuRemove);
@@ -114,9 +111,7 @@ public class MainWindow extends JFrame {
         jmReload.setToolTipText("Alle Einstellungen werden verworfen");
         jmSave.setToolTipText("Config wird auf FTP-Server geschrieben und überschreibt alte Config");
 
-        jScrollPaneCenter.setViewportView(jpCenter);
-        jpCenter.add(jTabbedPane);
-        jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        jScrollPaneCenter.setViewportView(jTabbedPane);
         reload();
 
     }
@@ -124,7 +119,6 @@ public class MainWindow extends JFrame {
     private void reload() {
 
         jTabbedPane.removeAll();
-        allocatePaneIgnore = new AllocatePane(ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
@@ -138,6 +132,15 @@ public class MainWindow extends JFrame {
     }
 
     private void initEvents() {
+        jmAcceptClient.addActionListener(e -> {
+            new AcceptClient().addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    reload();
+                }
+            });
+        });
+
         jmSave.addActionListener(e -> {
             FileService.writeClients();
             FileService.writeGroups();

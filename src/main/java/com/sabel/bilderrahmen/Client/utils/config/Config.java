@@ -93,8 +93,17 @@ public class Config {
         if (!(new File(getLocalRootDir()).exists() && new File(getLocalConfigDir()).exists() && new File(getLocalImageDir()).exists() && new File(getLocalResizedDir()).exists() && new File(getLocalLogDir()).exists())) {
             Logger.appendln("Not all required directories could be created. Please check that you have sufficient permissions on the folder \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_FATAL);
             Main.quit();
+            return;
         }
-        new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder());
+        if (!isUnixDevice() && isUsbEnabled()) {
+            Logger.appendln("Loading from connected media devices is only supported on linux operating systems.", Logger.LOGTYPE_ERROR);
+            setUsbEnabled(false);
+        }
+        try {
+            new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder()).write(getLocalConfigDir()+"local-config.xml");
+        } catch (JAXBException e) {
+            Logger.appendln("Could not save changes to local configuration.", Logger.LOGTYPE_ERROR);
+        }
     }
 
     private static void interpretLocalConfigFile() {

@@ -17,6 +17,7 @@ public class EditClient extends Edit_Times {
     private JTextField jTextFieldMac;
     private JLabel jLabelName;
     private JLabel jLabelMac;
+    private JCheckBox randomCB;
 
     public EditClient() {
         super(MOD_CLIENT);
@@ -24,20 +25,17 @@ public class EditClient extends Edit_Times {
         jPanelRow.setLayout(new BoxLayout(jPanelRow, BoxLayout.X_AXIS));
         jLabelName = new JLabel("Name:");
         jPanelRow.add(jLabelName);
-        jTextFieldName = new JTextField(20);
+        jTextFieldName = new JTextField(10);
         jPanelRow.add(jTextFieldName);
         jLabelMac = new JLabel("MacAddress");
         jPanelRow.add(jLabelMac);
-        jTextFieldMac = new JTextField(20);
+        jTextFieldMac = new JTextField(10);
         jPanelRow.add(jTextFieldMac);
+        randomCB = new JCheckBox("Zufällige wiedergabe");
+        jPanelRow.add(randomCB);
         add(jPanelRow, 1);
         showName();
-        jComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showName();
-            }
-        });
+        jComboBox.addActionListener(e -> showName());
 
         jTextFieldMac.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -75,13 +73,20 @@ public class EditClient extends Edit_Times {
                 ((Client) jComboBox.getSelectedItem()).setName(jTextFieldName.getText());
             }
         });
+        randomCB.addActionListener(e -> {
+                    ((Client) jComboBox.getSelectedItem()).setRandomImageOrder(randomCB.isSelected());
+
+                }
+        );
 
 
     }
 
     private void showName() {
         jTextFieldName.setText(jComboBox.getSelectedItem().toString());
-        if (jComboBox.getSelectedItem() instanceof Client)
+        if (jComboBox.getSelectedItem() instanceof Client) {
             jTextFieldMac.setText(((Client) jComboBox.getSelectedItem()).getMac());
+            randomCB.setSelected(((Client) jComboBox.getSelectedItem()).isRandomImageOrder());
+        }
     }
 }
