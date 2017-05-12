@@ -1,8 +1,6 @@
 package com.sabel.bilderrahmen.Client.utils.helper;
 
-import java.awt.AWTException;
-import java.awt.MouseInfo;
-import java.awt.Robot;
+import java.awt.*;
 
 /**
  * Created by Robin on 10.05.2017.
@@ -13,7 +11,7 @@ public class MouseMover implements Runnable {
     static {
         try {
             hal = new Robot();
-            hal.mouseMove(0,0);
+            hal.mouseMove((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         } catch (AWTException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package com.sabel.bilderrahmen.Client.utils.usb;
 
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
+import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,8 +31,8 @@ public class USBService {
             List<String> deviceList = new ArrayList<>();
             while ((s = stdInput.readLine()) != null) {
                 if (s.contains("part /media")) {
-                    System.out.println("Habe gefindet: \"" + s.substring(s.indexOf("part /media") + 5) + "\"");
                     deviceList.add(s.substring(s.indexOf("part /media") + 5));
+                    Logger.appendln("Found device " + deviceList.get(deviceList.size() - 1), Logger.LOGTYPE_INFO);
                 }
             }
             List<String> images = new ArrayList<>();
@@ -42,17 +43,17 @@ public class USBService {
                         .collect(Collectors.toList());
                 for (Path p : collect) {
                     String path = p.toString();
-                    System.out.println("Habe: " + path);
+                    Logger.appendln("Found \"" + path + "\".", Logger.LOGTYPE_INFO);
                     if (path.contains(".") && ImageTools.getSupportedExtensions().contains(path.substring(path.lastIndexOf('.') + 1))) {
                         images.add(path);
-                        System.out.println("Habe Bild \"" + path + "\"");
+                        Logger.appendln("\"" + path + "\" is an image and was added to the list.", Logger.LOGTYPE_INFO);
                     }
                 }
             }
             for (String i : images) {
                 Config.getImageService().addImage(new USBImage(i, i.substring(i.lastIndexOf('/')), Config.getUsbDisplayTime()));
+                System.out.println("Found image " + i);
             }
-            ImageTools.resizeAllImages(false);
         } catch (IOException e) {
             e.printStackTrace();
         }

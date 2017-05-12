@@ -180,7 +180,7 @@ public class ImageTools {
         int failed = 0;
         for (File f : images) {
             if (supportedExtensions.contains(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
-                if (!Config.getImageService().contains(f.getName())) {
+                if (!Config.getImageService().contains(f.getName().replace("resized-", ""))) {
                     if (f.delete()) {
                         Logger.appendln("Deleted obsolete resized image \"" + f.getPath() + "\"", Logger.LOGTYPE_INFO);
                         File original = new File((Config.getLocalImageDir() + f.getName()).replace("resized-", ""));

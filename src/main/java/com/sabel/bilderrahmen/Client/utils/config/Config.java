@@ -299,7 +299,6 @@ public class Config {
                         }
                     }
                     setImageService(new ImageService(savedImages));
-                    ImageTools.resizeAllImages(false);
                     return true;
                 }
             } else {

@@ -87,8 +87,12 @@ public class MainWindow extends JFrame {
                         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                         Config.readServerConfig();
                         if (Config.isUsbEnabled()) {
+                            Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
                             USBService.update();
+                        } else {
+                            Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
                         }
+                        ImageTools.resizeAllImages(false);
                         ImageTools.deleteObsoleteImages();
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                         Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);

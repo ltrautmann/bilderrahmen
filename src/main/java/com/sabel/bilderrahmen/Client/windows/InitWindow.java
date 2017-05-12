@@ -2,6 +2,7 @@ package com.sabel.bilderrahmen.Client.windows;
 
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.config.Config;
+import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 
@@ -61,6 +62,7 @@ public class InitWindow extends JFrame {
                         } else {
                             Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
                         }
+                        ImageTools.resizeAllImages(false);
                         Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
                         Main.setMainWindow(new MainWindow());
                     }
