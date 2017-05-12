@@ -173,19 +173,6 @@ public class ImageTools {
         bw.close();
     }
 
-    public static List<String> getResizedImagePaths() {
-        List<String> ret = new ArrayList<>();
-        File[] images = new File(Config.getLocalResizedDir()).listFiles();
-        for (File f : images) {
-            if (supportedExtensions.contains(f.getName().substring(f.getName().lastIndexOf(".") + 1))) {
-                if (new File(f.getPath().replace(Config.getLocalResizedDir() + renamedFilePrefix, Config.getLocalImageDir())).exists()) {
-                    ret.add(f.getPath());
-                }
-            }
-        }
-        return ret;
-    }
-
     public static void deleteObsoleteImages() {
         Logger.appendln("Deleting obsolete images.", Logger.LOGTYPE_INFO);
         File[] images = new File(Config.getLocalResizedDir()).listFiles();

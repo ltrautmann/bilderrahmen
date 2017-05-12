@@ -137,11 +137,6 @@ public class Config {
                 Logger.appendln("Device name changed to \"" + lcf.getPasswd() + "\", new Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
                 count++;
             }
-            if (lcf.getUsbUpdateInterval() != 0 && lcf.getUsbUpdateInterval() != getUsbUpdateInterval()) {
-                setUsbUpdateInterval(lcf.getUsbUpdateInterval());
-                Logger.appendln("USB update Interval changed to \"" + getUsbUpdateInterval() + "\".", Logger.LOGTYPE_INFO);
-                count++;
-            }
             if (lcf.isUsbEnabled() != isUsbEnabled()) {
                 setUsbEnabled(lcf.isUsbEnabled());
                 Logger.appendln("USB now " + ((isUsbEnabled()) ? "enabled." : "disabled"), Logger.LOGTYPE_INFO);
@@ -227,21 +222,6 @@ public class Config {
                         setUsbEnabled(false);
                         Logger.appendln("USB disabled.", Logger.LOGTYPE_INFO);
                         break;
-                    case "--usb-update-interval":
-                    case "/usb-update-interval":
-                        try {
-                            int interval = Integer.parseInt(args[i + 1]);
-                            if (interval > 0) {
-                                setUsbUpdateInterval(interval);
-                                Logger.appendln("USB update interval changed to " + getUsbUpdateInterval() + " seconds.", Logger.LOGTYPE_INFO);
-                            } else {
-                                Logger.appendln("USB update Interval must be bigger than 0. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
-                            }
-                            break;
-                        } catch (NumberFormatException e) {
-                            Logger.appendln("USB update Interval must be numeric. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
-                            break;
-                        }
                     case "--random-order":
                     case "/random-order":
                         setRandomImageOrder(true);

@@ -3,9 +3,11 @@ package com.sabel.bilderrahmen.Client.windows;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
+import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.image.SavedImage;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.panels.ImagePanel;
+import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 
 import javax.swing.JFrame;
 import java.awt.*;
@@ -84,6 +86,10 @@ public class MainWindow extends JFrame {
                         Thread.sleep(1000 * Config.getConfigUpdateInterval());
                         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                         Config.readServerConfig();
+                        if (Config.isUsbEnabled()) {
+                            USBService.update();
+                        }
+                        ImageTools.deleteObsoleteImages();
                         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                         Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);
                         Logger.appendln(Config.getImageService().toString(), Logger.LOGTYPE_INFO);

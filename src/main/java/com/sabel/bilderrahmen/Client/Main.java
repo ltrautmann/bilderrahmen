@@ -177,10 +177,6 @@ public class Main {
                         "\t\t\t\tEnables or disables image import from connected storage media\n" +
                         "\t\t\t\tEnabled by default\n" +
                         "\n" +
-                        "\t\t--usb-update-interval|/usb-update-interval updateinterval\n" +
-                        "\t\t\t\tThe frequency of scans for connected storage media in seconds\n" +
-                        "\t\t\t\tThe default is 300 (5 min)\n" +
-                        "\n" +
                         "\t\t--random-order|/random-order|--sorted-order|/sorted-order\n" +
                         "\t\t\t\tStates whether the images should be displayed in random or original order. \n" +
                         "\t\t\t\tThe default is random\n" +
