@@ -9,11 +9,10 @@ import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Admin.services.FtpService;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -58,7 +57,7 @@ public class MainWindow extends JFrame {
 
     private void initComponents() {
         jScrollPaneCenter = new JScrollPane();
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Admin-Bilderrahmen");
         setMinimumSize(new Dimension(600, 450));
         c = getContentPane();
@@ -157,7 +156,7 @@ public class MainWindow extends JFrame {
             }
         });
         jmNewClient.addActionListener(e -> {
-            String name ,mac;
+            String name, mac;
             do {
                 name = JOptionPane.showInputDialog("name of New Client");
                 mac = JOptionPane.showInputDialog("mac of New Client");
@@ -166,7 +165,7 @@ public class MainWindow extends JFrame {
             reload();
         });
         jmNewGroup.addActionListener(e -> {
-            while (!GroupPool.getInstance().addGroup(new Group(JOptionPane.showInputDialog("Groupname"))));
+            while (!GroupPool.getInstance().addGroup(new Group(JOptionPane.showInputDialog("Groupname")))) ;
             reload();
 
         });
@@ -197,8 +196,15 @@ public class MainWindow extends JFrame {
             public void windowClosing(WindowEvent e) {
                 int speichern = JOptionPane.showConfirmDialog(null, "Änderungen speichern?", "Speichern?", JOptionPane.YES_NO_OPTION);
                 if (speichern == JOptionPane.YES_OPTION) {
-                    FileService.writeClients();
-                    FileService.writeGroups();
+                    boolean success = true;
+                    success &= FileService.writeClients();
+                    success &= FileService.writeGroups();
+                    if (success)
+                        System.exit(1);
+                }
+                if (speichern == JOptionPane.NO_OPTION) {
+                    System.exit(1);
+
                 }
             }
         });
