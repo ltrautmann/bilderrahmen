@@ -141,8 +141,13 @@ public class MainWindow extends JFrame {
         });
 
         jmSave.addActionListener(e -> {
-            FileService.writeClients();
-            FileService.writeGroups();
+            boolean success = true;
+
+            success &= FileService.writeClients();
+            success &= FileService.writeGroups();
+            if(!success){
+                JOptionPane.showMessageDialog(null,"NichtGespeichert!!!");
+            }
         });
         jmReload.addActionListener(e -> {
             FileService.readClients();
