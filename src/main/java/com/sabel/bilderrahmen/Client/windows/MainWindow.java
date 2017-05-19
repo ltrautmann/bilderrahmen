@@ -67,7 +67,11 @@ public class MainWindow extends JFrame {
                             } catch (NullPointerException e) {
                                 Logger.appendln("Image to be updated was null, skipping image. This is probably due to attempting to read a new image that is currently being scaled.", Logger.LOGTYPE_WARNING);
                             }
-                            TimeUnit.SECONDS.sleep(img.getDisplayTime());
+                            if (img != null) {
+                                TimeUnit.SECONDS.sleep(img.getDisplayTime());
+                            } else {
+                                TimeUnit.MILLISECONDS.sleep(10);
+                            }
                         }
                     }
                 } catch (InterruptedException e) {

@@ -57,7 +57,7 @@ public class ImageService {
     }
 
     public SavedImage next(SavedImage image) throws IOException {
-        if (size() < 1) {
+        if (size() < 1 || images == null) {
             return null;
         }
         if (image == null) {
@@ -71,7 +71,7 @@ public class ImageService {
     }
 
     public SavedImage previous(SavedImage image) throws IOException {
-        if (size() < 1) {
+        if (size() < 1 || images == null) {
             return null;
         }
         if (image == null) {
