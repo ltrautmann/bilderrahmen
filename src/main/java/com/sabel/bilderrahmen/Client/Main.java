@@ -3,8 +3,6 @@ package com.sabel.bilderrahmen.Client;
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 import com.sabel.bilderrahmen.Client.utils.helper.MouseMover;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
-import com.sabel.bilderrahmen.Client.utils.usb.USBService;
-import com.sabel.bilderrahmen.Client.windows.ConfigWindow;
 import com.sabel.bilderrahmen.Client.windows.InitWindow;
 import com.sabel.bilderrahmen.Client.windows.MainWindow;
 
@@ -18,7 +16,6 @@ import java.util.List;
 public class Main {
     private static InitWindow initWindow;
     private static MainWindow mainWindow;
-    private static ConfigWindow configWindow;
     private static List<Thread> threadList;
 
     public static InitWindow getInitWindow() {
@@ -43,18 +40,6 @@ public class Main {
             Main.mainWindow = null;
         }
         Main.mainWindow = mainWindow;
-    }
-
-    public static ConfigWindow getConfigWindow() {
-        return configWindow;
-    }
-
-    public static void setConfigWindow(ConfigWindow configWindow) {
-        if (Main.configWindow != null) {
-            Main.configWindow.dispose();
-            Main.configWindow = null;
-        }
-        Main.configWindow = configWindow;
     }
 
     public static void registerThread(Thread thread) {
@@ -129,7 +114,6 @@ public class Main {
             Logger.logProgramExit("You are a wizard! You interrupted the program in the few Milliseconds it needs to exit!", Logger.LOGTYPE_FATAL);
         } finally {
             setInitWindow(null);
-            setConfigWindow(null);
             setMainWindow(null);
         }
     }
