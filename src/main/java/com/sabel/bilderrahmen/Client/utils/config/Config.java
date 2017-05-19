@@ -315,11 +315,11 @@ public class Config {
                         }
                     }
                     setImageService(new ImageService(savedImages));
-                    if (isIgnoreServerDefinedImageOrder()) {
+                    if (!isIgnoreServerDefinedImageOrder()) {
                         setRandomImageOrder(thisClient.isRandomImageOrder());
                     }
-                    if (isIgnoreServerDefinedUSBTime()) {
-                        //TODO:READ
+                    if (!isIgnoreServerDefinedUSBTime()) {
+                        setUsbDisplayTime(thisClient.getDefaultanzeigedauer());
                     }
                     return true;
                 }
