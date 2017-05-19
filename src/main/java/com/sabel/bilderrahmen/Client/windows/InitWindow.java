@@ -49,7 +49,7 @@ public class InitWindow extends JFrame {
                 Logger.appendln("Raspi Bilderrahmen", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
-                Logger.appendln("When in Display Mode, Press ESC to quit, F5 to force refresh configuration or F1 to edit local configuration", Logger.LOGTYPE_INFO);
+                Logger.appendln("When in Display Mode, Press ESC to quit or F5 to force refresh configuration", Logger.LOGTYPE_INFO);
                 Logger.appendln("", Logger.LOGTYPE_INFO);
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 int serverResponseCode = Config.testServerConnection();
@@ -68,7 +68,6 @@ public class InitWindow extends JFrame {
                     }
                 } else {
                     Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
-                    Main.setConfigWindow(new ConfigWindow());
                 }
             }
         });

@@ -133,11 +133,6 @@ public class MainWindow extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     //TODO:Refresh config
                     System.out.println("refreshing config...");
-                } else if (e.getKeyCode() == KeyEvent.VK_F1) {
-                    System.out.println("Manual Configuration Edit requested...");
-                    Main.setConfigWindow(new ConfigWindow());
-                    //TODO: Properly dispose Main Window
-                    Main.setMainWindow(null);
                 }
             }
         });
