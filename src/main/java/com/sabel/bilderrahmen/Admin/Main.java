@@ -23,7 +23,7 @@ public class Main {
 
 
 
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         new MainWindow();
 
