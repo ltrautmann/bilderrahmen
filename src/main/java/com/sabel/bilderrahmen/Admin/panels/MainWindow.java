@@ -205,10 +205,10 @@ public class MainWindow extends JFrame {
                     success &= FileService.writeClients();
                     success &= FileService.writeGroups();
                     if (success)
-                        System.exit(1);
+                        System.exit(0);
                 }
                 if (speichern == JOptionPane.NO_OPTION) {
-                    System.exit(1);
+                    System.exit(0);
 
                 }
             }

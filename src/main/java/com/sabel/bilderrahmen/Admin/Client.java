@@ -32,6 +32,17 @@ public class Client implements Got_Pictures {
     @XmlElement
     private boolean randomImageOrder;
 
+    public int getDefaultanzeigedauer() {
+        return defaultanzeigedauer;
+    }
+
+    public void setDefaultanzeigedauer(int defaultanzeigedauer) {
+        this.defaultanzeigedauer = defaultanzeigedauer;
+    }
+
+    @XmlElement
+    private int defaultanzeigedauer;
+
     public Client(String name, String mac) {
         this.name = name;
         this.mac = mac;
