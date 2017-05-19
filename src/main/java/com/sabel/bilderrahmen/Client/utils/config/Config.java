@@ -104,7 +104,7 @@ public class Config {
             setUsbEnabled(false);
         }
         try {
-            new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled()).write(getLocalConfigDir() + "local-config.xml");
+            new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), isUsbEnabled()).write(getLocalConfigDir() + "local-config.xml");
         } catch (JAXBException e) {
             Logger.appendln("Could not save changes to local configuration.", Logger.LOGTYPE_ERROR);
         }
@@ -115,7 +115,7 @@ public class Config {
             String localConfig = getLocalConfigDir() + "local-config.xml";
             if (!new File(localConfig).exists()) {
                 Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled());
+                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), isUsbEnabled());
                 lcf.write(localConfig);
             }
             LocalConfigFile lcf = LocalConfigFile.read(localConfig);
