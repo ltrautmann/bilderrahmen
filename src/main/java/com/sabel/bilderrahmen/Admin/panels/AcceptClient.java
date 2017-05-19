@@ -7,7 +7,8 @@ import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Admin.services.FtpService;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.HeadlessException;
 import java.util.ArrayList;
 
 /**
@@ -46,10 +47,10 @@ public class AcceptClient extends JFrame {
             for (Client_Create client_create : createClientTableModel.getNewClients()) { // Alle nicht registrierte Clients
                 if (client_create.createMe) {                                               // soll er erstellt werden?
                     if (ClientPool.getInstance().addClient(client_create)) {                // versuche zu pool hinzu zu fügen
-                        if(FtpService.getInstance().delFile(dir + client_create.getFilname())) {  // datei vom Server entfernen
+                        if (FtpService.getInstance().delFile(dir + client_create.getFilname())) {  // datei vom Server entfernen
                             created.add(client_create);                          // neuen Client persistieren
-                        }else {
-                            System.out.println(dir+client_create.getFilname());
+                        } else {
+                            System.out.println(dir + client_create.getFilname());
                         }
                     }
 

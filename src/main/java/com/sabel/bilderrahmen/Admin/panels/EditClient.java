@@ -90,7 +90,7 @@ public class EditClient extends Edit_Times {
             }
         });
         randomCB.addActionListener(e -> ((Client) jComboBox.getSelectedItem()).setRandomImageOrder(randomCB.isSelected()));
-        jSpinner.addChangeListener(e -> ((Client)jComboBox.getSelectedItem()).setDefaultanzeigedauer((Integer) jSpinner.getValue()));
+        jSpinner.addChangeListener(e -> ((Client) jComboBox.getSelectedItem()).setDefaultanzeigedauer((Integer) jSpinner.getValue()));
 
 
     }

@@ -22,7 +22,7 @@ public class CreateClientTableModel extends AbstractTableModel {
         FTPFile[] folder = FtpService.getInstance().getFolder("files/clients");
         for (FTPFile ftpFile : folder) {
 
-            if(!ftpFile.getName().equals(".")&&!ftpFile.getName().equals("..")&&!ftpFile.getName().contains(".php"))
+            if (!ftpFile.getName().equals(".") && !ftpFile.getName().equals("..") && !ftpFile.getName().contains(".php"))
                 newClients.add(new Client_Create(ftpFile.getName()));
         }
 
@@ -36,25 +36,31 @@ public class CreateClientTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0:return  newClients.get(rowIndex).getName();
-            case 1:return  newClients.get(rowIndex).getMac();
+            case 0:
+                return newClients.get(rowIndex).getName();
+            case 1:
+                return newClients.get(rowIndex).getMac();
 
-            case 2:return newClients.get(rowIndex).createMe;
+            case 2:
+                return newClients.get(rowIndex).createMe;
         }
         return true;
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex !=1;
+        return columnIndex != 1;
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 0:return String.class;
-            case 1:return String.class;
-            case 2:return Boolean.class;
+            case 0:
+                return String.class;
+            case 1:
+                return String.class;
+            case 2:
+                return Boolean.class;
         }
         return null;
     }
@@ -62,8 +68,12 @@ public class CreateClientTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0: newClients.get(rowIndex).setName(aValue.toString()); break;
-            case 2: newClients.get(rowIndex).createMe = (boolean) aValue;break;
+            case 0:
+                newClients.get(rowIndex).setName(aValue.toString());
+                break;
+            case 2:
+                newClients.get(rowIndex).createMe = (boolean) aValue;
+                break;
         }
     }
 

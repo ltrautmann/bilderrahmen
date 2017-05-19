@@ -131,22 +131,20 @@ public class MainWindow extends JFrame {
     }
 
     private void initEvents() {
-        jmAcceptClient.addActionListener(e -> {
-            new AcceptClient().addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    reload();
-                }
-            });
-        });
+        jmAcceptClient.addActionListener(e -> new AcceptClient().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                reload();
+            }
+        }));
 
         jmSave.addActionListener(e -> {
             boolean success = true;
 
             success &= FileService.writeClients();
             success &= FileService.writeGroups();
-            if(!success){
-                JOptionPane.showMessageDialog(null,"NichtGespeichert!!!");
+            if (!success) {
+                JOptionPane.showMessageDialog(null, "NichtGespeichert!!!");
             }
         });
         jmReload.addActionListener(e -> {

@@ -16,6 +16,7 @@ public class Picture_Properties {
     private int presentationTime;
     @XmlElement
     private String name;
+
     public Picture_Properties(int presentationTime, String name) {
         this.presentationTime = presentationTime;
         this.name = name;

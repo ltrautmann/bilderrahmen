@@ -46,16 +46,16 @@ public class Client implements Got_Pictures {
     public Client(String name, String mac) {
         this.name = name;
         this.mac = mac;
-        randomImageOrder =false;
+        randomImageOrder = false;
 
-        groups = new ArrayList<String>();
-        ignoredPictures = new ArrayList<Picture_Properties>();
-        privatePictures = new ArrayList<Picture_Properties>();
+        groups = new ArrayList<>();
+        ignoredPictures = new ArrayList<>();
+        privatePictures = new ArrayList<>();
     }
 
     private Client() {
-        ignoredPictures = new ArrayList<Picture_Properties>();
-        privatePictures = new ArrayList<Picture_Properties>();
+        ignoredPictures = new ArrayList<>();
+        privatePictures = new ArrayList<>();
 
     }
 
@@ -239,9 +239,8 @@ public class Client implements Got_Pictures {
         for (Object o : selectedValuesList) {
             if (o instanceof Group || o instanceof String) {
                 removeGroup((String) o);
-            }
-            else
-            System.err.println("Its not a group its a " + o);
+            } else
+                System.err.println("Its not a group its a " + o);
         }
 
     }

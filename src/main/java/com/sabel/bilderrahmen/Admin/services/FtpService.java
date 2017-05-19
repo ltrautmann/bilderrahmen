@@ -13,10 +13,10 @@ import java.io.*;
  */
 public class FtpService {
     private static FtpService instance;
-    private FTPClient ftpClient;
     private static String loginName;
     private static String loginSerever;
     private static String loginPassword;
+    private FTPClient ftpClient;
 
     private FtpService() {
         ftpClient = new FTPClient();
@@ -38,6 +38,7 @@ public class FtpService {
         return getInstance();
 
     }
+
     public static FtpService getInstance() {
         if (instance == null)
             instance = new FtpService();
@@ -51,7 +52,7 @@ public class FtpService {
             if (!FTPReply.isPositiveCompletion(reply)) {
                 System.err.println("FTP server refused connection.");
             }
-            ftpClient.login(loginName,loginPassword);//"bilderrahmen@bilderrahmen.cheaterll.de", "Kennwort0");
+            ftpClient.login(loginName, loginPassword);//"bilderrahmen@bilderrahmen.cheaterll.de", "Kennwort0");
             if (ftpClient.isConnected())
                 System.out.println("FTP Connected");
         } catch (IOException e) {
@@ -68,12 +69,10 @@ public class FtpService {
             FileInputStream fi = new FileInputStream(file);
             ftpClient.setFileTransferMode(FTP.BLOCK_TRANSFER_MODE);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            ftpClient.storeFile(file.getName().replace(' ','_'), fi);
+            ftpClient.storeFile(file.getName().replace(' ', '_'), fi);
             fi.close();
             //file.delete();
             // ftpClient.logout();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,9 +105,9 @@ public class FtpService {
             ftpFile = ftpClient.listFiles(folder);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            return ftpFile;
         }
+        return ftpFile;
+
     }
 
     public void disconnect() {

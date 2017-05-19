@@ -1,11 +1,11 @@
 package com.sabel.bilderrahmen.Admin;
 
-import com.sabel.bilderrahmen.Admin.panels.AcceptClient;
 import com.sabel.bilderrahmen.Admin.panels.MainWindow;
 import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Admin.services.FtpService;
 
-import javax.swing.*;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 
 /**
@@ -14,7 +14,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 
-        FtpService.getInstance("bilderrahmen@bilderrahmen.cheaterll.de","Kennwort0","ftp.strato.de");
+        FtpService.getInstance("bilderrahmen@bilderrahmen.cheaterll.de", "Kennwort0", "ftp.strato.de");
         FileService.readClients();
         FileService.readGroups();
 
@@ -22,8 +22,7 @@ public class Main {
         FtpService.getInstance().disconnect();
 
 
-
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         new MainWindow();
 

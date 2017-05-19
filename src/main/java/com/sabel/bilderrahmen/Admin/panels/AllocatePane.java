@@ -6,7 +6,8 @@ import com.sabel.bilderrahmen.Admin.Picture_Properties;
 import com.sabel.bilderrahmen.Admin.resources.GroupPool;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -75,83 +76,73 @@ public class AllocatePane extends JPanel {
     }
 
     private void initEvents() {
-        jComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Object o = jComboBox.getSelectedItem();
-                if (o instanceof Client) {
-                    if (kindeOfPane == 1) {
-                        showTarget();
-                    }
-                    if (kindeOfPane == 2) {
-                        showTarget();
-
-                    }
-                    if (kindeOfPane == 4) {
-                        showClientGroups();
-                    }
+        jComboBox.addActionListener(e -> {
+            Object o = jComboBox.getSelectedItem();
+            if (o instanceof Client) {
+                if (kindeOfPane == 1) {
+                    showTarget();
                 }
-                if (o instanceof Group) {
+                if (kindeOfPane == 2) {
+                    showTarget();
+
+                }
+                if (kindeOfPane == 4) {
+                    showClientGroups();
+                }
+            }
+            if (o instanceof Group) {
+                showGroupPictures();
+            }
+        });
+        jBadd.addActionListener(e -> {
+            switch (kindeOfPane) {
+                case 1: {
+                    ((Client) jComboBox.getSelectedItem()).addIgnoredPicture(itmePool.getSelectedValuesList());
+                    showTarget();
+                    break;
+                }
+                case 2: {
+                    ((Client) jComboBox.getSelectedItem()).addPrivatePicture(itmePool.getSelectedValuesList());
+                    showTarget();
+                    break;
+                }
+                case 3: {
+                    ((Group) jComboBox.getSelectedItem()).addPicture(itmePool.getSelectedValuesList());
                     showGroupPictures();
+                    break;
                 }
-            }
-
-        });
-        jBadd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switch (kindeOfPane) {
-                    case 1: {
-                        ((Client) jComboBox.getSelectedItem()).addIgnoredPicture(itmePool.getSelectedValuesList());
-                        showTarget();
-                        break;
-                    }
-                    case 2: {
-                        ((Client) jComboBox.getSelectedItem()).addPrivatePicture(itmePool.getSelectedValuesList());
-                        showTarget();
-                        break;
-                    }
-                    case 3: {
-                        ((Group) jComboBox.getSelectedItem()).addPicture(itmePool.getSelectedValuesList());
-                        showGroupPictures();
-                        break;
-                    }
-                    case 4: {
-                        ((Client) jComboBox.getSelectedItem()).addGroup(itmePool.getSelectedValuesList());
-                        showClientGroups();
-                        break;
-                    }
-
+                case 4: {
+                    ((Client) jComboBox.getSelectedItem()).addGroup(itmePool.getSelectedValuesList());
+                    showClientGroups();
+                    break;
                 }
 
             }
-        });
-        jBrem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(kindeOfPane);
-                switch (kindeOfPane) {
-                    case 1: {
-                        ((Client) jComboBox.getSelectedItem()).removeIgnoredPicture(items.getSelectedValuesList());
-                        showTarget();
-                        break;
-                    }
-                    case 2: {
-                        ((Client) jComboBox.getSelectedItem()).removePrivatePictureByName(items.getSelectedValuesList());
-                        showTarget();
-                        break;
-                    }
-                    case 3: {
-                        ((Group) jComboBox.getSelectedItem()).removePicture(items.getSelectedValuesList());
-                        showGroupPictures();
-                        break;
-                    }
-                    case 4: {
-                        ((Client) jComboBox.getSelectedItem()).removeGroup(items.getSelectedValuesList());
-                        showClientGroups();
 
-                        break;
-                    }
+        });
+        jBrem.addActionListener(e -> {
+            System.out.println(kindeOfPane);
+            switch (kindeOfPane) {
+                case 1: {
+                    ((Client) jComboBox.getSelectedItem()).removeIgnoredPicture(items.getSelectedValuesList());
+                    showTarget();
+                    break;
+                }
+                case 2: {
+                    ((Client) jComboBox.getSelectedItem()).removePrivatePictureByName(items.getSelectedValuesList());
+                    showTarget();
+                    break;
+                }
+                case 3: {
+                    ((Group) jComboBox.getSelectedItem()).removePicture(items.getSelectedValuesList());
+                    showGroupPictures();
+                    break;
+                }
+                case 4: {
+                    ((Client) jComboBox.getSelectedItem()).removeGroup(items.getSelectedValuesList());
+                    showClientGroups();
+
+                    break;
                 }
             }
         });
@@ -198,7 +189,7 @@ public class AllocatePane extends JPanel {
     private void buildWindow() {
         setLayout(new BorderLayout());
 
-        add(jSplitPane1,BorderLayout.CENTER);
+        add(jSplitPane1, BorderLayout.CENTER);
         jPanelLeft.setLayout(new BorderLayout());
         jPanelRight.setLayout(new BorderLayout());
         jPanelLeft.add(jScrollPaneLeft);
@@ -211,10 +202,10 @@ public class AllocatePane extends JPanel {
         jPanelCombobox.add(jComboBox);
         jPanelAdd.add(jBadd);
         jPanelRem.add(jBrem);
-        add(jPanelCombobox,BorderLayout.NORTH);
+        add(jPanelCombobox, BorderLayout.NORTH);
         jGridMiddle.add(jPanelAdd);
         jGridMiddle.add(jPanelRem);
-        jGridMiddle.setSize(20,20);
+        jGridMiddle.setSize(20, 20);
         jPanelMiddle.setLayout(new GridBagLayout());
         jPanelMiddle.add(jGridMiddle);
         if (itmePool == null) {
@@ -258,7 +249,7 @@ public class AllocatePane extends JPanel {
     private void initComponents() {
 
         jGridMiddle = new JPanel();
-        jGridMiddle.setLayout(new BoxLayout(jGridMiddle,BoxLayout.Y_AXIS));
+        jGridMiddle.setLayout(new BoxLayout(jGridMiddle, BoxLayout.Y_AXIS));
         jPanelAdd = new JPanel();
         jPanelRem = new JPanel();
         jPanelCombobox = new JPanel();
