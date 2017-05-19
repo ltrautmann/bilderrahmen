@@ -179,7 +179,7 @@ public class Main {
                         "\n" +
                         "\t\t--random-order|/random-order|--sorted-order|/sorted-order\n" +
                         "\t\t\t\tStates whether the images should be displayed in random or original order. \n" +
-                        "\t\t\t\tThe default is random\n" +
+                        "\t\t\t\tThe default is sorted\n" +
                         "\n" +
                         "BUGS\n" +
                         "\t\tReport bugs to info@cheaterll.de\n" +

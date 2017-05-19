@@ -57,25 +57,31 @@ public class ImageService {
     }
 
     public SavedImage next(SavedImage image) throws IOException {
-        int index = images.indexOf(image);
-        if (index < 0) {
-            index = 0;
-        }
         if (size() < 1) {
             return null;
         }
+        if (image == null) {
+            return images.get(0);
+        }
+        if (!images.contains(image)) {
+            return null;
+        }
+        int index = images.indexOf(image);
         return (index == images.size() - 1) ? images.get(0) : images.get(index + 1);
     }
 
     public SavedImage previous(SavedImage image) throws IOException {
-        int index = images.indexOf(image);
-        if (index < 0) {
-            index = 0;
-        }
         if (size() < 1) {
             return null;
         }
-        return (index == 0) ? images.get(images.size() - 1) : images.get(index - 1);
+        if (image == null) {
+            return images.get(0);
+        }
+        if (!images.contains(image)) {
+            return null;
+        }
+        int index = images.indexOf(image);
+        return (index == images.size() - 1) ? images.get(images.size()-1) : images.get(index - 1);
     }
 
     public SavedImage randomImage() throws IOException {

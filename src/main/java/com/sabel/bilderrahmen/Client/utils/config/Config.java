@@ -42,6 +42,8 @@ public class Config {
     private static boolean usbEnabled;
     private static boolean unixDevice;
     private static boolean randomImageOrder;
+    private static boolean ignoreServerDefinedImageOrder;
+    private static boolean ignoreServerDefinedUSBTime;
     private static String[] args;
     private static ImageService imageService;
 
@@ -72,8 +74,10 @@ public class Config {
         setConfigUpdateInterval(1800);
         WebService.setUname(new char[]{'g', 'b', 's'});
         WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
-        setRandomImageOrder(true);
+        setRandomImageOrder(false);
+        setIgnoreServerDefinedImageOrder(false);
         setUsbUpdateInterval(300);
+        setIgnoreServerDefinedUSBTime(false);
         setUsbEnabled(true);
         setUsbDisplayTime(2);
         interpretLocalConfigFile();//TODO:??
@@ -100,7 +104,7 @@ public class Config {
             setUsbEnabled(false);
         }
         try {
-            new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder()).write(getLocalConfigDir()+"local-config.xml");
+            new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled()).write(getLocalConfigDir() + "local-config.xml");
         } catch (JAXBException e) {
             Logger.appendln("Could not save changes to local configuration.", Logger.LOGTYPE_ERROR);
         }
@@ -111,7 +115,7 @@ public class Config {
             String localConfig = getLocalConfigDir() + "local-config.xml";
             if (!new File(localConfig).exists()) {
                 Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
-                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled(), isRandomImageOrder());
+                LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), getUsbUpdateInterval(), isUsbEnabled());
                 lcf.write(localConfig);
             }
             LocalConfigFile lcf = LocalConfigFile.read(localConfig);
@@ -151,11 +155,6 @@ public class Config {
                 Logger.appendln("USB now " + ((isUsbEnabled()) ? "enabled." : "disabled"), Logger.LOGTYPE_INFO);
                 count++;
             }
-            if (lcf.isRandomImageOrder() != isRandomImageOrder()) {
-                setRandomImageOrder(lcf.isRandomImageOrder());
-                Logger.appendln("Random image order now " + ((isRandomImageOrder()) ? "enabled." : "disabled"), Logger.LOGTYPE_INFO);
-                count++;
-            }
             Logger.appendln("Local config file was found, " + count + ((count == 1) ? " setting was changed." : " settings were changed"), Logger.LOGTYPE_INFO);
         } catch (JAXBException e) {
             Logger.appendln("Local config file could not be accessed. This may result in an inability to connect to the Server.", Logger.LOGTYPE_ERROR);
@@ -165,8 +164,9 @@ public class Config {
 
     private static void interpretCMDArgs() {
         int count = 0;
+        Logger.appendln("Console arguments: " + Arrays.toString(args), Logger.LOGTYPE_INFO);
         if (args != null) {
-            for (int i = 0; i + 1 < args.length; i += 2) {
+            for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
                     case "-s":
                     case "--server":
@@ -174,6 +174,7 @@ public class Config {
                     case "/server":
                         setServer(args[i + 1]);
                         Logger.appendln("Download Server changed to \"" + getServer() + "\".", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "-u":
                     case "--user":
@@ -181,6 +182,7 @@ public class Config {
                     case "/user":
                         WebService.setUname(args[i + 1].toCharArray());
                         Logger.appendln("Download Server Login Name changed.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "-p":
                     case "--password":
@@ -188,6 +190,7 @@ public class Config {
                     case "/password":
                         WebService.setPasswd(args[i + 1].toCharArray());
                         Logger.appendln("Download Server Password changed.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "-n":
                     case "--device-name":
@@ -196,6 +199,7 @@ public class Config {
                         setDevicename(args[i + 1]);
                         setDeviceID();
                         Logger.appendln("Device Name changed to \"" + getDevicename() + "\", Device ID is \"" + getDeviceID() + "\".", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "-d":
                     case "--directory":
@@ -203,6 +207,7 @@ public class Config {
                     case "/directory":
                         setLocalRootDir(args[i + 1]);
                         Logger.appendln("Working Directory changed to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "-i":
                     case "--update-interval":
@@ -212,7 +217,9 @@ public class Config {
                             int interval = Integer.parseInt(args[i + 1]);
                             if (interval > 0) {
                                 setConfigUpdateInterval(interval);
+                                setIgnoreServerDefinedUSBTime(true);
                                 Logger.appendln("Update interval changed to " + getConfigUpdateInterval() + " seconds.", Logger.LOGTYPE_INFO);
+                                count++;
                             } else {
                                 Logger.appendln("Update Interval must be bigger than 0. Console argument \"" + args[i] + " " + args[i + 1] + "\" is being ignored.", Logger.LOGTYPE_WARNING);
                             }
@@ -225,25 +232,34 @@ public class Config {
                     case "/enable-usb":
                         setUsbEnabled(true);
                         Logger.appendln("USB enabled.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "--disable-usb":
                     case "/disable-usb":
                         setUsbEnabled(false);
                         Logger.appendln("USB disabled.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "--random-order":
                     case "/random-order":
                         setRandomImageOrder(true);
+                        setIgnoreServerDefinedImageOrder(true);
                         Logger.appendln("Random image order enabled.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                     case "--sorted-order":
                     case "/sorted-order":
                         setRandomImageOrder(false);
+                        setIgnoreServerDefinedImageOrder(true);
                         Logger.appendln("Random image order disabled.", Logger.LOGTYPE_INFO);
+                        count++;
                         break;
                 }
 
             }
+            Logger.appendln("Detected " + args.length + " console arguments, " + count + " settings changed.", Logger.LOGTYPE_INFO);
+        } else {
+            Logger.appendln("No console arguments detected.", Logger.LOGTYPE_INFO);
         }
     }
 
@@ -299,6 +315,12 @@ public class Config {
                         }
                     }
                     setImageService(new ImageService(savedImages));
+                    if (isIgnoreServerDefinedImageOrder()) {
+                        setRandomImageOrder(thisClient.isRandomImageOrder());
+                    }
+                    if (isIgnoreServerDefinedUSBTime()) {
+                        //TODO:READ
+                    }
                     return true;
                 }
             } else {
@@ -400,7 +422,7 @@ public class Config {
             directorySeparator = "\\";
         }
         setLocalConfigDir(getLocalRootDir() + "config" + directorySeparator);
-        setLocalLogDir(getLocalRootDir() + "config" + directorySeparator + "logs" + directorySeparator);
+        setLocalLogDir(getLocalRootDir() + "logs" + directorySeparator);
         setLocalImageDir(getLocalRootDir() + "images" + directorySeparator);
         setLocalResizedDir(getLocalRootDir() + "images" + directorySeparator + "resized" + directorySeparator);
     }
@@ -547,5 +569,21 @@ public class Config {
 
     public static void setUsbDisplayTime(int usbDisplayTime) {
         Config.usbDisplayTime = usbDisplayTime;
+    }
+
+    public static boolean isIgnoreServerDefinedImageOrder() {
+        return ignoreServerDefinedImageOrder;
+    }
+
+    public static void setIgnoreServerDefinedImageOrder(boolean ignoreServerDefinedImageOrder) {
+        Config.ignoreServerDefinedImageOrder = ignoreServerDefinedImageOrder;
+    }
+
+    public static boolean isIgnoreServerDefinedUSBTime() {
+        return ignoreServerDefinedUSBTime;
+    }
+
+    public static void setIgnoreServerDefinedUSBTime(boolean ignoreServerDefinedUSBTime) {
+        Config.ignoreServerDefinedUSBTime = ignoreServerDefinedUSBTime;
     }
 }
