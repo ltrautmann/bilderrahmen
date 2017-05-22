@@ -146,7 +146,7 @@ public class Main {
                         "\n" +
                         "\t\t-n|--device-name|/n|/device-name \"device name\"\n" +
                         "\t\t\t\tThe name of this device\n" +
-                        "\t\t\t\tThe default is \"testdevice\"\n" +
+                        "\t\t\t\tThe default is \"NewDevice\"\n" +
                         "\n" +
                         "\t\t-d|--directory|/d|/directory \"working directory\"\n" +
                         "\t\t\t\tThe directory to use for storing configuration files, images and logs\n" +

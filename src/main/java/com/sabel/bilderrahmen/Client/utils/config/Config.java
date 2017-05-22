@@ -66,7 +66,7 @@ public class Config {
             }
             Logger.appendln("Using directory root \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
         }
-        setDevicename("testdevice");
+        setDevicename("NewDevice");
         setDeviceID();
         setRemoteConfigDir("config/");
         setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
@@ -117,6 +117,7 @@ public class Config {
                 Logger.appendln("Local config file was not found. This is probably the first time the program is run. If it isn't, please check that you have sufficient permissions to write to \"" + getLocalRootDir() + "\".", Logger.LOGTYPE_INFO);
                 LocalConfigFile lcf = new LocalConfigFile(getServer(), getDevicename(), getLocalRootDir(), getConfigUpdateInterval(), new String(WebService.getUname()), new String(WebService.getPasswd()), isUsbEnabled());
                 lcf.write(localConfig);
+                return;
             }
             LocalConfigFile lcf = LocalConfigFile.read(localConfig);
             int count = 0;
