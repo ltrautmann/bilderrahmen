@@ -74,7 +74,8 @@ public class FtpService {
             //file.delete();
             // ftpClient.logout();
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showConfirmDialog(null,
+                    e);
         }
     }
 

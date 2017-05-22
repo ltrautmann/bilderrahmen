@@ -16,6 +16,7 @@ public class Edit_Times extends JPanel {
     public final static int MOD_CLIENT = 1;
     public final static int MOD_Gruppe = 2;
     public JComboBox jComboBox;
+    public JLabel jLabelClient;
     private JPanel jPanel;
     private ComboBoxModel comboBoxModel;
     private int modus;
@@ -49,6 +50,8 @@ public class Edit_Times extends JPanel {
 
             }
         });
+        jLabelClient = new JLabel("Gruppe auswählen: ");
+        jPanel.add(jLabelClient);
         jPanel.add(jComboBox);
         add(jPanel);
         add(jScrollPane);
