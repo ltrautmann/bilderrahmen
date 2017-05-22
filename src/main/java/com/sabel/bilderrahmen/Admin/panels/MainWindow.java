@@ -123,7 +123,7 @@ public class MainWindow extends JFrame {
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
         jTabbedPane.add("Gruppe bekommt Bilder", allocatePaneGroupPicture);
         jTabbedPane.add("Gruppe Einstellungen", new Edit_Times(Edit_Times.MOD_Gruppe));
-        jTabbedPane.add("Gruppen zuordnen", allocatePaneGroupToClient);
+        jTabbedPane.add("Client in Gruppe", allocatePaneGroupToClient);
         jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
         jTabbedPane.add("Client Einstellungen", new EditClient());
         jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
