@@ -54,7 +54,7 @@ public class InitWindow extends JFrame {
                 Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
                 int serverResponseCode = Config.testServerConnection();
                 if (serverResponseCode == HttpURLConnection.HTTP_OK) {
-                    Logger.appendln("Server Connection OK", Logger.LOGTYPE_INFO);
+                    Logger.appendln("Server Connection OK (Response Code " + serverResponseCode + ")", Logger.LOGTYPE_INFO);
                     if (Config.readServerConfig()) {
                         if (Config.isUsbEnabled()) {
                             Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
