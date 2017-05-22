@@ -23,6 +23,7 @@ public class EditClient extends Edit_Times {
 
     public EditClient() {
         super(MOD_CLIENT);
+        jLabelClient.setText("Client auswählen: ");
         jPanels = new JPanel[4];
         for (int i = 0; i < jPanels.length; i++) {
             jPanels[i] = new JPanel();

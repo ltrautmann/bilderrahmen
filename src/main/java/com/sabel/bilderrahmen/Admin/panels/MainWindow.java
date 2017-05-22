@@ -141,8 +141,8 @@ public class MainWindow extends JFrame {
         jmSave.addActionListener(e -> {
             boolean success = true;
 
-            success &= FileService.writeClients();
-            success &= FileService.writeGroups();
+            success = success & FileService.writeClients();
+            success = success & FileService.writeGroups();
             if (!success) {
                 JOptionPane.showMessageDialog(null, "NichtGespeichert!!!");
             }
@@ -189,7 +189,7 @@ public class MainWindow extends JFrame {
             for (File file : files) {
                 FtpService.getInstance().upload("files/images", file);
             }
-            JOptionPane.showMessageDialog(null, "Uploade done");
+            JOptionPane.showMessageDialog(null, "Hochladen abgeschlossen");
             FileService.readPictures();
             reload();
 
