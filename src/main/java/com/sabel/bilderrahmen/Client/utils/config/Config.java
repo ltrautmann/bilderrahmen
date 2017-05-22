@@ -268,7 +268,7 @@ public class Config {
         try {
             HttpURLConnection huc = WebService.getAuthenticatedConnection(getServer());
             huc.setRequestMethod("HEAD");
-            return HttpURLConnection.HTTP_OK;
+            return huc.getResponseCode();
         } catch (IOException e) {
             return 0;
         }
