@@ -123,7 +123,7 @@ public class MainWindow extends JFrame {
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
         jTabbedPane.add("Gruppe bekommt Bilder", allocatePaneGroupPicture);
         jTabbedPane.add("Gruppe Einstellungen", new Edit_Times(Edit_Times.MOD_Gruppe));
-        jTabbedPane.add("Gruppen zuordnen", allocatePaneGroupToClient);
+        jTabbedPane.add("Client in Gruppe", allocatePaneGroupToClient);
         jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
         jTabbedPane.add("Client Einstellungen", new EditClient());
         jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
@@ -141,8 +141,8 @@ public class MainWindow extends JFrame {
         jmSave.addActionListener(e -> {
             boolean success = true;
 
-            success &= FileService.writeClients();
-            success &= FileService.writeGroups();
+            success = success & FileService.writeClients();
+            success = success & FileService.writeGroups();
             if (!success) {
                 JOptionPane.showMessageDialog(null, "NichtGespeichert!!!");
             }
@@ -189,7 +189,7 @@ public class MainWindow extends JFrame {
             for (File file : files) {
                 FtpService.getInstance().upload("files/images", file);
             }
-            JOptionPane.showMessageDialog(null, "Uploade done");
+            JOptionPane.showMessageDialog(null, "Hochladen abgeschlossen");
             FileService.readPictures();
             reload();
 

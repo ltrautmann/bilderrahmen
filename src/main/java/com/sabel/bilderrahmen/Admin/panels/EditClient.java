@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by robin on 09.05.17.
@@ -20,9 +22,12 @@ public class EditClient extends Edit_Times {
     private JCheckBox randomCB;
     private JLabel defaultTimeLable;
     private JSpinner jSpinner;
+    private JToggleButton editButton;
 
     public EditClient() {
         super(MOD_CLIENT);
+        editButton = new JToggleButton("Bearbeiten");
+        jLabelClient.setText("Client auswählen: ");
         jPanels = new JPanel[4];
         for (int i = 0; i < jPanels.length; i++) {
             jPanels[i] = new JPanel();
@@ -38,6 +43,7 @@ public class EditClient extends Edit_Times {
         jLabelMac = new JLabel("   MacAddress           ");
         jTextFieldMac = new JTextField(10);
         randomCB = new JCheckBox("Zufällige wiedergabe");
+        jPanels[0].add(editButton);
         jPanels[0].add(jLabelName);
         jPanels[0].add(jTextFieldName);
         jPanels[1].add(jLabelMac);
@@ -92,7 +98,16 @@ public class EditClient extends Edit_Times {
         randomCB.addActionListener(e -> ((Client) jComboBox.getSelectedItem()).setRandomImageOrder(randomCB.isSelected()));
         jSpinner.addChangeListener(e -> ((Client) jComboBox.getSelectedItem()).setDefaultanzeigedauer((Integer) jSpinner.getValue()));
 
+        jTextFieldMac.setEditable(false);
+        jTextFieldName.setEditable(false);
 
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTextFieldName.setEditable(editButton.isSelected());
+                jTextFieldMac.setEditable(editButton.isSelected());
+            }
+        });
     }
 
     private void showName() {

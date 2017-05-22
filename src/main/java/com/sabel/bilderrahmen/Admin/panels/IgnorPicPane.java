@@ -6,8 +6,6 @@ import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by robin on 09.05.17.
@@ -16,6 +14,7 @@ public class IgnorPicPane extends JPanel {
     private JTable table;
     private JScrollPane jScrollPane;
     private JPanel jPanelCombobox;
+    private JLabel jLableTitel;
     private ComboBoxModel comboBoxModel;
     private JComboBox jComboBox;
 
@@ -26,6 +25,7 @@ public class IgnorPicPane extends JPanel {
     }
 
     private void initComponents() {
+        jLableTitel = new JLabel("Client auswählen: ");
         jScrollPane = new JScrollPane();
         jPanelCombobox = new JPanel();
         comboBoxModel = new DefaultComboBoxModel(ClientPool.getInstance().getClientArrayList().toArray());
@@ -42,6 +42,7 @@ public class IgnorPicPane extends JPanel {
 
     private void build() {
         setLayout(new BorderLayout());
+        jPanelCombobox.add(jLableTitel);
         jPanelCombobox.add(jComboBox);
         add(jPanelCombobox, BorderLayout.NORTH);
         jScrollPane.setViewportView(table);

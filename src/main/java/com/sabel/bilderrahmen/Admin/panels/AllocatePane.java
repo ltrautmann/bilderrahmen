@@ -34,6 +34,7 @@ public class AllocatePane extends JPanel {
     private JButton jBrem;
     private int kindeOfPane; // 1= ignore Pictures; 2= Bild >> Client; 3= Bild >> Gruppe; 4 = Gruppe >> Client
     private JPanel jGridMiddle;
+    private JLabel jLablePleaseSelect;
 
     public AllocatePane(ArrayList itmePool, ArrayList targets) {
         this.targets = targets;
@@ -199,6 +200,7 @@ public class AllocatePane extends JPanel {
         jSplitPane2.setLeftComponent(jPanelMiddle);
         jSplitPane2.setRightComponent(jPanelRight);
         jComboBox = new JComboBox(targets.toArray());
+        jPanelCombobox.add(jLablePleaseSelect);
         jPanelCombobox.add(jComboBox);
         jPanelAdd.add(jBadd);
         jPanelRem.add(jBrem);
@@ -253,6 +255,7 @@ public class AllocatePane extends JPanel {
         jPanelAdd = new JPanel();
         jPanelRem = new JPanel();
         jPanelCombobox = new JPanel();
+        jLablePleaseSelect = new JLabel("Bitte Client auswählen: ");
         jPanelMiddle = new JPanel();
         jPanelRight = new JPanel();
         jPanelLeft = new JPanel();
