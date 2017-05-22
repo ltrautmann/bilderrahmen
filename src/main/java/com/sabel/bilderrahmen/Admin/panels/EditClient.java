@@ -40,9 +40,9 @@ public class EditClient extends Edit_Times {
         defaultTimeLable = new JLabel("   USB Anzeigedauer ");
         jLabelName = new JLabel("Name   ");
         jTextFieldName = new JTextField(10);
-        jLabelMac = new JLabel("   MacAddress           ");
+        jLabelMac = new JLabel("   Mac-Adresse           ");
         jTextFieldMac = new JTextField(10);
-        randomCB = new JCheckBox("Zufällige wiedergabe");
+        randomCB = new JCheckBox("Zufällige Wiedergabe");
         jPanels[0].add(editButton);
         jPanels[0].add(jLabelName);
         jPanels[0].add(jTextFieldName);

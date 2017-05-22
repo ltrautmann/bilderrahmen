@@ -121,12 +121,12 @@ public class MainWindow extends JFrame {
         allocatePaneGroupToClient = new AllocatePane(GroupPool.getInstance().getGroupArrayList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneClientPictures = new AllocatePane(PicturePool.getInstance().getPictureList(), ClientPool.getInstance().getClientArrayList());
         allocatePaneGroupPicture = new AllocatePane(PicturePool.getInstance().getPictureList(), GroupPool.getInstance().getGroupArrayList());
-        jTabbedPane.add("Gruppe bekommt Bilder", allocatePaneGroupPicture);
-        jTabbedPane.add("Gruppe Einstellungen", new Edit_Times(Edit_Times.MOD_Gruppe));
-        jTabbedPane.add("Client in Gruppe", allocatePaneGroupToClient);
-        jTabbedPane.add("Client Bilder", allocatePaneClientPictures);
-        jTabbedPane.add("Client Einstellungen", new EditClient());
-        jTabbedPane.add("BilderIgnorieren", new IgnorPicPane());
+        jTabbedPane.add("Gruppen: Bilder-Management", allocatePaneGroupPicture);
+        jTabbedPane.add("Gruppen: Bilder-Anzeigedauer", new Edit_Times(Edit_Times.MOD_Gruppe));
+        jTabbedPane.add("Gruppen-Verwaltung", allocatePaneGroupToClient);
+        jTabbedPane.add("Client: Bilder-Management", allocatePaneClientPictures);
+        jTabbedPane.add("Client: Einstellungen", new EditClient());
+        jTabbedPane.add("Client: Bilder aus Gruppe Ignorieren", new IgnorPicPane());
 
     }
 
