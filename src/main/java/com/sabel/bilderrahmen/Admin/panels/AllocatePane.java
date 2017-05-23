@@ -58,6 +58,8 @@ public class AllocatePane extends JPanel {
         }
         if (targets.get(0) instanceof Group) {
             kindeOfPane = 3;
+
+
         }
 
         initComponents();
@@ -217,7 +219,11 @@ public class AllocatePane extends JPanel {
             itmePool.setVisibleRowCount(11);
             if (kindeOfPane == 4) {
                 showClientGroups();
+
             }
+        }
+        if (kindeOfPane == 3) {
+            jLablePleaseSelect.setText("Bitte Gruppe auswählen: ");
         }
 
     }
