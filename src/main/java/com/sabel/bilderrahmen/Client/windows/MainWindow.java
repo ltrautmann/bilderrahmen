@@ -9,7 +9,7 @@ import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.panels.ImagePanel;
 import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

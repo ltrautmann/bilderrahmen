@@ -1,7 +1,7 @@
 package com.sabel.bilderrahmen.Client.utils.image;
 
 import javax.imageio.ImageIO;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class ImageService {
             return null;
         }
         int index = images.indexOf(image);
-        return (index == images.size() - 1) ? images.get(images.size()-1) : images.get(index - 1);
+        return (index == images.size() - 1) ? images.get(images.size() - 1) : images.get(index - 1);
     }
 
     public SavedImage randomImage() throws IOException {

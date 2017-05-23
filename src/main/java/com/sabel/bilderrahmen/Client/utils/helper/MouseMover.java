@@ -11,7 +11,7 @@ public class MouseMover implements Runnable {
     static {
         try {
             WallE = new Robot();
-            WallE.mouseMove((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),(int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+            WallE.mouseMove((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         } catch (AWTException e) {
             e.printStackTrace();
         }

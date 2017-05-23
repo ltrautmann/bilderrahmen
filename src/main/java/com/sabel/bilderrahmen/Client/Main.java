@@ -6,7 +6,7 @@ import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.windows.InitWindow;
 import com.sabel.bilderrahmen.Client.windows.MainWindow;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

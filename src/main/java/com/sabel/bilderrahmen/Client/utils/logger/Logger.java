@@ -2,8 +2,7 @@ package com.sabel.bilderrahmen.Client.utils.logger;
 
 import com.sabel.bilderrahmen.Client.utils.config.Config;
 
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;

@@ -6,14 +6,9 @@ import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.usb.USBService;
 
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.text.DefaultCaret;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.HeadlessException;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.HttpURLConnection;

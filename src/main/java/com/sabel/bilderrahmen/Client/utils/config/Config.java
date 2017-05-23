@@ -6,11 +6,11 @@ import com.sabel.bilderrahmen.Admin.resources.ClientPool;
 import com.sabel.bilderrahmen.Admin.services.FileService;
 import com.sabel.bilderrahmen.Client.Main;
 import com.sabel.bilderrahmen.Client.utils.image.ImageService;
-import com.sabel.bilderrahmen.Client.utils.image.ImageTools;
 import com.sabel.bilderrahmen.Client.utils.image.SavedImage;
 import com.sabel.bilderrahmen.Client.utils.logger.Logger;
 import com.sabel.bilderrahmen.Client.utils.web.WebService;
 
+import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class Config {
         setIgnoreServerDefinedUSBTime(false);
         setUsbEnabled(true);
         setUsbDisplayTime(2);
-        interpretLocalConfigFile();//TODO:??
+        interpretLocalConfigFile();
         interpretCMDArgs();
         if (new File(getLocalConfigDir()).mkdirs()) {
             Logger.appendln("Directory \"" + getLocalConfigDir() + "\" did not exist yet and was created.", Logger.LOGTYPE_INFO);
@@ -284,12 +284,19 @@ public class Config {
                 FileService.readGroups(new File(getLocalConfigDir() + "Groups.xml"));
                 Client thisClient = ClientPool.getInstance().getClientByMac(MACAddress);
                 if (thisClient == null) {
-                    Logger.appendln("Client was not found in configuration file, registering client with Server and exiting.", Logger.LOGTYPE_WARNING);
+                    Logger.appendln("Client was not found in configuration file, registering client with server and exiting.", Logger.LOGTYPE_WARNING);
                     HttpURLConnection huc = WebService.getAuthenticatedConnection(Config.getServer() + "clients/register.php?name=" + URLEncoder.encode(getDeviceID(), "UTF-8"));
-                    if (huc.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                        Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_ERROR);
+                    if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        Logger.appendln("Your MAC Address is \"" + MACAddress + "\", Device Name is \"" + getDevicename() + "\"", Logger.LOGTYPE_FATAL);
+                        JOptionPane.showMessageDialog(Main.getInitWindow(),
+                                "Client was registered with Server.\n" +
+                                        "Name: " + devicename + "\tMAC: " + MACAddress + "\n" +
+                                        "Please contact you Administrator with these details.",
+                                "No Configuration Available",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        Logger.appendln("Failed to register client, HTTP Error code \"" + huc.getResponseCode() + "\" at \"" + huc.getURL() + "\".", Logger.LOGTYPE_FATAL);
                     }
-                    Logger.appendln("No Configuration Available.", Logger.LOGTYPE_FATAL);
                     Main.quit();
                     return false;
                 } else {
@@ -313,6 +320,7 @@ public class Config {
                             }
                         } catch (IOException e) {
                             Logger.appendln("Image download failed (IOException), image will be ignored.", Logger.LOGTYPE_ERROR);
+                            e.printStackTrace();
                         }
                     }
                     setImageService(new ImageService(savedImages));

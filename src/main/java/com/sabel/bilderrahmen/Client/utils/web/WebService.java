@@ -7,9 +7,8 @@ import sun.misc.BASE64Encoder;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by CheaterLL on 18.04.2017.
