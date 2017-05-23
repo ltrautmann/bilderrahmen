@@ -53,9 +53,6 @@ public class Main {
             if (s.equals("-h") || s.equals("--help") || s.equals("/?") || s.equals("/h") || s.equals("/help")) {
                 printHelp();
                 System.exit(0);
-            } else if (s.equals("-t")) {
-                Test.main(null);
-                System.exit(0);
             } else {
                 Config.passArgs(args);
             }
@@ -67,33 +64,22 @@ public class Main {
     }
 
     private static void start() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Main.initWindow = new InitWindow();
-            }
-        });
+        SwingUtilities.invokeLater(() -> Main.initWindow = new InitWindow());
     }
 
     public static void restart() {
-        Thread restart = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Main.exit();
-                Main.start();
-            }
+        Thread restart = new Thread(() -> {
+            Main.exit();
+            Main.start();
         });
         restart.setName("RESTARTING");
         restart.start();
     }
 
     public static synchronized void quit() {
-        Thread quit = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Main.exit();
-                System.exit(0);
-            }
+        Thread quit = new Thread(() -> {
+            Main.exit();
+            System.exit(0);
         });
         quit.setName("QUITTING");
         quit.start();

@@ -42,9 +42,6 @@ public class LocalConfigFile {
         this.usbEnabled = usbEnabled;
     }
 
-    public LocalConfigFile() {
-    }
-
     public String getServer() {
         return server;
     }

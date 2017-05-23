@@ -44,7 +44,7 @@ public class ImageService {
         return images.size();
     }
 
-    public int indexOfImage(SavedImage i) {
+    public int indexOf(SavedImage i) {
         return images.indexOf(i);
     }
 
@@ -112,17 +112,6 @@ public class ImageService {
             }
         }
         return false;
-    }
-
-    public int find(String name) {
-        if (name != null && !"".equals(name)) {
-            for (SavedImage s : images) {
-                if (name.equals(s.getPicture_properties().getName())) {
-                    return images.indexOf(s);
-                }
-            }
-        }
-        return -1;
     }
 
     @Override

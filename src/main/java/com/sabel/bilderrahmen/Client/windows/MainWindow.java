@@ -26,7 +26,6 @@ public class MainWindow extends JFrame {
     private Thread imageUpdateThread;
     private Thread configUpdateThread;
     private ImagePanel imagePanel;
-    private ImageService imageService;
 
     public MainWindow() {
         init();
@@ -36,81 +35,75 @@ public class MainWindow extends JFrame {
         initComponents();
         initEvents();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        fullScreen(this, false);
+        fullScreen(this);
         start();
     }
 
     private void start() {
-        imageUpdateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Main.registerThread(Thread.currentThread());
+        imageUpdateThread = new Thread(() -> {
+            Main.registerThread(Thread.currentThread());
+            try {
+                SavedImage img = null;
+                if (Config.getImageService().size() < 1) {
+                    Logger.appendln("No images provided to display thread. Exiting.", Logger.LOGTYPE_FATAL);
+                    Main.quit();
+                } else {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
+                            if (Config.isRandomImageOrder()) {
+                                img = Config.getImageService().randomImage();
+                                Logger.appendln("Applying random image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
+                                imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
+                            } else {
+                                img = Config.getImageService().next(img);
+                                Logger.appendln("Applying next image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
+                                imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
+                            }
+                        } catch (IOException e) {
+                            Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
+                        } catch (NullPointerException e) {
+                            Logger.appendln("Image to be updated was null, skipping image. This is probably due to attempting to read a new image that is currently being scaled.", Logger.LOGTYPE_WARNING);
+                        }
+                        if (img != null) {
+                            TimeUnit.SECONDS.sleep(img.getDisplayTime());
+                        } else {
+                            TimeUnit.MILLISECONDS.sleep(10);
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+            }
+            Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
+        });
+        configUpdateThread = new Thread(() -> {
+            Main.registerThread(Thread.currentThread());
+            while (!Thread.currentThread().isInterrupted()) {
+                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                 try {
-                    SavedImage img = null;
+                    Thread.sleep(1000 * Config.getConfigUpdateInterval());
+                    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+                    Config.readServerConfig();
+                    if (Config.isUsbEnabled()) {
+                        Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
+                        USBService.update();
+                    } else {
+                        Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
+                    }
+                    ImageTools.resizeAllImages(false);
+                    ImageTools.deleteObsoleteImages();
+                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+                    Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);
+                    Logger.appendln(Config.getImageService().toString(), Logger.LOGTYPE_INFO);
                     if (Config.getImageService().size() < 1) {
                         Logger.appendln("No images provided to display thread. Exiting.", Logger.LOGTYPE_FATAL);
                         Main.quit();
-                    } else {
-                        while (!Thread.currentThread().isInterrupted()) {
-                            try {
-                                if (Config.isRandomImageOrder()) {
-                                    img = Config.getImageService().randomImage();
-                                    Logger.appendln("Applying random image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
-                                    imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
-                                } else {
-                                    img = Config.getImageService().next(img);
-                                    Logger.appendln("Applying next image: \"" + img.getPicture_properties().getName() + "\" for " + img.getDisplayTime() + " Seconds.", Logger.LOGTYPE_INFO);
-                                    imagePanel.setImage(ImageService.accessImage(img.getResizedPath(), null, null));
-                                }
-                            } catch (IOException e) {
-                                Logger.appendln("Could not read image: " + e.getMessage(), Logger.LOGTYPE_ERROR);
-                            } catch (NullPointerException e) {
-                                Logger.appendln("Image to be updated was null, skipping image. This is probably due to attempting to read a new image that is currently being scaled.", Logger.LOGTYPE_WARNING);
-                            }
-                            if (img != null) {
-                                TimeUnit.SECONDS.sleep(img.getDisplayTime());
-                            } else {
-                                TimeUnit.MILLISECONDS.sleep(10);
-                            }
-                        }
                     }
                 } catch (InterruptedException e) {
                     Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
                 }
-                Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
             }
-        });
-        configUpdateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Main.registerThread(Thread.currentThread());
-                while (!Thread.currentThread().isInterrupted()) {
-                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-                    try {
-                        Thread.sleep(1000 * Config.getConfigUpdateInterval());
-                        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                        Config.readServerConfig();
-                        if (Config.isUsbEnabled()) {
-                            Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
-                            USBService.update();
-                        } else {
-                            Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
-                        }
-                        ImageTools.resizeAllImages(false);
-                        ImageTools.deleteObsoleteImages();
-                        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-                        Logger.appendln("Configuration update finished.", Logger.LOGTYPE_INFO);
-                        Logger.appendln(Config.getImageService().toString(), Logger.LOGTYPE_INFO);
-                        if (Config.getImageService().size() < 1) {
-                            Logger.appendln("No images provided to display thread. Exiting.", Logger.LOGTYPE_FATAL);
-                            Main.quit();
-                        }
-                    } catch (InterruptedException e) {
-                        Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
-                    }
-                }
-                Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
-            }
+            Logger.logProgramExit("Thread was interrupted. Exiting.", Logger.LOGTYPE_INFO);
         });
         imageUpdateThread.setName("IMAGEUPDATE");
         configUpdateThread.setName("CONFIGUPDATE");
@@ -132,13 +125,16 @@ public class MainWindow extends JFrame {
                     Main.quit();
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     Config.readServerConfig();
-                    System.out.println("refreshing config...");
+                    Logger.appendln("Refreshing Config.", Logger.LOGTYPE_INFO);
+                }else if (e.getKeyCode() == KeyEvent.VK_F12) {
+                    Main.restart();
+                    Logger.appendln("Restarting.", Logger.LOGTYPE_INFO);
                 }
             }
         });
     }
 
-    static private boolean fullScreen(final JFrame frame, boolean doPack) {
+    static private boolean fullScreen(final JFrame frame) {
 
         GraphicsDevice device = frame.getGraphicsConfiguration().getDevice();
         boolean result = device.isFullScreenSupported();
@@ -160,15 +156,9 @@ public class MainWindow extends JFrame {
                 }
             });
 
-            if (doPack)
-                frame.pack();
-
             device.setFullScreenWindow(frame);
         } else {
             frame.setPreferredSize(frame.getGraphicsConfiguration().getBounds().getSize());
-
-            if (doPack)
-                frame.pack();
 
             frame.setResizable(true);
 

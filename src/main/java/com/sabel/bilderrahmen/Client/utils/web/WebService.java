@@ -36,7 +36,7 @@ public class WebService {
         if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
             InputStream inputStream = huc.getInputStream();
             FileOutputStream outputStream = new FileOutputStream(file);
-            int bytesRead = -1;
+            int bytesRead;
             byte[] buffer = new byte[4096];
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);

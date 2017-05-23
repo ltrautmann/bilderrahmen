@@ -43,11 +43,7 @@ public class SavedImage {
 
         SavedImage that = (SavedImage) o;
 
-        if (getOriginalPath() != null ? !getOriginalPath().equals(that.getOriginalPath()) : that.getOriginalPath() != null)
-            return false;
-        if (getResizedPath() != null ? !getResizedPath().equals(that.getResizedPath()) : that.getResizedPath() != null)
-            return false;
-        return getPicture_properties() != null ? getPicture_properties().equals(that.getPicture_properties()) : that.getPicture_properties() == null;
+        return (getOriginalPath() != null ? getOriginalPath().equals(that.getOriginalPath()) : that.getOriginalPath() == null) && (getResizedPath() != null ? getResizedPath().equals(that.getResizedPath()) : that.getResizedPath() == null) && (getPicture_properties() != null ? getPicture_properties().equals(that.getPicture_properties()) : that.getPicture_properties() == null);
     }
 
     @Override

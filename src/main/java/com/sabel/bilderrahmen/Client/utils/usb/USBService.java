@@ -23,10 +23,9 @@ public class USBService {
 
     public static synchronized void update() {
         try {
-            System.out.println(ImageTools.getSupportedExtensions());
             Process mount = Runtime.getRuntime().exec("lsblk");
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(mount.getInputStream()));
-            String s = null;
+            String s;
             List<String> deviceList = new ArrayList<>();
             while ((s = stdInput.readLine()) != null) {
                 if (s.contains("part /media")) {
@@ -51,7 +50,7 @@ public class USBService {
             }
             for (String i : images) {
                 Config.getImageService().addImage(new USBImage(i, i.substring(i.lastIndexOf('/')), Config.getUsbDisplayTime()));
-                System.out.println("Found image " + i);
+                Logger.appendln("Found image " + i, Logger.LOGTYPE_INFO);
             }
         } catch (IOException e) {
             e.printStackTrace();

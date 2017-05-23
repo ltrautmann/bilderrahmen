@@ -34,36 +34,33 @@ public class InitWindow extends JFrame {
         setSize(960, 540);
         setLocationRelativeTo(null);
         setVisible(true);
-        Thread init = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Logger.initLogger(jTextArea, jProgressBar);
-                Config.init();
-                Logger.initLogFile();
-                Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
-                Logger.appendln("Raspi Bilderrahmen", Logger.LOGTYPE_INFO);
-                Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
-                Logger.appendln("", Logger.LOGTYPE_INFO);
-                Logger.appendln("When in Display Mode, Press ESC to quit or F5 to force refresh configuration", Logger.LOGTYPE_INFO);
-                Logger.appendln("", Logger.LOGTYPE_INFO);
-                Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
-                int serverResponseCode = Config.testServerConnection();
-                if (serverResponseCode == HttpURLConnection.HTTP_OK) {
-                    Logger.appendln("Server Connection OK (Response Code " + serverResponseCode + ")", Logger.LOGTYPE_INFO);
-                    if (Config.readServerConfig()) {
-                        if (Config.isUsbEnabled()) {
-                            Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
-                            USBService.update();
-                        } else {
-                            Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
-                        }
-                        ImageTools.resizeAllImages(false);
-                        Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
-                        Main.setMainWindow(new MainWindow());
+        Thread init = new Thread(() -> {
+            Logger.initLogger(jTextArea, jProgressBar);
+            Config.init();
+            Logger.initLogFile();
+            Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
+            Logger.appendln("Raspi Bilderrahmen", Logger.LOGTYPE_INFO);
+            Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
+            Logger.appendln("", Logger.LOGTYPE_INFO);
+            Logger.appendln("When in Display Mode, Press ESC to quit or F5 to force refresh configuration", Logger.LOGTYPE_INFO);
+            Logger.appendln("", Logger.LOGTYPE_INFO);
+            Logger.appendln("########################################################################################################################", Logger.LOGTYPE_INFO);
+            int serverResponseCode = Config.testServerConnection();
+            if (serverResponseCode == HttpURLConnection.HTTP_OK) {
+                Logger.appendln("Server Connection OK (Response Code " + serverResponseCode + ")", Logger.LOGTYPE_INFO);
+                if (Config.readServerConfig()) {
+                    if (Config.isUsbEnabled()) {
+                        Logger.appendln("Reading connected storage media.", Logger.LOGTYPE_INFO);
+                        USBService.update();
+                    } else {
+                        Logger.appendln("USB is disabled.", Logger.LOGTYPE_INFO);
                     }
-                } else {
-                    Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
+                    ImageTools.resizeAllImages(false);
+                    Logger.appendln("Starting Display.", Logger.LOGTYPE_INFO);
+                    Main.setMainWindow(new MainWindow());
                 }
+            } else {
+                Logger.appendln("Could not connect to server \"" + Config.getServer() + "\"! HTTP ERROR " + serverResponseCode, Logger.LOGTYPE_ERROR);
             }
         });
         init.setName("INITIALIZING");

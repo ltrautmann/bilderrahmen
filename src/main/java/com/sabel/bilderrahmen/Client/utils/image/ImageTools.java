@@ -75,7 +75,9 @@ public class ImageTools {
                                     Logger.appendln("\n\tNot enough memory to resize current image. Aborting resize.", Logger.LOGTYPE_ERROR);
                                     tries++;
                                     File f2 = new File(resizedPath);
-                                    f2.delete();
+                                    if (f2.delete()) {
+                                        Logger.appendln("Previously resized version was found and removed to avoid conflicts.", Logger.LOGTYPE_INFO);
+                                    }
                                     Config.getImageService().removeImage(s);
                                     tries += maxTries;
                                     outOfMemoryImages++;
@@ -160,9 +162,8 @@ public class ImageTools {
                 setLastResolution(lastResolutionPath, newResolution);
             } catch (IOException e) {
                 Logger.appendln("Current resolution could not be saved. This will force another resize of all images on the next update cycle.", Logger.LOGTYPE_WARNING);
-            } finally {
-                return true;
             }
+            return true;
         }
     }
 
@@ -176,6 +177,10 @@ public class ImageTools {
     public static void deleteObsoleteImages() {
         Logger.appendln("Deleting obsolete images.", Logger.LOGTYPE_INFO);
         File[] images = new File(Config.getLocalResizedDir()).listFiles();
+        if (images == null) {
+            Logger.appendln("No resized images were found.", Logger.LOGTYPE_ERROR);
+            return;
+        }
         int count = 0;
         int failed = 0;
         for (File f : images) {
@@ -224,18 +229,7 @@ public class ImageTools {
         }
         boolean multiStepDownscaling = (image.getWidth() > width && image.getHeight() > height) && !forceSingleStep;
         Logger.append(((multiStepDownscaling) ? "\tDownscaling" : "\tUpscaling") + " image of size " + image.getWidth() + "x" + image.getHeight() + " to " + width + "x" + height + " at aspect ratio of " + aspectRatio + ".", Logger.LOGTYPE_INFO);
-        if (true) {
-            return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
-        } else {
-            BufferedImage tmp = new BufferedImage(width, height, ((image.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB));
-            Graphics2D g2 = tmp.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g2.drawImage(image, 0, 0, width, height, null);
-            g2.dispose();
-            g2 = null;
-            image = tmp;
-            return image;
-        }
+        return getScaledInstance(image, width, height, RenderingHints.VALUE_INTERPOLATION_BILINEAR, multiStepDownscaling);
     }
 
     /**
@@ -261,7 +255,7 @@ public class ImageTools {
     private static synchronized BufferedImage getScaledInstance(BufferedImage img, int targetWidth, int targetHeight, Object hint, boolean higherQuality) {
         int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
         int cycles = 0;
-        BufferedImage ret = (BufferedImage) img;
+        BufferedImage ret = img;
         int w, h;
         if (higherQuality) {
             // Use multi-step technique: start with original size, then
@@ -295,7 +289,6 @@ public class ImageTools {
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
             g2.drawImage(ret, 0, 0, w, h, null);
             g2.dispose();
-            g2 = null;
             System.gc();
             ret = tmp;
             cycles++;

@@ -276,8 +276,7 @@ public class Config {
 
     public static boolean readServerConfig() {
         try {
-            boolean success = true;
-            success = success && WebService.getConfig("Clients.xml");
+            boolean success = WebService.getConfig("Clients.xml");
             success = success && WebService.getConfig("Groups.xml");
             if (success) {
                 FileService.readClients(new File(getLocalConfigDir() + "Clients.xml"));
@@ -344,7 +343,7 @@ public class Config {
 
     private static void readMAC() {
         try {
-            byte[] mac = null;
+            byte[] mac;
             if (unixDevice) {
                 int ifacenum = 0;
                 mac = readLinuxMac("wlp2s0");
@@ -365,8 +364,8 @@ public class Config {
                 Logger.appendln("Failed to read MAC Address(No available Interface found)", Logger.LOGTYPE_ERROR);
             } else {
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < mac.length; i++) {
-                    sb.append(String.format("%02X", mac[i]));
+                for (byte aMac : mac) {
+                    sb.append(String.format("%02X", aMac));
                 }
                 MACAddress = sb.toString();
                 Logger.appendln("Detected MAC Address " + MACAddress, Logger.LOGTYPE_INFO);

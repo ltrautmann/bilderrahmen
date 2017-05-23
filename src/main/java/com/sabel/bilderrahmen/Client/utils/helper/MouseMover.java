@@ -17,20 +17,14 @@ public class MouseMover implements Runnable {
         }
     }
 
-
-    public static void runit() {
+    @Override
+    public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             WallE.delay(1000);
             int x = MouseInfo.getPointerInfo().getLocation().x ^ 1; // + - 1 Pixel
             int y = MouseInfo.getPointerInfo().getLocation().y ^ 1; // + - 1 Pixel
             WallE.mouseMove(x, y);
         }
-    }
-
-    @Override
-    public void run() {
-        runit();
-
     }
 }
 
