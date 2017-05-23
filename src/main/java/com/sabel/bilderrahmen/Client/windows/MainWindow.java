@@ -131,7 +131,7 @@ public class MainWindow extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     Main.quit();
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
-                    //TODO:Refresh config
+                    Config.readServerConfig();
                     System.out.println("refreshing config...");
                 }
             }
