@@ -37,7 +37,6 @@ public class Config {
     private static String remoteConfigDir;
     private static String remoteConfigFile;
     private static int configUpdateInterval;
-    private static int usbUpdateInterval;
     private static int usbDisplayTime;
     private static boolean usbEnabled;
     private static boolean unixDevice;
@@ -76,7 +75,6 @@ public class Config {
         WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
         setRandomImageOrder(false);
         setIgnoreServerDefinedImageOrder(false);
-        setUsbUpdateInterval(300);
         setIgnoreServerDefinedUSBTime(false);
         setUsbEnabled(true);
         setUsbDisplayTime(2);
@@ -553,14 +551,6 @@ public class Config {
 
     public static void setImageService(ImageService imageService) {
         Config.imageService = imageService;
-    }
-
-    public static int getUsbUpdateInterval() {
-        return usbUpdateInterval;
-    }
-
-    public static void setUsbUpdateInterval(int usbUpdateInterval) {
-        Config.usbUpdateInterval = usbUpdateInterval;
     }
 
     public static boolean isUsbEnabled() {
