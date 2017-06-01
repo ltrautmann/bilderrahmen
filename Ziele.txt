@@ -16,7 +16,7 @@ Client:
 	
 Admin:
 	Upload der Bilder via FTP 
-		ftp.strato.de bilderrahmen@bilderrahmen.cheaterll.de::Kennwort0
+		
 	Bearbeiten und Löschen von Bildern
 	Anzeigen der Client-Config
 	Suchen nach Gruppen, Untergruppen, Namen
