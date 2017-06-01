@@ -71,8 +71,8 @@ public class Config {
         setRemoteConfigFile(getRemoteConfigDir() + getDeviceID() + ".xml");
         setRemoteImageDir("images/");
         setConfigUpdateInterval(1800);
-        WebService.setUname(new char[]{'g', 'b', 's'});
-        WebService.setPasswd(new char[]{'K', 'e', 'n', 'n', 'w', 'o', 'r', 't', '0'});
+        WebService.setUname(new char[]{'u', 's', 'e', 'r'});
+        WebService.setPasswd(new char[]{'p', 'a', 's', 's', 'w', 'o', 'r', 'd'});
         setRandomImageOrder(false);
         setIgnoreServerDefinedImageOrder(false);
         setIgnoreServerDefinedUSBTime(false);
