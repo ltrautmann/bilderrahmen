@@ -14,7 +14,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Main {
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 
-        FtpService.getInstance("bilderrahmen@bilderrahmen.cheaterll.de", "Kennwort0", "ftp.strato.de");
+        FtpService.getInstance("ftp name", "ftp kennwort", "ftp server");
         FileService.readClients();
         FileService.readGroups();
 
